@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin-oversikt | Studio Nord</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="builder.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+
+<div class="noise-overlay"></div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="logo">Studio<span>Nord</span></a>
+    <div class="topbar-divider"></div>
+    <span class="admin-title-tag">Admin-oversikt</span>
+  </div>
+
+  <div class="topbar-right">
+    <div class="user-menu">
+      <button class="user-avatar admin-avatar" id="userAvatarBtn">AD</button>
+      <div class="user-dropdown" id="userDropdown">
+        <div class="user-email" id="userEmail">admin@studionord.no</div>
+        <a href="index.html">Til forsiden</a>
+        <button id="logoutBtn">Logg ut</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="admin-main">
+  <div class="admin-main-inner">
+
+    <div class="admin-head">
+      <div>
+        <h1>Alle nettsideprosjekter</h1>
+        <p class="admin-sub">Som admin har du full oversikt og kan redigere alle kundekontoer &mdash; inkludert kildekoden direkte.</p>
+      </div>
+      <button class="btn btn-primary" id="newAccountBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Ny konto
+      </button>
+    </div>
+
+    <div class="admin-stats">
+      <div class="admin-stat"><span class="n" id="statTotal">0</span><span class="l">Kontoer totalt</span></div>
+      <div class="admin-stat"><span class="n" id="statLive">0</span><span class="l">Live nettsider</span></div>
+      <div class="admin-stat"><span class="n" id="statDraft">0</span><span class="l">Under utvikling</span></div>
+    </div>
+
+    <div class="account-grid" id="accountGrid"></div>
+
+  </div>
+</main>
+
+<!-- NEW ACCOUNT MODAL -->
+<div class="modal-overlay" id="newAccountModal">
+  <div class="modal modal-form">
+    <div class="code-modal-head">
+      <div>
+        <h3>Opprett ny konto</h3>
+        <p class="code-modal-sub">Kunden får sin egen nettside å redigere.</p>
+      </div>
+      <button class="icon-btn" id="closeNewAccountModal" aria-label="Lukk">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <form id="newAccountForm" class="field-group">
+      <label class="b-field">
+        <span>Brukernavn</span>
+        <input type="text" id="na-username" placeholder="f.eks. bakeriet-anna" required>
+      </label>
+      <label class="b-field">
+        <span>Passord</span>
+        <input type="text" id="na-password" placeholder="Velg et passord" required>
+      </label>
+      <label class="b-field">
+        <span>Bedrifts-/prosjektnavn</span>
+        <input type="text" id="na-projectname" placeholder="f.eks. Annas Bakeri" required>
+      </label>
+      <label class="b-field">
+        <span>Bransje (startmal)</span>
+        <select id="na-template"></select>
+      </label>
+      <p class="auth-error" id="newAccountError"></p>
+      <button type="submit" class="btn btn-primary btn-full">Opprett konto</button>
+    </form>
+  </div>
+</div>
+
+<script src="builder-data.js?v=demo2"></script>
+<script src="accounts.js?v=demo2"></script>
+<script src="admin.js?v=demo3"></script>
+</body>
+</html>

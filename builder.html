@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nettsidebygger | Studio Nord</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="builder.css">
+</head>
+<body class="builder-body">
+
+<div class="noise-overlay"></div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="logo">Studio<span>Nord</span></a>
+    <div class="topbar-divider"></div>
+    <a href="admin.html" class="btn-back-admin" id="backToAdmin" style="display:none;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Oversikt
+    </a>
+    <input type="text" id="projectName" class="project-name-input" value="Mitt nettsideprosjekt">
+    <span class="owner-tag" id="ownerTag" style="display:none;"></span>
+  </div>
+
+  <div class="topbar-center">
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="desktop">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="13" rx="1.5" stroke="currentColor" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Desktop
+      </button>
+      <button class="view-btn" data-view="mobile">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="7" y="2" width="10" height="20" rx="2" stroke="currentColor" stroke-width="2"/><path d="M11 18h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Mobil
+      </button>
+    </div>
+  </div>
+
+  <div class="topbar-right">
+    <span class="save-status" id="saveStatus">Alt lagret</span>
+    <button class="btn btn-ghost btn-small" id="codeBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M8 5L2 12l6 7M16 5l6 7-6 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Kode
+    </button>
+    <button class="btn btn-ghost btn-small" id="saveBtn">Lagre</button>
+    <a class="btn btn-ghost btn-small" id="viewSiteBtn" href="#" target="_blank">Se nettside</a>
+    <button class="btn btn-primary btn-small" id="publishBtn">Publiser</button>
+    <div class="user-menu">
+      <button class="user-avatar" id="userAvatarBtn">SN</button>
+      <div class="user-dropdown" id="userDropdown">
+        <div class="user-email" id="userEmail">demo@studionord.no</div>
+        <a href="index.html">Til forsiden</a>
+        <button id="logoutBtn">Logg ut</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="builder-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <nav class="sidebar-tabs">
+      <button class="sidebar-tab active" data-tab="oppsett">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9s1.3-6.4 3.8-9z" stroke="currentColor" stroke-width="2"/></svg>
+        Oppsett
+      </button>
+      <button class="sidebar-tab" data-tab="innhold">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 5h16M4 12h16M4 19h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Innhold
+      </button>
+      <button class="sidebar-tab" data-tab="seksjoner">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="4" rx="1" stroke="currentColor" stroke-width="2"/><rect x="4" y="10" width="16" height="4" rx="1" stroke="currentColor" stroke-width="2"/><rect x="4" y="16" width="16" height="4" rx="1" stroke="currentColor" stroke-width="2"/></svg>
+        Seksjoner
+      </button>
+    </nav>
+
+    <div class="sidebar-panels">
+
+      <!-- OPPSETT PANEL -->
+      <div class="panel active" id="panel-oppsett">
+        <h2 class="panel-title">Nettside-oppsett</h2>
+        <p class="panel-desc">Tekniske innstillinger og grunndata for prosjektet.</p>
+
+        <div class="field-group">
+          <label class="b-field">
+            <span>Domene</span>
+            <div class="domain-field">
+              <input type="text" id="f-domain" placeholder="minbedrift.no">
+              <span class="domain-status" id="domainStatus">✓ Ledig</span>
+            </div>
+          </label>
+          <label class="b-field">
+            <span>Bransje</span>
+            <select id="f-template"></select>
+          </label>
+          <label class="b-field">
+            <span>Språk</span>
+            <select id="f-language">
+              <option value="no">Norsk (bokmål)</option>
+              <option value="nn">Norsk (nynorsk)</option>
+              <option value="en">Engelsk</option>
+            </select>
+          </label>
+          <label class="b-field">
+            <span>Status</span>
+            <select id="f-status">
+              <option value="draft">Under utvikling</option>
+              <option value="live">Live</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="field-divider"></div>
+
+        <div class="field-group">
+          <label class="b-field">
+            <span>SEO-tittel</span>
+            <input type="text" id="f-seoTitle">
+          </label>
+          <label class="b-field">
+            <span>SEO-beskrivelse</span>
+            <textarea id="f-seoDesc" rows="3"></textarea>
+          </label>
+        </div>
+
+        <div class="field-divider"></div>
+
+        <div class="tech-info">
+          <div class="tech-info-row"><span>SSL-sertifikat</span><strong class="ok">Aktivert ✓</strong></div>
+          <div class="tech-info-row"><span>Hosting</span><strong>StudioNord Cloud</strong></div>
+          <div class="tech-info-row"><span>CDN</span><strong class="ok">Aktivert ✓</strong></div>
+          <div class="tech-info-row"><span>Backup</span><strong>Daglig</strong></div>
+          <div class="tech-info-row"><span>Sist lagret</span><strong id="lastSavedInfo">Nå nettopp</strong></div>
+        </div>
+      </div>
+
+      <!-- INNHOLD PANEL -->
+      <div class="panel" id="panel-innhold">
+        <h2 class="panel-title">Rediger innhold</h2>
+        <p class="panel-desc">Endringer vises direkte i forhåndsvisningen.</p>
+
+        <div class="field-group">
+          <label class="b-field">
+            <span>Bedriftsnavn</span>
+            <input type="text" id="f-businessName">
+          </label>
+          <label class="b-field">
+            <span>Kort fane/tag</span>
+            <input type="text" id="f-heroTag">
+          </label>
+          <label class="b-field">
+            <span>Hero-overskrift</span>
+            <textarea id="f-heroTitle" rows="2"></textarea>
+          </label>
+          <label class="b-field">
+            <span>Hero-undertekst</span>
+            <textarea id="f-heroSub" rows="2"></textarea>
+          </label>
+          <label class="b-field">
+            <span>Knappetekst (CTA)</span>
+            <input type="text" id="f-cta">
+          </label>
+          <label class="b-field">
+            <span>Badge-tekst</span>
+            <input type="text" id="f-badge">
+          </label>
+        </div>
+
+        <div class="field-divider"></div>
+
+        <div class="field-group">
+          <label class="b-field">
+            <span>Om oss &mdash; tittel</span>
+            <input type="text" id="f-aboutTitle">
+          </label>
+          <label class="b-field">
+            <span>Om oss &mdash; tekst</span>
+            <textarea id="f-aboutText" rows="4"></textarea>
+          </label>
+        </div>
+
+        <div class="field-divider"></div>
+
+        <div class="field-group">
+          <label class="b-field">
+            <span>Meny/Tjenester &mdash; tittel</span>
+            <input type="text" id="f-offeringsLabel">
+          </label>
+          <div class="offerings-editor" id="offeringsEditor"></div>
+        </div>
+
+        <div class="field-divider"></div>
+
+        <div class="field-group">
+          <span class="b-field-label-standalone">Galleri &mdash; bilder</span>
+          <div class="gallery-editor" id="galleryEditor"></div>
+          <button type="button" class="btn btn-outline btn-small btn-full" id="addGalleryItemBtn">+ Legg til bilde</button>
+        </div>
+
+        <div class="field-divider"></div>
+
+        <div class="field-group">
+          <label class="b-field">
+            <span>Adresse</span>
+            <input type="text" id="f-address">
+          </label>
+          <label class="b-field">
+            <span>Åpningstider / kontaktinfo</span>
+            <input type="text" id="f-hours">
+          </label>
+        </div>
+
+        <div class="field-divider"></div>
+
+        <div class="field-group">
+          <div class="color-row">
+            <label class="b-field color-field">
+              <span>Primærfarge</span>
+              <input type="color" id="f-accent">
+            </label>
+            <label class="b-field color-field">
+              <span>Sekundærfarge</span>
+              <input type="color" id="f-accent2">
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEKSJONER PANEL -->
+      <div class="panel" id="panel-seksjoner">
+        <h2 class="panel-title">Bygg med seksjoner</h2>
+        <p class="panel-desc">Dra i &#9776; for å endre rekkefølge. Skru av/på med bryteren.</p>
+        <div class="section-list" id="sectionList"></div>
+
+        <div class="add-section-wrap">
+          <button type="button" class="btn btn-outline btn-full" id="addSectionBtn">+ Legg til seksjon</button>
+          <div class="add-section-menu" id="addSectionMenu"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="customer-save-bar" id="customerSaveBar" style="display:none;">
+      <div><strong>Lagre endringene dine</strong><span id="customerSaveHint">Alle endringer er lagret</span></div>
+      <button class="btn btn-primary btn-full" id="customerSaveBtn" type="button">Lagre endringer</button>
+    </div>
+  </aside>
+
+  <!-- CANVAS -->
+  <main class="canvas">
+    <div class="canvas-inner">
+      <div class="mockup-stage" id="mockupStage">
+        <div class="mockup mockup-desktop" id="mockupDesktop">
+          <div class="browser-chrome">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <div class="browser-url" id="browserUrl">minbedrift.no</div>
+          </div>
+          <div class="site-preview" id="previewDesktop"></div>
+        </div>
+        <div class="mockup mockup-mobile" id="mockupMobile">
+          <div class="phone-chrome"><span class="notch"></span></div>
+          <div class="site-preview site-preview-mobile" id="previewMobile"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- PUBLISH MODAL -->
+<div class="modal-overlay" id="publishModal">
+  <div class="modal">
+    <div class="modal-icon">🚀</div>
+    <h3>Nettsiden er publisert!</h3>
+    <p>Dette er en demo, så ingenting er faktisk satt i luften &mdash; men slik ville det sett ut:</p>
+    <div class="modal-url" id="modalUrl">https://baeroskebab.no</div>
+    <button class="btn btn-primary btn-full" id="closeModal">Lukk</button>
+  </div>
+</div>
+
+<!-- CODE MODAL -->
+<div class="modal-overlay" id="codeModal">
+  <div class="modal modal-code">
+    <div class="code-modal-head">
+      <div>
+        <h3>Kildekode</h3>
+        <p class="code-modal-sub" id="codeModalSub">baeroskebab.no</p>
+      </div>
+      <div class="code-modal-head-right">
+        <div class="view-toggle code-mode-toggle" id="codeModeToggle" style="display:none;">
+          <button class="view-btn active" data-mode="view">Vis</button>
+          <button class="view-btn" data-mode="edit">Rediger</button>
+        </div>
+        <button class="icon-btn" id="closeCodeModal" aria-label="Lukk">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="custom-code-banner" id="customCodeBanner" style="display:none;">Egendefinert kode er aktiv &mdash; forhåndsvisningen viser din redigerte kode, ikke de vanlige innholdsfeltene.</p>
+    <div class="code-block-wrap">
+      <pre class="code-block" id="codeOutput"></pre>
+      <textarea class="code-editor" id="codeEditor" spellcheck="false" style="display:none;"></textarea>
+    </div>
+    <div class="code-modal-foot">
+      <span class="code-modal-note" id="codeModalNote">Generert automatisk fra byggeren din &mdash; oppdateres når du endrer innhold.</span>
+      <div class="code-modal-foot-actions">
+        <button class="btn btn-outline btn-small" id="resetCodeBtn" style="display:none;">Tilbakestill</button>
+        <button class="btn btn-primary btn-small" id="applyCodeBtn" style="display:none;">Bruk endringer</button>
+        <button class="btn btn-primary btn-small" id="copyCodeBtn">Kopier kode</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="builder-data.js?v=demo2"></script>
+<script src="accounts.js?v=demo2"></script>
+<script src="builder.js?v=save1"></script>
+</body>
+</html>

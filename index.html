@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nettsider folk faktisk legger merke til | Studio Nord</title>
+<meta name="description" content="Profesjonelle nettsider for norske småbedrifter. Rask levering. Fast pris. 100% ditt.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="noise-overlay"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="logo">Studio<span>Nord</span></a>
+    <nav class="nav-links">
+      <a href="#bransjer">Bransjer</a>
+      <a href="#portfolio">Eksempler</a>
+      <a href="#prosess">Prosess</a>
+      <a href="#tjenester">Tjenester</a>
+      <a href="#priser">Priser</a>
+      <a href="#kontakt">Kontakt</a>
+      <a href="login.html" class="nav-login-mobile">Logg inn</a>
+    </nav>
+    <a href="login.html" class="nav-login">Logg inn</a>
+    <a href="#kontakt" class="btn btn-small btn-primary">Få et gratis forslag</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Meny">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-glow glow-1"></div>
+    <div class="hero-glow glow-2"></div>
+  </div>
+  <div class="hero-inner reveal">
+    <div class="eyebrow">Webdesign for norske bedrifter</div>
+    <h1 class="hero-title">
+      Nettsider folk<br>
+      <span class="gradient-text">faktisk legger merke til.</span>
+    </h1>
+    <p class="hero-sub">Profesjonelle nettsider for norske småbedrifter. Rask levering. Fast pris. 100&nbsp;% ditt.</p>
+    <div class="hero-cta">
+      <a href="#bransjer" class="btn btn-primary btn-large">
+        <span>Se hvordan din bedrift kan se ut</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#portfolio" class="btn btn-ghost btn-large">Se eksempler</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num" data-count="120">0</span><span class="stat-label">Leverte nettsider</span></div>
+      <div class="stat"><span class="stat-num" data-count="14">0</span><span class="stat-label">Dagers snitt-levering</span></div>
+      <div class="stat"><span class="stat-num" data-count="100">0</span><span class="stat-label">% eierskap til deg</span></div>
+    </div>
+  </div>
+  <div class="scroll-indicator"><span></span></div>
+</section>
+
+<!-- BRANSJEVELGER -->
+<section class="section" id="bransjer">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <div class="eyebrow">Finn din bransje</div>
+      <h2>Bygget for din type bedrift</h2>
+      <p class="section-sub">Velg bransjen din, og se et skreddersydd eksempel på hvordan nettsiden din kan se ut.</p>
+    </div>
+
+    <div class="industry-grid reveal" id="industryGrid">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO / DEMO -->
+<section class="section section-dark" id="portfolio">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <div class="eyebrow">Eksempler</div>
+      <h2>Se det i aksjon</h2>
+      <p class="section-sub">Realistiske eksempler på nettsider vi kan bygge for din bedrift &mdash; på både stor og liten skjerm.</p>
+    </div>
+
+    <div class="portfolio-tabs reveal" id="portfolioTabs"></div>
+
+    <div class="showcase reveal">
+      <div class="showcase-info">
+        <div class="showcase-tag" id="showTag">Restaurant / takeaway</div>
+        <h3 id="showTitle">Bæros Kebab</h3>
+        <p id="showDesc">En sulten kunde skal kunne åpne siden, se menyen, og bestille på under 30 sekunder. Stort matbilde, tydelig CTA og åpningstider rett under logoen.</p>
+        <ul class="showcase-features" id="showFeatures"></ul>
+        <div class="view-toggle">
+          <button class="view-btn active" data-view="desktop">Desktop</button>
+          <button class="view-btn" data-view="mobile">Mobil</button>
+        </div>
+      </div>
+
+      <div class="mockup-stage">
+        <div class="mockup mockup-desktop" id="mockupDesktop">
+          <div class="browser-chrome">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <div class="browser-url" id="browserUrl">baeroskebab.no</div>
+          </div>
+          <div class="site-preview" id="sitePreviewDesktop"></div>
+        </div>
+
+        <div class="mockup mockup-mobile" id="mockupMobile">
+          <div class="phone-chrome"><span class="notch"></span></div>
+          <div class="site-preview site-preview-mobile" id="sitePreviewMobile"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROSESS -->
+<section class="section" id="prosess">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <div class="eyebrow">Slik fungerer det</div>
+      <h2>Fra idé til lansering p&aring; dager, ikke m&aring;neder</h2>
+    </div>
+    <div class="process reveal">
+      <div class="process-line"></div>
+      <div class="process-step">
+        <div class="process-num">01</div>
+        <h3>Velg design</h3>
+        <p>Du velger en stil og et eksempel som passer bransjen og smaken din &mdash; ferdig strukturert og klart til å fylles med ditt innhold.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-num">02</div>
+        <h3>Vi tilpasser nettsiden</h3>
+        <p>Vi bygger inn logo, tekster, bilder og farger. Du får se og kommentere underveis, helt til det føles riktig.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-num">03</div>
+        <h3>Nettsiden lanseres</h3>
+        <p>Vi kobler på domene, setter opp SEO og publiserer. Nettsiden er live &mdash; og den er din.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TJENESTER -->
+<section class="section section-dark" id="tjenester">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <div class="eyebrow">Tjenester</div>
+      <h2>Alt du trenger, samlet ett sted</h2>
+    </div>
+    <div class="services-grid reveal">
+      <div class="service-card">
+        <div class="service-icon">✦</div>
+        <h3>Skreddersydd design</h3>
+        <p>Unikt design tilpasset din bedrift &mdash; ikke en generisk mal alle andre også bruker.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📱</div>
+        <h3>Mobiltilpasning</h3>
+        <p>Perfekt på mobil, nettbrett og desktop. De fleste kundene dine finner deg fra telefonen.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔍</div>
+        <h3>SEO</h3>
+        <p>Bygget for å bli funnet på Google, med riktig struktur og lokal søkeoptimalisering.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">✉</div>
+        <h3>Kontaktskjema</h3>
+        <p>Enkelt for kundene å ta kontakt &mdash; henvendelser rett i innboksen din.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📍</div>
+        <h3>Google Maps</h3>
+        <p>Kartintegrasjon som gjør det enkelt å finne veien til deg.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">★</div>
+        <h3>Google Reviews</h3>
+        <p>Vis frem anmeldelsene dine direkte på siden og bygg tillit automatisk.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">⏱</div>
+        <h3>Booking/integrasjoner</h3>
+        <p>Timebestilling, bordreservasjon eller andre integrasjoner tilpasset din bedrift.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🛒</div>
+        <h3>Nettbutikk ved behov</h3>
+        <p>Selg produkter direkte på nettsiden når du er klar for det.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EIERSKAP -->
+<section class="section ownership" id="eierskap">
+  <div class="section-inner ownership-inner reveal">
+    <div class="ownership-text">
+      <div class="eyebrow">Ingen bindingstid. Ingen overraskelser.</div>
+      <h2>Din nettside.<br><span class="gradient-text">Din eiendom.</span></h2>
+      <p>Mange webbyråer leier ut nettsiden din tilbake til deg hver måned. Slik gjør ikke vi det. Når prosjektet er ferdig, eier du alt &mdash; ingen strenger festet.</p>
+      <ul class="ownership-list">
+        <li><span class="check">✓</span> Du eier nettsiden 100 %</li>
+        <li><span class="check">✓</span> Du eier domenet ditt</li>
+        <li><span class="check">✓</span> Du eier alt innhold og alle bilder</li>
+        <li><span class="check">✓</span> Ingen skjulte månedlige avgifter</li>
+        <li><span class="check">✓</span> Flytt hosting når du vil, uten problemer</li>
+      </ul>
+    </div>
+    <div class="ownership-visual">
+      <div class="ownership-card">
+        <div class="ownership-card-row"><span>Nettside</span><strong>100% din</strong></div>
+        <div class="ownership-card-row"><span>Domene</span><strong>100% ditt</strong></div>
+        <div class="ownership-card-row"><span>Innhold</span><strong>100% ditt</strong></div>
+        <div class="ownership-card-row"><span>Bindingstid</span><strong>0 måneder</strong></div>
+        <div class="ownership-glow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRISER -->
+<section class="section section-dark" id="priser">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <div class="eyebrow">Priser</div>
+      <h2>Fast pris. Ingen overraskelser.</h2>
+      <p class="section-sub">Velg pakken som passer bedriften din. Alle priser er engangskostnad &mdash; du eier resultatet.</p>
+    </div>
+    <div class="pricing-grid reveal">
+      <div class="price-card">
+        <h3>Start</h3>
+        <p class="price-desc">For deg som trenger en enkel, proff synlighet på nett.</p>
+        <div class="price-amount">9 900 kr</div>
+        <ul class="price-features">
+          <li>✓ Én-siders nettside</li>
+          <li>✓ Mobiltilpasset design</li>
+          <li>✓ Kontaktskjema</li>
+          <li>✓ Google Maps</li>
+          <li>✓ Grunnleggende SEO</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-outline btn-full">Velg Start</a>
+      </div>
+      <div class="price-card price-featured">
+        <div class="price-badge">Mest populær</div>
+        <h3>Pro</h3>
+        <p class="price-desc">For bedrifter som vil ha full kontroll og flere sider.</p>
+        <div class="price-amount">19 900 kr</div>
+        <ul class="price-features">
+          <li>✓ Opptil 6 sider</li>
+          <li>✓ Skreddersydd design</li>
+          <li>✓ Google Reviews-integrasjon</li>
+          <li>✓ Booking / timebestilling</li>
+          <li>✓ SEO-optimalisert innhold</li>
+          <li>✓ Prioritert levering</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-primary btn-full">Velg Pro</a>
+      </div>
+      <div class="price-card">
+        <h3>Premium</h3>
+        <p class="price-desc">For deg som ønsker nettbutikk eller avanserte integrasjoner.</p>
+        <div class="price-amount">Fra 34 900 kr</div>
+        <ul class="price-features">
+          <li>✓ Alt i Pro</li>
+          <li>✓ Nettbutikk</li>
+          <li>✓ Skreddersydde integrasjoner</li>
+          <li>✓ Flerspråklig nettside</li>
+          <li>✓ Dedikert oppfølging</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-outline btn-full">Velg Premium</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ANMELDELSER -->
+<section class="section" id="anmeldelser">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <div class="eyebrow">Tilbakemeldinger</div>
+      <h2>Bedrifter som allerede har fått ny nettside</h2>
+    </div>
+    <div class="testimonial-grid reveal">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>&laquo;Vi fikk dobbelt så mange bordbestillinger etter at den nye siden kom opp. Ser proft ut, og det tok bare to uker.&raquo;</p>
+        <div class="testimonial-author">
+          <div class="avatar">MK</div>
+          <div><strong>Mehmet K.</strong><span>Bæros Kebab</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>&laquo;Endelig en nettside jeg faktisk er stolt av å dele på Instagram. Kundene sier de bestiller time direkte fra mobilen.&raquo;</p>
+        <div class="testimonial-author">
+          <div class="avatar">SL</div>
+          <div><strong>Sofie L.</strong><span>Studio Frisør &amp; Skjønnhet</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>&laquo;Prosessen var enkel og prisen var fast fra dag én. Ingen overraskelser, og vi eier alt selv nå.&raquo;</p>
+        <div class="testimonial-author">
+          <div class="avatar">TH</div>
+          <div><strong>Thomas H.</strong><span>Haugen Rørlegger AS</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="kontakt">
+  <div class="final-cta-bg"></div>
+  <div class="final-cta-inner reveal">
+    <h2>Klar for en nettside som<br><span class="gradient-text">faktisk ser bra ut?</span></h2>
+    <p>Fortell oss litt om bedriften din, så sender vi deg et gratis forslag &mdash; helt uforpliktende.</p>
+
+    <form class="contact-form" id="contactForm">
+      <div class="form-row">
+        <input type="text" placeholder="Navn" required>
+        <input type="email" placeholder="E-post" required>
+      </div>
+      <div class="form-row">
+        <input type="text" placeholder="Bedrift" required>
+        <select required>
+          <option value="" disabled selected>Velg bransje</option>
+          <option>Restaurant / takeaway</option>
+          <option>Frisør / skjønnhet</option>
+          <option>Håndverker</option>
+          <option>Bilverksted</option>
+          <option>Eiendom</option>
+          <option>Konsulent / regnskap</option>
+          <option>Annet</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary btn-large btn-full-mobile">
+        <span>Få et gratis forslag</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="form-note">Dette er en demo &mdash; skjemaet sender ikke inn noe.</p>
+    </form>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <a href="#top" class="logo">Studio<span>Nord</span></a>
+    <p>&copy; 2026 Studio Nord. Dette er en demonstrasjonsnettside.</p>
+    <div class="footer-links">
+      <a href="#bransjer">Bransjer</a>
+      <a href="#portfolio">Eksempler</a>
+      <a href="#priser">Priser</a>
+      <a href="#kontakt">Kontakt</a>
+      <a href="login.html">Logg inn</a>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
