@@ -1,3 +1,5 @@
+import { supabase } from './supabase.js'
+
 function startSession(account) {
   localStorage.setItem(SESSION_KEY, JSON.stringify({
     accountId: account.id,
@@ -19,7 +21,7 @@ function showError(html) {
   authError.classList.add('show');
 }
 
-loginForm.addEventListener('submit', (e) => {
+loginForm.addEventListener("submit", async (event) => {
   e.preventDefault();
   const username = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
@@ -29,19 +31,34 @@ loginForm.addEventListener('submit', (e) => {
     return;
   }
 
-  const account = findAccountByCredentials(username, password);
-  if (!account) {
-    showError('Feil brukernavn eller passord. Prøv <strong>admin</strong>/<strong>123</strong> eller <strong>bruker</strong>/<strong>123</strong>.');
-    return;
-  }
+  const { data, error } = await supabase.auth.signInWithPassword({
+  email: username,
+  password: password
+})
 
+if (error) {
+  showError('Feil e-post eller passord.')
+  return
+}
+
+const user = data.user
+
+const { data: profile, error: profileError } = await supabase
+  .from('profiles')
+  .select('*')
+  .eq('id', user.id)
+  .single()
+if (profileError || !profile) {
+  showError('Kunne ikke hente brukerprofilen.')
+  return
+}
   authError.classList.remove('show');
   const btn = loginForm.querySelector('button[type="submit"] span');
   btn.textContent = 'Logger inn ...';
 
   setTimeout(() => {
-    startSession(account);
-    routeAfterLogin(account);
+    startSession(profile);
+    routeAfterLogin(profile);
   }, 400);
 });
 
