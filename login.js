@@ -1,5 +1,7 @@
 import { supabase } from './supabase.js'
 
+const SESSION_KEY = 'sn_session'
+
 function startSession(account) {
   localStorage.setItem(SESSION_KEY, JSON.stringify({
     accountId: account.id,
@@ -22,7 +24,8 @@ function showError(html) {
 }
 
 loginForm.addEventListener("submit", async (event) => {
-  e.preventDefault();
+  console.log("LOGIN-KNAPPEN FUNGERER");
+  event.preventDefault();
   const username = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
 
@@ -49,7 +52,7 @@ const { data: profile, error: profileError } = await supabase
   .eq('id', user.id)
   .single()
 if (profileError || !profile) {
-  showError('Kunne ikke hente brukerprofilen.')
+  showError('Profil-feil: ' + (profileError?.message || 'Ingen profil funnet'))
   return
 }
   authError.classList.remove('show');
