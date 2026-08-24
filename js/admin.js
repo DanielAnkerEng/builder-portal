@@ -1,3 +1,4 @@
+import { supabase } from './supabase.js';
 /* ===================== AUTH GUARD ===================== */
 const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
 if (!session) {
@@ -121,7 +122,7 @@ if (session && session.role === 'admin') {
     if (e.target.id === 'newAccountModal') newAccountModal.classList.remove('open');
   });
 
-  newAccountForm.addEventListener('submit', (e) => {
+  newAccountForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('na-username').value.trim();
     const password = document.getElementById('na-password').value.trim();
@@ -146,14 +147,53 @@ if (session && session.role === 'admin') {
       newAccountError.classList.add('show');
       return;
     }
+    const { data: company, error: companyError } = await supabase
+  .from('companies')
+  .insert({
+    name: projectName,
+    is_active: true
+  })
+  .select('id')
+  .single();
 
-    const newAccount = createAccount({ username, password, projectName, templateId });
+if (companyError) {
+  console.error('COMPANY ERROR:', companyError);
+  newAccountError.textContent = 'Kunne ikke opprette bedriften i Supabase.';
+  newAccountError.classList.add('show');
+  return;
+  }
+
+  console.log('NEW COMPANY:', company);
+  const { error: securityError } = await supabase.rpc(
+  'set_company_security_code',
+  {
+    p_company_id: company.id,
+    p_code: securityCode
+  }
+);
+
+if (securityError) {
+  console.error('SECURITY CODE ERROR:', securityError);
+  newAccountError.textContent = 'Bedriften ble opprettet, men sikkerhetsnøkkelen kunne ikke lagres.';
+  newAccountError.classList.add('show');
+  return;
+}
+
+console.log('SECURITY CODE SAVED');
+
+    const newAccount = createAccount({
+  username,
+  password,
+  projectName,
+  templateId,
+  companyId: company.id
+});
     console.log('NEW ACCOUNT:', newAccount);
-    
+
     newAccountModal.classList.remove('open');
     renderAccounts();
   });
 
   renderAccounts();
-}
+  }
 

@@ -139,7 +139,7 @@ function updateAccount(id, patch) {
   return findAccountById(id);
 }
 
-function createAccount({ username, password, projectName, templateId }) {
+function createAccount({ username, password, projectName, templateId, companyId }) {
   const id = 'acc_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   const account = {
     id,
@@ -149,6 +149,7 @@ function createAccount({ username, password, projectName, templateId }) {
     email: `${username.trim().toLowerCase()}@studionord.no`,
     projectName: projectName || 'Nytt nettsideprosjekt',
     templateId,
+    companyId,
     createdAt: new Date().toISOString(),
   };
   const accounts = getAccounts();
