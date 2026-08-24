@@ -37,11 +37,40 @@ if (!session) {
 if (!bail) {
 
 const isAdmin = session.role === 'admin';
-document.getElementById('viewSiteBtn').href = `site.html?account=${targetAccountId}`;
+function updateViewSiteLink() {
+  const slug = currentPageObj().slug;
+  document.getElementById('viewSiteBtn').href = `site.html?account=${targetAccountId}${slug ? `&page=${slug}` : ''}`;
+}
 if (!isAdmin) document.getElementById('customerSaveBar').style.display = 'block';
 
 /* ===================== STATE ===================== */
-let state = JSON.parse(localStorage.getItem(stateKeyFor(targetAccountId)) || 'null') || freshStateFromTemplate(targetAccount.templateId || 'restaurant');
+/* siteData er det som faktisk lagres: felter som gjelder hele nettsiden
+   (businessName, domain, farger osv.) pluss en liste med sider (pages),
+   hver med sitt eget innhold. `state` er en "flatet" visning av siteData +
+   den aktive siden, brukt av det meste av koden under akkurat som før vi
+   hadde flere sider — bytte side flater bare siteData på nytt. */
+const SITE_WIDE_KEYS = ['businessName', 'accent', 'accent2', 'bg', 'domain', 'language', 'status', 'seoTitle', 'seoDesc', 'templateId'];
+
+function currentPageObj() {
+  return siteData.pages.find(p => p.id === siteData.activePageId) || siteData.pages[0];
+}
+
+function flattenForEditing() {
+  const page = currentPageObj();
+  const flat = {};
+  SITE_WIDE_KEYS.forEach(k => { flat[k] = siteData[k]; });
+  PAGE_CONTENT_KEYS.forEach(k => { flat[k] = page[k]; });
+  return flat;
+}
+
+function commitStateToSiteData() {
+  SITE_WIDE_KEYS.forEach(k => { siteData[k] = state[k]; });
+  const page = currentPageObj();
+  PAGE_CONTENT_KEYS.forEach(k => { page[k] = state[k]; });
+}
+
+let siteData = migrateToPages(JSON.parse(localStorage.getItem(stateKeyFor(targetAccountId)) || 'null')) || freshStateFromTemplate(targetAccount.templateId || 'restaurant');
+let state = flattenForEditing();
 let draggedId = null;
 let saveTimer = null;
 
@@ -54,8 +83,9 @@ function slugify(str) {
 }
 
 function persistState(showStatus) {
+  commitStateToSiteData();
   clearTimeout(saveTimer);
-  localStorage.setItem(stateKeyFor(targetAccountId), JSON.stringify(state));
+  localStorage.setItem(stateKeyFor(targetAccountId), JSON.stringify(siteData));
   const info = document.getElementById('lastSavedInfo');
   if (info) info.textContent = 'Nå nettopp';
   const hint = document.getElementById('customerSaveHint');
@@ -102,6 +132,8 @@ if (isAdmin) {
   ownerTag.style.display = 'inline-block';
   ownerTag.textContent = `redigerer for @${targetAccount.username}`;
   document.getElementById('codeModeToggle').style.display = 'inline-flex';
+  document.getElementById('downloadDataBtn').style.display = 'inline-flex';
+  document.getElementById('downloadHtmlBtn').style.display = 'inline-flex';
 }
 
 /* ===================== PROSJEKTNAVN ===================== */
@@ -138,7 +170,12 @@ BUILDER_TEMPLATES.forEach(t => {
 templateSelect.addEventListener('change', () => {
   const id = templateSelect.value;
   if (id === state.templateId) return;
-  state = freshStateFromTemplate(id);
+  if (siteData.pages.length > 1 && !confirm('Bytte bransjemal starter nettsiden på nytt med kun forsiden — alle andre sider du har lagt til blir slettet. Fortsette?')) {
+    templateSelect.value = state.templateId;
+    return;
+  }
+  siteData = freshStateFromTemplate(id);
+  state = flattenForEditing();
   targetAccount = updateAccount(targetAccountId, { templateId: id });
   renderAll();
   scheduleAutosave();
@@ -233,6 +270,7 @@ function renderOfferingsEditor() {
     row.innerHTML = `
       <input type="text" class="off-name" value="${o.t.replace(/"/g, '&quot;')}" placeholder="Navn">
       <input type="text" class="off-price" value="${o.d.replace(/"/g, '&quot;')}" placeholder="Pris">
+      <button type="button" class="gallery-remove-btn off-remove-btn" title="Fjern vare" aria-label="Fjern vare">✕</button>
     `;
     row.querySelector('.off-name').addEventListener('input', (e) => {
       state.offerings[i].t = e.target.value;
@@ -244,9 +282,21 @@ function renderOfferingsEditor() {
       updatePreview();
       scheduleAutosave();
     });
+    row.querySelector('.off-remove-btn').addEventListener('click', () => {
+      state.offerings.splice(i, 1);
+      renderOfferingsEditor();
+      updatePreview();
+      scheduleAutosave();
+    });
     offeringsEditor.appendChild(row);
   });
 }
+document.getElementById('addOfferingBtn').addEventListener('click', () => {
+  state.offerings.push({ t: '', d: '' });
+  renderOfferingsEditor();
+  updatePreview();
+  scheduleAutosave();
+});
 
 /* ===================== GALLERY EDITOR (bilder) ===================== */
 function resizeImageToDataURL(file, maxDim, quality) {
@@ -328,6 +378,91 @@ document.getElementById('addGalleryItemBtn').addEventListener('click', () => {
   scheduleAutosave();
 });
 
+/* ===================== SIDER (flere sider) ===================== */
+const pageListEl = document.getElementById('pageList');
+const newPageNameInput = document.getElementById('newPageName');
+const addPageBtn = document.getElementById('addPageBtn');
+
+function activateInnholdTab() {
+  const tab = document.querySelector('.sidebar-tab[data-tab="innhold"]');
+  if (!tab) return;
+  document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.toggle('active', t === tab));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-innhold'));
+}
+
+function setActivePage(pageId, opts) {
+  if (pageId === siteData.activePageId) return;
+  commitStateToSiteData();
+  siteData.activePageId = pageId;
+  state = flattenForEditing();
+  fillFields();
+  renderSectionList();
+  renderAddSectionMenu();
+  updatePreview();
+  renderPageList();
+  updateViewSiteLink();
+  persistState(false);
+  if (!opts || opts.switchTab !== false) activateInnholdTab();
+}
+
+function renderPageList() {
+  pageListEl.innerHTML = '';
+  siteData.pages.forEach(page => {
+    const row = document.createElement('div');
+    row.className = 'page-row' + (page.id === siteData.activePageId ? ' active' : '');
+    row.innerHTML = `
+      <div class="page-row-info">
+        <input type="text" class="page-row-name-input" value="${(page.name || '').replace(/"/g, '&quot;')}">
+        <div class="page-row-slug">${page.slug ? '/' + page.slug : '/ (forside)'}</div>
+      </div>
+      ${page.id === siteData.activePageId ? '<span class="page-row-active-tag">Redigerer</span>' : ''}
+      ${!page.locked ? '<button type="button" class="page-delete-btn" title="Slett side" aria-label="Slett side">✕</button>' : ''}
+    `;
+    const nameInput = row.querySelector('.page-row-name-input');
+    nameInput.addEventListener('click', (e) => e.stopPropagation());
+    nameInput.addEventListener('input', () => {
+      page.name = nameInput.value;
+      if (!page.locked) {
+        page.slug = uniquePageSlug(slugifyPageName(nameInput.value), siteData.pages, page.id);
+        row.querySelector('.page-row-slug').textContent = page.slug ? '/' + page.slug : '/ (forside)';
+      }
+      if (page.id === siteData.activePageId) updateViewSiteLink();
+      persistState(false);
+    });
+    const deleteBtn = row.querySelector('.page-delete-btn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!confirm(`Slette siden "${page.name}"? Dette kan ikke angres.`)) return;
+        const wasActive = page.id === siteData.activePageId;
+        siteData.pages = siteData.pages.filter(p => p.id !== page.id);
+        if (wasActive) {
+          siteData.activePageId = siteData.pages[0].id;
+          state = flattenForEditing();
+        }
+        persistState(false);
+        renderPageList();
+        if (wasActive) { fillFields(); renderSectionList(); renderAddSectionMenu(); updatePreview(); updateViewSiteLink(); }
+      });
+    }
+    row.addEventListener('click', () => setActivePage(page.id));
+    pageListEl.appendChild(row);
+  });
+}
+
+addPageBtn.addEventListener('click', () => {
+  const name = newPageNameInput.value.trim();
+  if (!name) { newPageNameInput.focus(); return; }
+  commitStateToSiteData();
+  const page = createBlankPage(name, siteData.pages, siteData.pages[0]);
+  siteData.pages.push(page);
+  newPageNameInput.value = '';
+  setActivePage(page.id);
+});
+newPageNameInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); addPageBtn.click(); }
+});
+
 /* ===================== SECTION LIST (drag / toggle / fjern) ===================== */
 const sectionList = document.getElementById('sectionList');
 function renderSectionList() {
@@ -405,7 +540,8 @@ document.addEventListener('click', (e) => {
 });
 function renderAddSectionMenu() {
   const existingIds = state.sections.map(s => s.id);
-  const available = EXTRA_SECTION_TYPES.filter(t => !existingIds.includes(t.id));
+  const catalog = currentPageObj().locked ? EXTRA_SECTION_TYPES : ALL_SECTION_TYPES;
+  const available = catalog.filter(t => !existingIds.includes(t.id));
   addSectionMenu.innerHTML = '';
   if (available.length === 0) {
     addSectionMenu.innerHTML = '<div class="add-section-empty">Alle tilgjengelige seksjoner er lagt til.</div>';
@@ -549,11 +685,12 @@ function renderSectionBlock(section, s) {
 
 function buildPreviewHTML(s) {
   const blocks = s.sections.map(sec => renderSectionBlock(sec, s)).join('');
+  const navLinks = siteData.pages.map(p => `<span>${esc(p.name)}</span>`).join('');
   return `
     <div class="sp" style="background:${s.bg};color:#fff;">
       <div class="sp-nav">
         <span>${s.businessName}</span>
-        <span class="sp-nav-links"><span>Om oss</span><span>${s.offeringsLabel}</span><span>Kontakt</span></span>
+        <span class="sp-nav-links">${navLinks}</span>
       </div>
       ${blocks}
     </div>
@@ -665,9 +802,15 @@ function codeSectionMarkup(section, s, indent) {
   }
 }
 
-function generateSiteCode(s) {
+function pageFileName(slug) {
+  return slug ? `${slug}.html` : 'index.html';
+}
+
+function generateSiteCode(s, pages, currentSlug) {
   const langAttr = s.language === 'en' ? 'en' : 'no';
   const sections = s.sections.map(sec => codeSectionMarkup(sec, s, 2)).filter(Boolean).join('\n\n');
+  const navPages = pages && pages.length ? pages : [{ slug: currentSlug || '', name: s.businessName }];
+  const navLinks = navPages.map(p => `      <a href="${pageFileName(p.slug)}">${esc(p.name)}</a>`).join('\n');
   return `<!DOCTYPE html>
 <html lang="${langAttr}">
 <head>
@@ -683,9 +826,7 @@ function generateSiteCode(s) {
   <nav class="site-nav">
     <span class="logo">${esc(s.businessName)}</span>
     <div class="links">
-      <a href="#om-oss">Om oss</a>
-      <a href="#tilbud">${esc(s.offeringsLabel)}</a>
-      <a href="#kontakt">Kontakt</a>
+${navLinks}
     </div>
   </nav>
 
@@ -700,7 +841,47 @@ ${sections}
 }
 
 function currentSiteCode() {
-  return state.customCode || generateSiteCode(state);
+  return state.customCode || generateSiteCode(state, siteData.pages, currentPageObj().slug);
+}
+
+/* ===================== EKSPORT: SELVSTENDIG KODE + DATA ===================== */
+function downloadFile(filename, content, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+let cachedSiteCss = null;
+async function getSiteCss() {
+  if (!cachedSiteCss) {
+    const res = await fetch('css/site.css');
+    cachedSiteCss = await res.text();
+  }
+  return cachedSiteCss;
+}
+
+async function buildStandaloneHTML(page) {
+  const css = await getSiteCss();
+  const styleBlock = `<style>\n${css}\n</style>`;
+  const view = { ...siteData, ...page };
+  const raw = page.customCode || generateSiteCode(view, siteData.pages, page.slug);
+  if (raw.includes('<link rel="stylesheet" href="styles.css">')) {
+    return raw.replace('<link rel="stylesheet" href="styles.css">', styleBlock);
+  }
+  if (raw.includes('</head>')) {
+    return raw.replace('</head>', `${styleBlock}\n</head>`);
+  }
+  return raw;
+}
+
+function exportFilenameBase() {
+  return slugify(state.businessName || (targetAccount && targetAccount.projectName) || 'nettside');
 }
 
 function highlightHTML(code) {
@@ -736,7 +917,7 @@ function setCodeMode(mode) {
 function openCodeModal() {
   setCodeMode('view');
   refreshCodeView();
-  document.getElementById('codeModalSub').textContent = state.domain || (slugify(state.businessName) + '.no');
+  document.getElementById('codeModalSub').textContent = `${state.domain || (slugify(state.businessName) + '.no')} — ${currentPageObj().name} (${pageFileName(currentPageObj().slug)})`;
   document.getElementById('customCodeBanner').style.display = state.customCode ? 'block' : 'none';
   document.getElementById('codeModal').classList.add('open');
 }
@@ -769,6 +950,31 @@ if (isAdmin) {
     document.getElementById('customCodeBanner').style.display = 'none';
     refreshCodeView();
     setCodeMode('view');
+  });
+
+  document.getElementById('downloadDataBtn').addEventListener('click', () => {
+    commitStateToSiteData();
+    downloadFile(`${exportFilenameBase()}-data.json`, JSON.stringify(siteData, null, 2), 'application/json');
+  });
+
+  document.getElementById('downloadHtmlBtn').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const original = btn.textContent;
+    btn.textContent = 'Laster ned ...';
+    btn.disabled = true;
+    try {
+      commitStateToSiteData();
+      for (const page of siteData.pages) {
+        const html = await buildStandaloneHTML(page);
+        downloadFile(pageFileName(page.slug), html, 'text/html');
+        await new Promise(r => setTimeout(r, 150));
+      }
+    } catch (err) {
+      alert('Klarte ikke å bygge nedlastingen. Prøv igjen.');
+    } finally {
+      btn.textContent = original;
+      btn.disabled = false;
+    }
   });
 }
 
@@ -809,6 +1015,8 @@ function renderAll() {
   renderSectionList();
   renderAddSectionMenu();
   updatePreview();
+  renderPageList();
+  updateViewSiteLink();
 }
 
 bindFields();

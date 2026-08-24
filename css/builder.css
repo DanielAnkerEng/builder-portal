@@ -391,6 +391,66 @@
 }
 .section-delete-btn:hover { color: #ff8080; border-color: #ff8080; }
 
+/* Sideliste (flere sider) */
+.page-list { display: flex; flex-direction: column; gap: 10px; }
+.page-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.page-row:hover { border-color: var(--border-strong); }
+.page-row.active { border-color: var(--accent, #7c8cff); background: rgba(255,255,255,0.05); }
+.page-row-info { flex: 1; min-width: 0; }
+.page-row-name { font-size: 0.88rem; font-weight: 500; }
+.page-row-name-input {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 500;
+  font-family: inherit;
+  padding: 0;
+}
+.page-row-name-input:focus { outline: none; }
+.page-row-slug { font-size: 0.72rem; color: var(--text-dimmer); margin-top: 2px; }
+.page-row-active-tag {
+  font-size: 0.68rem;
+  color: var(--text-dimmer);
+  background: rgba(255,255,255,0.05);
+  padding: 3px 8px;
+  border-radius: 100px;
+  flex-shrink: 0;
+}
+.page-delete-btn {
+  width: 24px; height: 24px;
+  border-radius: 7px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dimmer);
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  transition: color 0.2s, border-color 0.2s;
+}
+.page-delete-btn:hover { color: #ff8080; border-color: #ff8080; }
+.add-page-wrap { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.add-page-wrap input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 0.86rem;
+  font-family: inherit;
+}
+.add-page-wrap input:focus { outline: none; border-color: var(--accent); }
+
 /* Legg til seksjon */
 .add-section-wrap { position: relative; margin-top: 14px; }
 .add-section-menu {

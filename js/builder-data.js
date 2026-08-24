@@ -201,6 +201,18 @@ const EXTRA_SECTION_TYPES = [
   { id: 'ctabanner', name: 'Ekstra CTA-banner', icon: '📣' },
 ];
 
+/* Kjernetyper (alltid tilgjengelig på forsiden) — brukt når nye sider skal
+   kunne velge blant ALLE seksjonstyper, ikke bare tilleggstypene over. */
+const CORE_SECTION_TYPES = [
+  { id: 'hero', name: 'Hero / toppbanner', icon: '🚀' },
+  { id: 'about', name: 'Om oss / tekst', icon: 'ℹ️' },
+  { id: 'offerings', name: 'Meny / tilbud', icon: '📋' },
+  { id: 'gallery', name: 'Galleri', icon: '🖼️' },
+  { id: 'contact', name: 'Kontakt', icon: '✉️' },
+];
+
+const ALL_SECTION_TYPES = [...CORE_SECTION_TYPES, ...EXTRA_SECTION_TYPES];
+
 /* Generisk standardinnhold for ekstra seksjoner (ikke bransjetilpasset) */
 const EXTRA_SECTION_CONTENT = {
   testimonials: {
@@ -238,11 +250,46 @@ function truncate(str, n) {
   return str.length > n ? str.slice(0, n - 1).trim() + '…' : str;
 }
 
-function freshStateFromTemplate(templateId) {
-  const t = getTemplate(templateId);
+function slugifyPageName(str) {
+  return (str || '')
+    .toLowerCase()
+    .trim()
+    .replace(/æ/g, 'ae').replace(/ø/g, 'o').replace(/å/g, 'a')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40) || 'side';
+}
+
+function uniquePageSlug(base, pages, excludeId) {
+  const taken = new Set(pages.filter(p => p.id !== excludeId).map(p => p.slug));
+  let slug = base;
+  let n = 2;
+  while (taken.has(slug)) {
+    slug = `${base}-${n}`;
+    n += 1;
+  }
+  return slug;
+}
+
+function newPageId() {
+  return 'page_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+/* Sidenes innholdsfelter — hver side har sitt eget sett, uavhengig av andre sider */
+const PAGE_CONTENT_KEYS = [
+  'heroTag', 'heroTitle', 'heroSub', 'cta', 'badge',
+  'aboutTitle', 'aboutText',
+  'offeringsLabel', 'offerings', 'gallery',
+  'address', 'hours',
+  'sections', 'customCode',
+];
+
+function homePageFromTemplate(t) {
   return {
-    templateId: t.id,
-    businessName: t.businessName,
+    id: 'page_home',
+    slug: '',
+    name: 'Forside',
+    locked: true,
     heroTag: t.heroTag,
     heroTitle: t.heroTitle,
     heroSub: t.heroSub,
@@ -255,17 +302,73 @@ function freshStateFromTemplate(templateId) {
     gallery: t.gallery.map(emoji => ({ emoji, img: null })),
     address: t.address,
     hours: t.hours,
+    sections: DEFAULT_SECTIONS.map(s => ({ ...s })),
+    customCode: null,
+  };
+}
+
+/* Ny, tom side (f.eks. "Meny", "Produkter") — arver kontaktinfo/CTA fra
+   forsiden så innholdet ikke blir tomt hvis man legger til en kontakt-seksjon,
+   men starter uten seksjoner slik at brukeren velger dem selv. */
+function createBlankPage(name, pages, basePage) {
+  const slug = uniquePageSlug(slugifyPageName(name), pages);
+  return {
+    id: newPageId(),
+    slug,
+    name: name || 'Ny side',
+    locked: false,
+    heroTag: basePage.heroTag,
+    heroTitle: name || 'Ny side',
+    heroSub: '',
+    cta: basePage.cta,
+    badge: '',
+    aboutTitle: name || 'Ny side',
+    aboutText: '',
+    offeringsLabel: name || 'Ny side',
+    offerings: [],
+    gallery: [],
+    address: basePage.address,
+    hours: basePage.hours,
+    sections: [],
+    customCode: null,
+  };
+}
+
+function freshStateFromTemplate(templateId) {
+  const t = getTemplate(templateId);
+  return {
+    templateId: t.id,
+    businessName: t.businessName,
     accent: t.accent,
     accent2: t.accent2,
     bg: t.bg,
-    sections: DEFAULT_SECTIONS.map(s => ({ ...s })),
-    customCode: null,
 
-    /* Oppsett / tekniske felter */
+    /* Oppsett / tekniske felter (gjelder hele nettsiden, ikke per side) */
     domain: t.url,
     language: 'no',
     status: 'draft',
     seoTitle: `${t.businessName} | ${t.heroTag}`,
     seoDesc: truncate(t.aboutText, 140),
+
+    pages: [homePageFromTemplate(t)],
+    activePageId: 'page_home',
   };
+}
+
+/* Migrerer gamle kontoer (lagret før flere-sider-støtte) til pages-formatet.
+   Muterer og returnerer samme objekt, trygt å kalle flere ganger. */
+function migrateToPages(data) {
+  if (!data) return data;
+  if (!Array.isArray(data.pages) || !data.pages.length) {
+    const page = { id: 'page_home', slug: '', name: 'Forside', locked: true };
+    PAGE_CONTENT_KEYS.forEach(k => {
+      page[k] = k in data ? data[k] : (k === 'sections' ? DEFAULT_SECTIONS.map(s => ({ ...s })) : (k === 'offerings' || k === 'gallery' ? [] : (k === 'customCode' ? null : '')));
+      delete data[k];
+    });
+    data.pages = [page];
+  }
+  if (!data.activePageId || !data.pages.some(p => p.id === data.activePageId)) {
+    data.activePageId = data.pages[0].id;
+  }
+  return data;
 }

@@ -51,8 +51,11 @@ function additionalDemoAccounts() {
   ];
 }
 
+const DEMO_SITE_WIDE_KEYS = ['businessName', 'domain'];
+
 function demoStateFor(account) {
   const state = freshStateFromTemplate(account.templateId);
+  const home = state.pages[0];
   const custom = {
     acc_fjord: {},
     acc_salong: { businessName: 'Nordlys Hårstudio', domain: 'nordlyshar.no', heroTitle: 'Hår som føles\nhelt som deg.', heroSub: 'En rolig salongopplevelse med dyktige stylister, gode produkter og tid til deg.', badge: 'Ledige timer denne uken', address: 'Markveien 32, Oslo' },
@@ -60,8 +63,11 @@ function demoStateFor(account) {
     acc_regnskap: { businessName: 'Klar Regnskap', domain: 'klarregnskap.no', heroTitle: 'Mer oversikt.\nMindre stress.', heroSub: 'Moderne regnskap og personlig rådgivning for bedrifter som vil bruke tiden på vekst.', badge: 'Gratis oppstartsmøte', address: 'Dronningens gate 12, Trondheim' },
     acc_mat: { businessName: 'Fjordgrill', domain: 'fjordgrill.no', heroTitle: 'Smaken av kysten.\nRett fra grillen.', heroSub: 'Ferske råvarer, varme smaker og en avslappet restaurant ved vannet.', badge: 'Åpent i dag 12–23', address: 'Bryggetorget 2, Drøbak' },
   }[account.id] || {};
-  Object.assign(state, custom);
-  state.seoTitle = `${state.businessName} | ${state.heroTag}`;
+  Object.entries(custom).forEach(([key, value]) => {
+    if (DEMO_SITE_WIDE_KEYS.includes(key)) state[key] = value;
+    else home[key] = value;
+  });
+  state.seoTitle = `${state.businessName} | ${home.heroTag}`;
   return state;
 }
 
@@ -160,7 +166,8 @@ function deleteAccount(id) {
 function getAccountState(id) {
   const account = findAccountById(id);
   if (!account) return null;
-  return JSON.parse(localStorage.getItem(stateKeyFor(id)) || 'null') || freshStateFromTemplate(account.templateId || 'restaurant');
+  const stored = JSON.parse(localStorage.getItem(stateKeyFor(id)) || 'null');
+  return migrateToPages(stored) || freshStateFromTemplate(account.templateId || 'restaurant');
 }
 
 seedAccountsIfNeeded();
