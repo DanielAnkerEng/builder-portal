@@ -7,6 +7,7 @@ function startSession(account) {
     accountId: account.id,
     username: account.username,
     role: account.role,
+    companyId: account.company_id,
     loggedInAt: new Date().toISOString(),
   }));
 }
