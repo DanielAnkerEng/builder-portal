@@ -181,6 +181,29 @@ if (securityError) {
 
 console.log('SECURITY CODE SAVED');
 
+const customerEmail = `${username.trim().toLowerCase()}@studionord.no`;
+
+const { data: createdCustomer, error: createCustomerError } =
+  await supabase.functions.invoke('create-customer', {
+    body: {
+      email: customerEmail,
+      password,
+      companyId: company.id
+    }
+  });
+
+if (createCustomerError || !createdCustomer?.success) {
+  console.error('CREATE CUSTOMER ERROR:', createCustomerError || createdCustomer);
+
+  newAccountError.textContent =
+    createdCustomer?.error || 'Kunne ikke opprette kunden i Supabase Auth.';
+
+  newAccountError.classList.add('show');
+  return;
+}
+
+console.log('SUPABASE CUSTOMER CREATED:', createdCustomer);
+
     const newAccount = createAccount({
   username,
   password,
