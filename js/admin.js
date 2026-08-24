@@ -127,22 +127,33 @@ if (session && session.role === 'admin') {
     const password = document.getElementById('na-password').value.trim();
     const projectName = document.getElementById('na-projectname').value.trim();
     const templateId = document.getElementById('na-template').value;
+    const securityCode = document.getElementById('na-security-code').value.trim();
 
-    if (!username || !password || !projectName) {
+    if (!username || !password || !projectName || !securityCode) {
       newAccountError.textContent = 'Fyll ut alle feltene.';
       newAccountError.classList.add('show');
       return;
     }
+
+    if (securityCode.length < 12) {
+      newAccountError.textContent = 'Sikkerhetsnøkkelen må være minst 12 tegn.';
+      newAccountError.classList.add('show');
+      return;
+    }
+
     if (usernameTaken(username)) {
       newAccountError.textContent = 'Dette brukernavnet er allerede i bruk.';
       newAccountError.classList.add('show');
       return;
     }
 
-    createAccount({ username, password, projectName, templateId });
+    const newAccount = createAccount({ username, password, projectName, templateId });
+    console.log('NEW ACCOUNT:', newAccount);
+    
     newAccountModal.classList.remove('open');
     renderAccounts();
   });
 
   renderAccounts();
 }
+
