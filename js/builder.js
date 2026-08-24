@@ -18,11 +18,22 @@ if (!session) {
       bail = true;
     }
   } else {
-    targetAccountId = session.accountId;
-    if (requestedAccountId && requestedAccountId !== session.accountId) {
+  const customerAccount = getAccounts().find(
+    account => account.companyId === session.companyId
+  );
+
+  if (!customerAccount) {
+    window.location.href = 'login.html';
+    bail = true;
+  } else {
+    targetAccountId = customerAccount.id;
+
+    if (requestedAccountId && requestedAccountId !== customerAccount.id) {
       window.location.href = 'builder.html';
       bail = true;
-    }
+    
+  }
+}
   }
 
   if (!bail) {
