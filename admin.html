@@ -75,24 +75,24 @@
 
     <form id="newAccountForm" class="field-group">
       <label class="b-field">
-        <span>Brukernavn</span>
-        <input type="text" id="na-username" placeholder="f.eks. bakeriet-anna" required>
+        <span>Kontaktperson</span>
+        <input type="text" id="na-displayname" placeholder="f.eks. Anna Hansen" required>
       </label>
       <label class="b-field">
-        <span>Passord</span>
-        <input type="text" id="na-password" placeholder="Velg et passord" required>
+        <span>E-post</span>
+        <input type="email" id="na-email" autocomplete="off" placeholder="anna@bedrift.no" required>
       </label>
       <label class="b-field">
         <span>Bedrifts-/prosjektnavn</span>
         <input type="text" id="na-projectname" placeholder="f.eks. Annas Bakeri" required>
       </label>
       <label class="b-field">
-  <span>Sikkerhetsnøkkel</span>
+  <span>Offentlig nettadresse</span>
   <input
     type="text"
-    id="na-security-code"
-    placeholder="Minst 12 tegn"
-    minlength="12"
+    id="na-public-slug"
+    placeholder="annas-bakeri"
+    pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
     autocomplete="off"
     required
   >
@@ -107,9 +107,7 @@
   </div>
 </div>
 
-<script src="js/builder-data.js?v=demo2"></script>
-<script src="js/accounts.js?v=demo2"></script>
-<script type="module" src="js/admin.js?v=demo4"></script>
+<script src="js/builder-data.js?v=security2"></script>
+<script type="module" src="js/admin.js?v=security2"></script>
 </body>
 </html>
-

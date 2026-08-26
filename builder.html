@@ -52,7 +52,7 @@
     <div class="user-menu">
       <button class="user-avatar" id="userAvatarBtn">SN</button>
       <div class="user-dropdown" id="userDropdown">
-        <div class="user-email" id="userEmail">demo@studionord.no</div>
+        <div class="user-email" id="userEmail">Laster bruker…</div>
         <a href="index.html">Til forsiden</a>
         <button id="logoutBtn">Logg ut</button>
       </div>
@@ -290,10 +290,12 @@
 <div class="modal-overlay" id="publishModal">
   <div class="modal">
     <div class="modal-icon">🚀</div>
-    <h3>Nettsiden er publisert!</h3>
-    <p>Dette er en demo, så ingenting er faktisk satt i luften &mdash; men slik ville det sett ut:</p>
-    <div class="modal-url" id="modalUrl">https://baeroskebab.no</div>
-    <button class="btn btn-primary btn-full" id="closeModal">Lukk</button>
+    <h3>Publiser nettsiden</h3>
+    <p>Publisering krever din personlige sikkerhetsnøkkel. Lagrede utkast forblir private.</p>
+    <label class="b-field"><span>Personlig sikkerhetsnøkkel</span><input type="password" id="publishPersonalKey" autocomplete="current-password"></label>
+    <p class="auth-error" id="publishError"></p>
+    <button class="btn btn-primary btn-full" id="confirmPublishBtn">Bekreft og publiser</button>
+    <button class="btn btn-outline btn-full" id="closeModal">Avbryt</button>
   </div>
 </div>
 
@@ -334,7 +336,6 @@
 </div>
 
 <script src="js/builder-data.js?v=demo2"></script>
-<script src="js/accounts.js?v=demo2"></script>
-<script src="js/builder.js?v=save1"></script>
+<script type="module" src="js/builder.js?v=security2"></script>
 </body>
 </html>

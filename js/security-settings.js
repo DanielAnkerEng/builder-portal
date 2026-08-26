@@ -1,0 +1,3 @@
+import { requireAal2 } from './auth.js'; import { setPersonalKey } from './api.js'; await requireAal2()
+const form=document.getElementById('keyForm'), errorEl=document.getElementById('keyError'); form.addEventListener('submit',async e=>{e.preventDefault();const next=document.getElementById('newKey').value;if(next!==document.getElementById('confirmKey').value)return show('Nøklene er ikke like.');try{await setPersonalKey(next,document.getElementById('currentKey').value||null);form.reset();show('Sikkerhetsnøkkelen er lagret.',false)}catch{show('Nøkkelen kunne ikke lagres. Kontroller nåværende nøkkel.')}});function show(m,err=true){errorEl.textContent=m;errorEl.classList.toggle('show',err)}
+

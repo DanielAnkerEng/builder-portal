@@ -1,8 +1,12 @@
+import { supabase } from './supabase.js';
 const params = new URLSearchParams(location.search);
-const accountId = params.get('account');
+const publicSlug = params.get('slug');
 const pageSlug = params.get('page') || '';
-const account = findAccountById(accountId);
-const siteData = account ? getAccountState(account.id) : null;
+const { data: published, error: publishedError } = publicSlug
+  ? await supabase.rpc('get_public_site', { p_slug: publicSlug }).maybeSingle()
+  : { data: null, error: null };
+const siteData = published?.content || null;
+const account = siteData ? { projectName: published.website_name, email: siteData.contactEmail || '' } : null;
 const root = document.getElementById('siteRoot');
 
 function safe(value) {
@@ -17,7 +21,7 @@ function findPage(data, slug) {
 
 function renderNav(data, activeSlug) {
   return data.pages.map(p => {
-    const href = `site.html?account=${accountId}${p.slug ? `&page=${p.slug}` : ''}`;
+    const href = `site.html?slug=${encodeURIComponent(publicSlug)}${p.slug ? `&page=${encodeURIComponent(p.slug)}` : ''}`;
     return `<a href="${href}"${p.slug === activeSlug ? ' aria-current="page"' : ''}>${safe(p.name)}</a>`;
   }).join('');
 }
@@ -60,24 +64,22 @@ function renderSection(section, page, data) {
   }
 }
 
-if (!account || !siteData) {
+if (publishedError || !account || !siteData) {
   root.innerHTML = '<main class="missing"><h1>Nettsiden finnes ikke</h1><a href="index.html">Tilbake til Studio Nord</a></main>';
 } else {
   const page = findPage(siteData, pageSlug);
-  if (page.customCode) {
-    document.open(); document.write(page.customCode); document.close();
-  } else {
+  {
     document.title = page.slug ? `${page.name} | ${siteData.businessName}` : (siteData.seoTitle || account.projectName);
     document.documentElement.style.setProperty('--accent', siteData.accent);
     document.documentElement.style.setProperty('--accent2', siteData.accent2);
     const sectionsHTML = page.sections.map(sec => renderSection(sec, page, siteData)).filter(Boolean).join('');
     root.innerHTML = `
     <header class="site-nav">
-      <a class="brand" href="site.html?account=${accountId}">${safe(siteData.businessName)}</a>
+      <a class="brand" href="site.html?slug=${encodeURIComponent(publicSlug)}">${safe(siteData.businessName)}</a>
       <nav>${renderNav(siteData, page.slug)}</nav>
       <a class="nav-cta" href="#kontakt">${safe(page.cta)}</a>
     </header>
     ${sectionsHTML}
-    <footer><a class="brand" href="site.html?account=${accountId}">${safe(siteData.businessName)}</a><span>© ${new Date().getFullYear()} ${safe(siteData.businessName)}</span><span>Laget av Studio Nord</span></footer>`;
+    <footer><a class="brand" href="site.html?slug=${encodeURIComponent(publicSlug)}">${safe(siteData.businessName)}</a><span>© ${new Date().getFullYear()} ${safe(siteData.businessName)}</span><span>Laget av Wreach</span></footer>`;
   }
 }

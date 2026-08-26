@@ -26,11 +26,7 @@ The helpers are `SECURITY DEFINER` only where protected membership lookup is req
 
 ## Backfill gate
 
-The foundation migration creates a private `security_v2_backfill_candidates` view for local review by the service role. It performs no membership or platform-admin promotions. Before a production migration is prepared, a human must confirm:
-
-1. the two platform-admin Auth UUIDs;
-2. the correct company and initial role for every existing profile with `company_id`;
-3. whether any profile is inactive, duplicated, or belongs to more than one company.
+The confirmed backfill migration records the two explicitly approved platform administrators. A company with exactly one valid legacy `profiles.company_id` link receives an owner membership. The migration aborts instead of guessing when a company has multiple linked profiles or a non-platform profile lacks a valid company. Legacy role and company columns remain in place for compatibility. Production execution still requires a separate review and approval.
 
 ## Target request rules
 
@@ -48,7 +44,14 @@ Saving modifies private draft state only. Publishing creates an immutable snapsh
 
 Internal audit events contain actor, company, time, event, result, target, required authorization controls, correlation ID, and allowlisted metadata. Raw IP addresses are not stored by default. Full audit is visible only to active AAL2 platform administrators. Customers receive a separate sanitized activity projection without internal UUIDs, MFA/key diagnostics, network data, or request IDs.
 
+`get_customer_activity` derives the caller from the AAL2 JWT, checks company membership server-side, exposes only allowlisted successful business events, and returns only timestamp, display name, human-readable action, and an optional safe resource name.
+
+## Local verification
+
+- pgTAP covers AAL1 rejection, role restrictions, cross-company access, draft/public separation, credential isolation, stale revisions, wrong-key failures, atomic publication, audit privacy, and anonymous public reads.
+- Static checks reject browser-local auth state, demo credentials, service-role secrets, and `document.write` in active frontend files.
+- Every Edge Function compiles locally and rejects missing or invalid user sessions.
+
 ## Deployment boundary
 
 Local implementation may create migrations, Edge Functions, tests, commits, and branch pushes. It must not push the linked production database, deploy production Edge Functions, modify production Auth users/data, merge to `main`, or perform destructive migrations without separate approval.
-

@@ -29,8 +29,8 @@
 
     <form id="loginForm" class="auth-form">
       <label class="field">
-        <span>Brukernavn / e-post</span>
-        <input type="text" id="email" placeholder="admin eller deg@bedrift.no" required>
+        <span>E-post</span>
+        <input type="email" id="email" autocomplete="username" placeholder="deg@bedrift.no" required>
       </label>
       <label class="field">
         <span>Passord</span>
@@ -50,28 +50,12 @@
       </button>
     </form>
 
-    <div class="auth-divider"><span>eller test med demo-konto</span></div>
-
-    <div class="demo-login-row">
-      <button class="btn btn-ghost btn-large" id="adminLoginBtn">
-        🛠️ Logg inn som Admin
-      </button>
-      <button class="btn btn-ghost btn-large" id="userLoginBtn">
-        👤 Logg inn som Kunde
-      </button>
-      <button class="btn btn-ghost btn-large fjord-login" id="fjordLoginBtn">
-        ⛵ Test Fjord Eiendom
-      </button>
-    </div>
-
-    <p class="auth-footnote">Testkunder: <strong>fjord/fjord123</strong>, <strong>salong/salong123</strong>, <strong>ror/ror123</strong>, <strong>tall/tall123</strong> og <strong>smak/smak123</strong>. Admin: <strong>admin/123</strong>.</p>
+    <p class="auth-footnote">Alle Wreach-kontoer krever passord og verifisert tofaktorautentisering.</p>
   </div>
 
   <p class="auth-back"><a href="index.html">&larr; Tilbake til forsiden</a></p>
 </div>
 
-<script src="js/builder-data.js?v=demo2"></script>
-<script src="js/accounts.js?v=demo2"></script>
-<script type="module" src="js/login.js?v=demo2"></script>
+<script type="module" src="js/login.js?v=security2"></script>
 </body>
 </html>

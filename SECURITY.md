@@ -20,7 +20,7 @@ These are architectural requirements, not UI conventions. RLS, database function
 
 ## Current implementation status
 
-Security V2 is being introduced additively on `security-auth-upgrade`. The production application still contains a legacy browser-local account and website model. The authorization foundation migration creates individual profiles, trusted platform administrators, company memberships, AAL2-aware authorization helpers, and a human-reviewed backfill surface. It intentionally does not promote any existing user.
+Security V2 is implemented locally and additively on `security-auth-upgrade`. The new portal uses Supabase Auth, AAL2-aware authorization, server-owned drafts/publications, per-user credentials, company credentials, and server-side audit events. The legacy account module is an inert compatibility stub and active portal code no longer uses browser-local authentication.
 
 Production deployment is not authorized during this implementation phase.
 
@@ -32,9 +32,8 @@ Production deployment is not authorized during this implementation phase.
 
 ## Custom code boundary
 
-The legacy builder can store custom HTML and JavaScript and currently renders it on the portal origin. This is unsafe. Security V2 will preserve the stored data but disable arbitrary JavaScript execution until an isolated origin or sandbox without access to Wreach cookies, localStorage, Supabase sessions, or portal DOM exists. HTML sanitization alone is not considered sufficient for arbitrary JavaScript.
+Legacy custom HTML/JavaScript is preserved as data but is not executed. It remains disabled until an isolated origin or sandbox without access to Wreach cookies, localStorage, Supabase sessions, or portal DOM exists. HTML sanitization alone is not considered sufficient for arbitrary JavaScript.
 
 ## Reporting
 
 Do not include secrets or production identifiers in issue reports. Record the affected component, expected security invariant, reproduction steps using local/test identities, and the relevant request correlation ID when available.
-
