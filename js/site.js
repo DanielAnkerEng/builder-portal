@@ -1,85 +1,20 @@
-import { supabase } from './supabase.js';
-const params = new URLSearchParams(location.search);
-const publicSlug = params.get('slug');
-const pageSlug = params.get('page') || '';
-const { data: published, error: publishedError } = publicSlug
-  ? await supabase.rpc('get_public_site', { p_slug: publicSlug }).maybeSingle()
-  : { data: null, error: null };
-const siteData = published?.content || null;
-const account = siteData ? { projectName: published.website_name, email: siteData.contactEmail || '' } : null;
-const root = document.getElementById('siteRoot');
-
-function safe(value) {
-  const div = document.createElement('div');
-  div.textContent = value || '';
-  return div.innerHTML;
-}
-
-function findPage(data, slug) {
-  return data.pages.find(p => p.slug === slug) || data.pages[0];
-}
-
-function renderNav(data, activeSlug) {
-  return data.pages.map(p => {
-    const href = `site.html?slug=${encodeURIComponent(publicSlug)}${p.slug ? `&page=${encodeURIComponent(p.slug)}` : ''}`;
-    return `<a href="${href}"${p.slug === activeSlug ? ' aria-current="page"' : ''}>${safe(p.name)}</a>`;
-  }).join('');
-}
-
-function renderSection(section, page, data) {
-  if (!section.enabled) return '';
-  switch (section.id) {
-    case 'hero':
-      return `<section class="hero" id="top" style="background:${data.bg}">
-      <div class="hero-orb one"></div><div class="hero-orb two"></div>
-      <div class="hero-content"><span class="eyebrow">${safe(page.heroTag)}</span><h1>${safe(page.heroTitle).replace(/\n/g,'<br>')}</h1><p>${safe(page.heroSub)}</p><div class="hero-actions"><a class="button" href="#kontakt">${safe(page.cta)}</a><span class="badge">${safe(page.badge)}</span></div></div>
-      <div class="hero-art"><div class="art-card"><span>${safe(page.gallery[0]?.emoji || '✦')}</span><small>${safe(data.businessName)}</small></div></div>
-    </section>`;
-    case 'about':
-      return `<section class="section intro" id="om"><span class="kicker">Om bedriften</span><h2>${safe(page.aboutTitle)}</h2><p>${safe(page.aboutText)}</p><div class="facts"><div><b>Personlig</b><span>Fast kontakt hele veien</span></div><div><b>Lokalt</b><span>Kunnskap som skaper trygghet</span></div><div><b>Enkelt</b><span>Tydelig prosess og raske svar</span></div></div></section>`;
-    case 'offerings':
-      return `<section class="section offerings" id="tilbud"><div class="section-head"><div><span class="kicker">Utvalgt for deg</span><h2>${safe(page.offeringsLabel)}</h2></div><p>Se et utvalg av det vi tilbyr akkurat nå.</p></div><div class="cards">${page.offerings.map((o,i)=>`<article><div class="card-visual"><span>${safe(page.gallery[i]?.emoji || '✦')}</span><em>0${i+1}</em></div><div class="card-copy"><h3>${safe(o.t)}</h3><p>${safe(o.d)}</p><a href="#kontakt">Les mer <span>→</span></a></div></article>`).join('')}</div></section>`;
-    case 'gallery':
-      return `<section class="gallery"><div class="gallery-copy"><span class="kicker">Et lite innblikk</span><h2>Detaljene gjør forskjellen.</h2></div><div class="gallery-grid">${page.gallery.map((g,i)=>`<div class="gallery-tile tile-${i+1}" ${g.img?`style="background-image:url('${g.img}')"`:''}><span>${g.img?'':safe(g.emoji)}</span></div>`).join('')}</div></section>`;
-    case 'contact':
-      return `<section class="contact" id="kontakt" style="background:${data.bg}"><span class="kicker">La oss snakke sammen</span><h2>Klar for neste steg?</h2><p>${safe(page.hours)}</p><a class="button" href="mailto:${safe(account.email)}">${safe(page.cta)}</a><div class="contact-meta"><span>📍 ${safe(page.address)}</span><span>✉ ${safe(account.email)}</span></div></section>`;
-    case 'testimonials': {
-      const c = EXTRA_SECTION_CONTENT.testimonials;
-      return `<section class="testimonials"><span class="kicker">Hva kundene sier</span><h2>${safe(section.name)}</h2><div class="cards">${c.items.map(it=>`<article><blockquote>"${safe(it.quote)}"</blockquote><cite>${safe(it.name)}</cite></article>`).join('')}</div></section>`;
-    }
-    case 'team': {
-      const c = EXTRA_SECTION_CONTENT.team;
-      return `<section class="team"><span class="kicker">Menneskene bak</span><h2>${safe(section.name)}</h2><div class="team-grid">${c.items.map(it=>`<div class="team-member"><span>${it.emoji}</span><strong>${safe(it.name)}</strong><em>${safe(it.role)}</em></div>`).join('')}</div></section>`;
-    }
-    case 'faq': {
-      const c = EXTRA_SECTION_CONTENT.faq;
-      return `<section class="faq"><span class="kicker">Lurer du på noe?</span><h2>${safe(section.name)}</h2>${c.items.map(it=>`<details class="faq-item"><summary>${safe(it.q)}</summary><p>${safe(it.a)}</p></details>`).join('')}</section>`;
-    }
-    case 'ctabanner': {
-      const c = EXTRA_SECTION_CONTENT.ctabanner;
-      return `<section class="cta-banner"><h2>${safe(section.name)}</h2><p>${safe(c.sub)}</p><a class="button" href="#kontakt">${safe(page.cta)}</a></section>`;
-    }
-    default:
-      return '';
-  }
-}
-
-if (publishedError || !account || !siteData) {
-  root.innerHTML = '<main class="missing"><h1>Nettsiden finnes ikke</h1><a href="index.html">Tilbake til Studio Nord</a></main>';
-} else {
-  const page = findPage(siteData, pageSlug);
-  {
-    document.title = page.slug ? `${page.name} | ${siteData.businessName}` : (siteData.seoTitle || account.projectName);
-    document.documentElement.style.setProperty('--accent', siteData.accent);
-    document.documentElement.style.setProperty('--accent2', siteData.accent2);
-    const sectionsHTML = page.sections.map(sec => renderSection(sec, page, siteData)).filter(Boolean).join('');
-    root.innerHTML = `
-    <header class="site-nav">
-      <a class="brand" href="site.html?slug=${encodeURIComponent(publicSlug)}">${safe(siteData.businessName)}</a>
-      <nav>${renderNav(siteData, page.slug)}</nav>
-      <a class="nav-cta" href="#kontakt">${safe(page.cta)}</a>
-    </header>
-    ${sectionsHTML}
-    <footer><a class="brand" href="site.html?slug=${encodeURIComponent(publicSlug)}">${safe(siteData.businessName)}</a><span>© ${new Date().getFullYear()} ${safe(siteData.businessName)}</span><span>Laget av Wreach</span></footer>`;
-  }
-}
+import { supabase } from './supabase.js'
+const params=new URLSearchParams(location.search),publicSlug=params.get('slug'),pageSlug=params.get('page')||'',root=document.getElementById('siteRoot')
+const{data:published,error}=publicSlug?await supabase.rpc('get_public_site',{p_slug:publicSlug}).maybeSingle():{data:null,error:null}
+const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text??'');return n}
+const append=(parent,...children)=>{parent.append(...children.filter(Boolean));return parent}
+const color=value=>/^#[0-9a-f]{6}$/i.test(value||'')?value:'#111111'
+const media=value=>typeof value==='string'&&(/^https:\/\/[^\s<>"']{1,2000}$/.test(value)||(value.length<=800000&&/^data:image\/(png|jpeg|webp|gif);base64,[a-z0-9+/]+={0,2}$/i.test(value)))?value:null
+const email=value=>typeof value==='string'&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)?value:''
+const href=(slug='')=>`site.html?slug=${encodeURIComponent(publicSlug)}${slug?`&page=${encodeURIComponent(slug)}`:''}`
+const link=(label,url,cls)=>{const a=el('a',cls,label);a.setAttribute('href',url);return a}
+function navigation(data,active){const h=el('header','site-nav'),nav=el('nav');for(const p of data.pages){const a=link(p.name,href(p.slug));if(p.slug===active)a.setAttribute('aria-current','page');nav.append(a)}return append(h,link(data.businessName,href(),'brand'),nav,link('Kontakt','#kontakt','nav-cta'))}
+function hero(page,data){const s=el('section','hero');s.id='top';s.style.backgroundColor=color(data.bg);const c=el('div','hero-content'),title=el('h1');String(page.heroTitle||'').split('\n').forEach((line,i)=>{if(i)title.append(document.createElement('br'));title.append(document.createTextNode(line))});return append(s,el('div','hero-orb one'),el('div','hero-orb two'),append(c,el('span','eyebrow',page.heroTag),title,el('p','',page.heroSub),append(el('div','hero-actions'),link(page.cta,'#kontakt','button'),el('span','badge',page.badge))))}
+function about(page){return append(el('section','section intro'),el('span','kicker','Om bedriften'),el('h2','',page.aboutTitle),el('p','',page.aboutText))}
+function offerings(page){const cards=el('div','cards');for(const o of page.offerings||[])append(cards,append(el('article'),el('h3','',o.t),el('p','',o.d),link('Les mer →','#kontakt')));return append(el('section','section offerings'),append(el('div','section-head'),append(el('div'),el('span','kicker','Utvalgt for deg'),el('h2','',page.offeringsLabel))),cards)}
+function gallery(page){const grid=el('div','gallery-grid');(page.gallery||[]).forEach((g,i)=>{const tile=el('div',`gallery-tile tile-${i+1}`),url=media(g.img);if(url)tile.style.backgroundImage=`url("${url.replaceAll('"','%22')}")`;else tile.append(el('span','',g.emoji||'✦'));grid.append(tile)});return append(el('section','gallery'),append(el('div','gallery-copy'),el('span','kicker','Et lite innblikk'),el('h2','','Detaljene gjør forskjellen.')),grid)}
+function contact(page,data){const s=el('section','contact'),mail=email(data.contactEmail);s.id='kontakt';s.style.backgroundColor=color(data.bg);append(s,el('span','kicker','La oss snakke sammen'),el('h2','','Klar for neste steg?'),el('p','',page.hours));if(mail)s.append(link(page.cta,`mailto:${mail}`,'button'));s.append(append(el('div','contact-meta'),el('span','',`📍 ${page.address||''}`),el('span','',mail?`✉ ${mail}`:'')));return s}
+function extra(section){const s=el('section',section.id);append(s,el('span','kicker',section.id.toUpperCase()),el('h2','',section.name||''));const content=EXTRA_SECTION_CONTENT?.[section.id];for(const item of content?.items||[])s.append(el('p','',item.quote||item.q||`${item.name||''} ${item.role||''}`));return s}
+function render(section,page,data){if(!section.enabled)return null;const f={hero:()=>hero(page,data),about:()=>about(page),offerings:()=>offerings(page),gallery:()=>gallery(page),contact:()=>contact(page,data),testimonials:()=>extra(section),team:()=>extra(section),faq:()=>extra(section),ctabanner:()=>extra(section)}[section.id];return f?f():null}
+if(error||!published?.content)append(root,append(el('main','missing'),el('h1','','Nettsiden finnes ikke'),link('Tilbake til Wreach','index.html')))
+else{const data=published.content,page=data.pages.find(p=>p.slug===pageSlug)||data.pages[0];document.title=page.slug?`${page.name} | ${data.businessName}`:(data.seoTitle||published.website_name);document.documentElement.style.setProperty('--accent',color(data.accent));document.documentElement.style.setProperty('--accent2',color(data.accent2));root.replaceChildren(navigation(data,page.slug),...(page.sections||[]).map(s=>render(s,page,data)).filter(Boolean),append(el('footer'),link(data.businessName,href(),'brand'),el('span','',`© ${new Date().getFullYear()} ${data.businessName}`),el('span','','Laget av Wreach')))}

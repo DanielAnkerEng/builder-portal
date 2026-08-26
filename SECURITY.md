@@ -15,6 +15,8 @@
 11. **NO CLIENT MAY READ SECURITY HASHES.**
 12. **FULL AUDIT IS WREACH-ADMIN ONLY.**
 13. **CUSTOMERS RECEIVE ONLY SANITIZED ACTIVITY.**
+14. **ALL STORED SITE CONTENT PASSES THE SERVER ALLOWLIST.**
+15. **LEGACY IMPORT CREATES A PRIVATE DRAFT ONLY AFTER EXPLICIT MAPPING.**
 
 These are architectural requirements, not UI conventions. RLS, database functions, and authenticated Edge Functions must continue to enforce them when browser code is bypassed.
 

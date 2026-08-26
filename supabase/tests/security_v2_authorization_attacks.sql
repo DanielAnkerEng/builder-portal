@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(24);
+select plan(30);
 
 insert into auth.users (id,aud,role,email,encrypted_password,email_confirmed_at,raw_app_meta_data,raw_user_meta_data,created_at,updated_at)
 values
@@ -18,8 +18,8 @@ insert into public.websites(id,company_id,name,public_slug,created_by) values
  ('11000000-0000-4000-8000-000000000011','10000000-0000-4000-8000-000000000001','Site A','site-a','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'),
  ('22000000-0000-4000-8000-000000000022','20000000-0000-4000-8000-000000000002','Site B','site-b','bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb');
 insert into public.website_drafts(website_id,content,revision,updated_by) values
- ('11000000-0000-4000-8000-000000000011','{"businessName":"A","pages":[{"slug":""}]}'::jsonb,1,'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'),
- ('22000000-0000-4000-8000-000000000022','{"businessName":"B","pages":[{"slug":""}]}'::jsonb,1,'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb');
+ ('11000000-0000-4000-8000-000000000011','{"businessName":"A","accent":"#112233","accent2":"#445566","bg":"#ffffff","activePageId":"home","pages":[{"id":"home","slug":"","name":"Forside","offerings":[],"gallery":[],"sections":[]}]}'::jsonb,1,'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'),
+ ('22000000-0000-4000-8000-000000000022','{"businessName":"B","accent":"#112233","accent2":"#445566","bg":"#ffffff","activePageId":"home","pages":[{"id":"home","slug":"","name":"Forside","offerings":[],"gallery":[],"sections":[]}]}'::jsonb,1,'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb');
 insert into public.user_security_credentials(user_id,key_hash) values
  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',extensions.crypt('Personal-Key-A-123',extensions.gen_salt('bf',4))),
  ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',extensions.crypt('Personal-Key-B-123',extensions.gen_salt('bf',4)));
@@ -34,6 +34,7 @@ select ok(not has_table_privilege('authenticated','public.company_security','SEL
 select ok(not has_table_privilege('authenticated','public.websites','UPDATE'),'Client cannot switch active publication');
 select ok(not has_function_privilege('authenticated','public.security_v2_publish_site(uuid,uuid,bigint,text,uuid)','EXECUTE'),'Browser cannot call trusted publish RPC');
 select ok(not has_function_privilege('authenticated','public.security_v2_change_member_role(uuid,uuid,uuid,text,text,text,uuid)','EXECUTE'),'Browser cannot call critical RPC');
+select ok(not has_function_privilege('authenticated','public.security_v2_stage_legacy_import(uuid,text,text,text,text,uuid,jsonb,jsonb,uuid)','EXECUTE'),'Browser cannot call trusted import RPC');
 
 select set_config('request.jwt.claims','{"sub":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","role":"authenticated","aal":"aal1"}',true);
 select is((select count(*) from public.websites),0::bigint,'AAL1 cannot read protected websites');
@@ -55,6 +56,19 @@ select is((public.security_v2_publish_site('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa
 select is((public.security_v2_publish_site('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','11000000-0000-4000-8000-000000000011',1,'Personal-Key-B-123',gen_random_uuid())->>'ok')::boolean,false,'User B key cannot publish as User A');
 select is((public.security_v2_publish_site('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','11000000-0000-4000-8000-000000000011',1,'Personal-Key-A-123',gen_random_uuid())->>'ok')::boolean,true,'Correct actor key publishes atomically');
 select isnt((select current_publication_id from public.websites where id='11000000-0000-4000-8000-000000000011'),null,'Successful publish activates immutable version');
+
+reset role;
+insert into public.platform_admins(user_id,admin_role,is_active) values('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','admin',true);
+set local role service_role;
+create temporary table staged_import as select public.security_v2_stage_legacy_import(
+  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',repeat('a',64),'legacy-a','Legacy A','legacy-a@test.local',
+  '10000000-0000-4000-8000-000000000001',(select content from public.website_drafts where website_id='11000000-0000-4000-8000-000000000011'),
+  '{"source":"test"}'::jsonb,gen_random_uuid()) result;
+select is((select result->>'ok' from staged_import),'true','Platform admin can stage a valid legacy export');
+select is((select status from public.legacy_site_imports where source_fingerprint=repeat('a',64)),'needs_mapping','Staging never creates or publishes a website');
+select is((public.security_v2_confirm_legacy_mapping('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',(select id from public.legacy_site_imports where source_fingerprint=repeat('a',64)),'10000000-0000-4000-8000-000000000001','Imported A','imported-a',false,gen_random_uuid())->>'ok'),'false','Mapping requires explicit human confirmation');
+select is((public.security_v2_confirm_legacy_mapping('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',(select id from public.legacy_site_imports where source_fingerprint=repeat('a',64)),'20000000-0000-4000-8000-000000000002','Imported A','imported-a',true,gen_random_uuid())->>'error'),'COMPANY_MISMATCH','Legacy company evidence prevents cross-company mapping');
+select is((public.security_v2_confirm_legacy_mapping('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',(select id from public.legacy_site_imports where source_fingerprint=repeat('a',64)),'10000000-0000-4000-8000-000000000001','Imported A','imported-a',true,gen_random_uuid())->>'published'),'false','Confirmed import creates private draft only');
 
 reset role;
 set local role anon;
