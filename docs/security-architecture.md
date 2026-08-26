@@ -55,3 +55,13 @@ Internal audit events contain actor, company, time, event, result, target, requi
 ## Deployment boundary
 
 Local implementation may create migrations, Edge Functions, tests, commits, and branch pushes. It must not push the linked production database, deploy production Edge Functions, modify production Auth users/data, merge to `main`, or perform destructive migrations without separate approval.
+
+## Wreach two-owner safety
+
+Daniel Anker Eng and Christian Anker Eng are independently confirmed owners of the Wreach company. Daniel remains platform owner and Christian remains platform admin; platform and company roles are separate. Neither Wreach ownership row may be reduced without new explicit human approval.
+
+A future catastrophic-operation control should add a server-side approval object with operation digest, initiator, independent approving owner, short expiry, one-time nonce, and immutable audit events. Deleting Wreach, transferring ownership, removing the last or other owner, destructive recovery, disabling critical security controls, and break-glass access should require two different active AAL2 owners, each verifying their own personal key, plus the company key where applicable. A platform role or break-glass path must not silently bypass the second approval.
+
+## Legacy import boundary
+
+Legacy browser data is exported without passwords/session state and staged by fingerprint. Staging cannot create a live site. Explicit platform-admin mapping creates only a private revision-1 draft; the normal personal-key Publish operation is the only path to an initial live snapshot. See `docs/legacy-site-import.md`.
