@@ -65,3 +65,5 @@ A future catastrophic-operation control should add a server-side approval object
 ## Legacy import boundary
 
 Legacy browser data is exported without passwords/session state and staged by fingerprint. Staging cannot create a live site. Explicit platform-admin mapping creates only a private revision-1 draft; the normal personal-key Publish operation is the only path to an initial live snapshot. See `docs/legacy-site-import.md`.
+
+The known projects Mitt nettsideprosjekt, Fjord Eiendom, Nordlys Hårstudio, Trygg Rørservice, Klar Regnskap, and Fjordgrill are human-confirmed demo data. They are not production migration inputs and must neither be mapped nor imported. Their original local browser data remains preserved pending separate cleanup approval. This decision does not change or infer anything about production companies, profiles, memberships, or Auth users.

@@ -1,5 +1,7 @@
 # Controlled legacy website import
 
+The six known legacy projects listed in `docs/legacy-mapping-report.md` are confirmed demo data and are explicitly out of scope for production import. Do not run this workflow for them. This mechanism remains available only for a separately confirmed legitimate site discovered later.
+
 The import is deliberately staged and never reads or changes production browser storage remotely.
 
 1. Serve `tools/legacy-import/export.html` on the exact legacy portal origin so the browser can access the old Wreach storage keys.

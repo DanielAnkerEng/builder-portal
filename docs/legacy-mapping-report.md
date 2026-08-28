@@ -1,16 +1,16 @@
 # Legacy mapping report
 
-No browser-local state was read during repository implementation. The exporter must be run on every browser/profile that used the legacy portal; additional accounts or changed names may exist there.
+Human decision recorded 2026-08-28: the six known legacy projects below are test/demo data only. They must not be staged, mapped, or imported into production `websites`, `website_drafts`, or `website_publications`. Their existing browser `localStorage` must remain untouched until a separate cleanup approval.
 
-Known legacy account definitions all require explicit mapping because the current production companies are named Wreach, Test Bedrift 4, Test Bedrift 5, or Testbedrift 3 and no unique evidence connects these demo projects to one of those company UUIDs.
-
-| Legacy account | Project | Legacy email | Mapping status |
+| Legacy account | Project | Legacy email | Production decision |
 |---|---|---|---|
-| `acc_bruker` | Mitt nettsideprosjekt | bruker@studionord.no | Human confirmation required |
-| `acc_fjord` | Fjord Eiendom | demo@fjordbolig.no | Human confirmation required |
-| `acc_salong` | Nordlys Hårstudio | hei@nordlysstudio.no | Human confirmation required |
-| `acc_ror` | Trygg Rørservice | post@tryggror.no | Human confirmation required |
-| `acc_regnskap` | Klar Regnskap | hei@klarregnskap.no | Human confirmation required |
-| `acc_mat` | Fjordgrill | bestilling@fjordgrill.no | Human confirmation required |
+| `acc_bruker` | Mitt nettsideprosjekt | bruker@studionord.no | Demo only — do not import |
+| `acc_fjord` | Fjord Eiendom | demo@fjordbolig.no | Demo only — do not import |
+| `acc_salong` | Nordlys Hårstudio | hei@nordlysstudio.no | Demo only — do not import |
+| `acc_ror` | Trygg Rørservice | post@tryggror.no | Demo only — do not import |
+| `acc_regnskap` | Klar Regnskap | hei@klarregnskap.no | Demo only — do not import |
+| `acc_mat` | Fjordgrill | bestilling@fjordgrill.no | Demo only — do not import |
 
-The legacy admin account has no website state and is excluded. Duplicate Test Bedrift names are never auto-associated. A staged export remains `needs_mapping` until an AAL2 platform administrator confirms one exact company UUID.
+The legacy admin account has no website state and remains excluded. None of these demo projects may be used to infer ownership of a production company. The four production companies without profiles remain unchanged and require a separate business review, not a website import.
+
+The secure import capability remains available only for a future legitimate, explicitly identified non-demo site. No such site is currently identified in the repository or confirmed production inventory. If one is later found in another browser/profile, it must follow the controlled staging and mapping runbook.
