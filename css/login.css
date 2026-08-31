@@ -21,6 +21,9 @@
   flex-direction: column;
   align-items: center;
 }
+.auth-wrap-wide { max-width: 520px; gap: 24px; }
+.settings-card { margin-top: 0; }
+.factor-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 0.88rem; }
 
 .auth-logo { font-size: 1.5rem; margin-bottom: 40px; }
 
@@ -38,6 +41,11 @@
   margin-bottom: 8px;
 }
 .auth-sub { color: var(--text-dim); font-size: 0.92rem; margin-bottom: 32px; }
+.mfa-status { color: var(--text-dim); font-size: 0.88rem; margin: -16px 0 20px; }
+.mfa-enrollment { text-align: center; margin: 20px 0; }
+.mfa-enrollment img { display: block; max-width: 100%; height: auto; margin: 0 auto 12px; background: #fff; border-radius: var(--radius-sm); }
+.mfa-enrollment code { overflow-wrap: anywhere; user-select: all; }
+.auth-card > .btn { margin-top: 14px; }
 
 .auth-form { display: flex; flex-direction: column; gap: 18px; }
 .field { display: flex; flex-direction: column; gap: 8px; }

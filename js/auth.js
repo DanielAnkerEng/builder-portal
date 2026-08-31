@@ -1,4 +1,4 @@
-import { supabase } from './supabase.js'
+import { clearWreachAuthSession, supabase } from './supabase.js'
 export async function requireAal2({ platformAdmin = false } = {}) {
   const { data: { session } } = await supabase.auth.getSession(); if (!session) return redirect('login.html')
   const { data: assurance, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel(); if (error || assurance.currentLevel !== 'aal2') return redirect('mfa.html')
@@ -9,6 +9,5 @@ export async function requireAal2({ platformAdmin = false } = {}) {
   const { data: memberships = [] } = await supabase.from('company_memberships').select('company_id,role,status').eq('user_id', session.user.id).eq('status', 'active')
   return { session, user: session.user, profile, admin, memberships, isPlatformAdmin: Boolean(admin) }
 }
-export async function signOut() { await supabase.auth.signOut(); sessionStorage.clear(); location.replace('login.html') }
+export async function signOut() { try { await supabase.auth.signOut() } finally { clearWreachAuthSession(); location.replace('login.html') } }
 function redirect(url) { location.replace(url); return new Promise(() => {}) }
-

@@ -1,5 +1,18 @@
 /* ===================== RESET & BASE ===================== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+.environment-banner {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 10000;
+  padding: 7px 12px;
+  text-align: center;
+  font: 700 12px/1.2 system-ui, sans-serif;
+  letter-spacing: 0.06em;
+}
+.environment-banner-local { color: #1b1200; background: #ffc857; border-bottom: 1px solid #8a6500; }
+html[data-supabase-environment='local'] body { padding-top: 29px; }
 
 :root {
   --bg: #08090c;
