@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin-oversikt | Studio Nord</title>
+<title>Admin-oversikt | Wreach</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
 <!-- TOPBAR -->
 <header class="topbar">
   <div class="topbar-left">
-    <a href="index.html" class="logo">Studio<span>Nord</span></a>
+    <a href="index.html" class="logo">W<span>reach</span></a>
     <div class="topbar-divider"></div>
     <span class="admin-title-tag">Admin-oversikt</span>
   </div>
@@ -27,7 +27,7 @@
     <div class="user-menu">
       <button class="user-avatar admin-avatar" id="userAvatarBtn">AD</button>
       <div class="user-dropdown" id="userDropdown">
-        <div class="user-email" id="userEmail">admin@studionord.no</div>
+        <div class="user-email" id="userEmail">Laster bruker …</div>
         <a href="index.html">Til forsiden</a>
         <button id="logoutBtn">Logg ut</button>
       </div>
@@ -50,10 +50,12 @@
     </div>
 
     <div class="admin-stats">
-      <div class="admin-stat"><span class="n" id="statTotal">0</span><span class="l">Kontoer totalt</span></div>
-      <div class="admin-stat"><span class="n" id="statLive">0</span><span class="l">Live nettsider</span></div>
-      <div class="admin-stat"><span class="n" id="statDraft">0</span><span class="l">Under utvikling</span></div>
+      <div class="admin-stat"><span class="n" id="statTotal">Laster …</span><span class="l">Kontoer totalt</span></div>
+      <div class="admin-stat"><span class="n" id="statLive">Laster …</span><span class="l">Live nettsider</span></div>
+      <div class="admin-stat"><span class="n" id="statDraft">Laster …</span><span class="l">Under utvikling</span></div>
     </div>
+
+    <p class="admin-overview-status" id="adminOverviewStatus" role="status" aria-live="polite">Laster kontooversikt …</p>
 
     <div class="account-grid" id="accountGrid"></div>
 

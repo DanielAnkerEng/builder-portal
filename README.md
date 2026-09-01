@@ -1,10 +1,10 @@
-# Studio Nord – webbyrå-demo
+# Wreach – webbyrå-demo
 
 En statisk demonstrasjon av et webbyrå med kundeportal, administratoroversikt, nettsidebygger og separate eksempelnettsider.
 
 ## Funksjoner
 
-- Forside for Studio Nord
+- Forside for Wreach
 - Administratoroversikt med flere testkunder
 - Kundeinnlogging og separate prosjekter
 - Redigering av tekst, farger, tilbud, bilder og seksjoner
@@ -45,4 +45,3 @@ Dette er en frontend-demo. Kontoer, passord og endringer lagres kun lokalt i bru
 2. Koble denne lokale mappen til repositoryet og push `main`.
 3. Gå til **Settings → Pages** på GitHub.
 4. Velg **Deploy from a branch**, `main` og mappen `/ (root)`.
-

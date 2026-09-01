@@ -50,6 +50,8 @@
   -webkit-text-fill-color: transparent;
 }
 .admin-stat .l { font-size: 0.8rem; color: var(--text-dimmer); }
+.admin-overview-status { margin: -20px 0 28px; color: var(--text-dim); font-size: 0.88rem; }
+.admin-overview-status[data-state='error'] { color: #ff9b9b; }
 
 .account-grid {
   display: grid;
