@@ -12,7 +12,9 @@
   letter-spacing: 0.06em;
 }
 .environment-banner-local { color: #1b1200; background: #ffc857; border-bottom: 1px solid #8a6500; }
+.environment-banner-production-preview { color: #fff; background: #a5111f; border-bottom: 1px solid #ff9aa4; }
 html[data-supabase-environment='local'] body { padding-top: 29px; }
+.production-auth-preview { padding-top: 42px; }
 
 :root {
   --bg: #08090c;

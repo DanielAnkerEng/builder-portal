@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://esm.sh; style-src 'self'; img-src data:; connect-src https://oqwpfnmqeriupujpssxz.supabase.co https://esm.sh; base-uri 'none'; form-action 'self'; frame-ancestors 'none'">
+  <title>Production Auth Preview | Wreach</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body class="auth-body production-auth-preview">
+  <div class="environment-banner environment-banner-production-preview" role="alert">PRODUCTION AUTH PREVIEW – ekte produksjonsbrukere</div>
+  <main class="auth-wrap auth-wrap-wide">
+    <div class="logo auth-logo">Wreach</div>
+    <section class="auth-card" id="previewAuthPanel">
+      <div class="eyebrow">Kun Auth/MFA</div>
+      <h1>Produksjonsinnlogging</h1>
+      <p class="auth-sub">Denne lokale siden kobler kun Auth/MFA mot produksjonsprosjektet. Ingen portal- eller databasehandlinger er tilgjengelige.</p>
+      <form class="auth-form" id="previewLoginForm">
+        <label class="field"><span>E-post</span><input id="previewEmail" type="email" autocomplete="username" required></label>
+        <label class="field"><span>Passord</span><input id="previewPassword" type="password" autocomplete="current-password" required></label>
+        <button class="btn btn-primary btn-large btn-full" type="submit">Logg inn mot produksjons-Auth</button>
+      </form>
+    </section>
+    <section class="auth-card" id="previewMfaPanel" hidden>
+      <div class="eyebrow">Kun Auth/MFA</div>
+      <h1>Tofaktorautentisering</h1>
+      <p class="mfa-status" id="previewStatus" aria-live="polite"></p>
+      <p class="auth-sub" id="previewFactors"></p>
+      <button class="btn btn-primary btn-full" id="previewMfaStart" type="button" hidden>Aktiver 2FA</button>
+      <div class="mfa-enrollment" id="previewEnrollment" hidden>
+        <img id="previewQr" alt="QR-kode for autentiseringsapp" width="220" height="220">
+        <p>Manuell kode: <code id="previewSecret"></code></p>
+        <p class="auth-footnote">Hemmeligheten lagres ikke og fjernes når siden forlates.</p>
+      </div>
+      <form class="auth-form" id="previewVerifyForm" hidden>
+        <label class="field"><span>6-sifret kode</span><input id="previewCode" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required></label>
+        <button class="btn btn-primary btn-full" id="previewVerify" type="submit">Bekreft kode</button>
+      </form>
+      <button class="btn btn-ghost btn-full" id="previewCancel" type="button" hidden>Avbryt og fjern uferdig faktor</button>
+      <button class="btn btn-ghost btn-full" id="previewLogout" type="button">Logg ut</button>
+    </section>
+    <p class="auth-error" id="previewError" role="alert"></p>
+  </main>
+  <script type="module" src="js/production-auth-preview.js"></script>
+</body>
+</html>

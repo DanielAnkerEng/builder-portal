@@ -1,16 +1,14 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { isLocalSupabaseHost } from './supabase-environment.mjs'
 import { createBrowserAuthStorage } from './auth-storage.mjs'
+import { PRODUCTION_PUBLIC_CONFIG, validateProductionPublicConfig } from './supabase-public-config.mjs'
 
-const PRODUCTION_CONFIG = Object.freeze({
-  url: 'https://oqwpfnmqeriupujpssxz.supabase.co',
-  key: 'sb_publishable_BcJUAYkgF3nHpdbCyHd1eA_pQ3yEA15'
-})
+if (!validateProductionPublicConfig(PRODUCTION_PUBLIC_CONFIG)) throw new Error('Invalid production public configuration')
 const local = isLocalSupabaseHost(window.location.hostname)
-const config = local ? (await import('./supabase.local.js')).LOCAL_SUPABASE_CONFIG : PRODUCTION_CONFIG
+const config = local ? (await import('./supabase.local.js')).LOCAL_SUPABASE_CONFIG : PRODUCTION_PUBLIC_CONFIG
 
 if (local && new URL(config.url).hostname !== '127.0.0.1') throw new Error('Localhost is restricted to local Supabase')
-if (!local && config !== PRODUCTION_CONFIG) throw new Error('Invalid production Supabase configuration')
+if (!local && config !== PRODUCTION_PUBLIC_CONFIG) throw new Error('Invalid production Supabase configuration')
 
 export const supabaseEnvironment = local ? 'local' : 'production'
 export const authStorage = createBrowserAuthStorage(window, config.url)
