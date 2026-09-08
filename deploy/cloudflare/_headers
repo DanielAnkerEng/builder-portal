@@ -10,14 +10,29 @@
 /login.html
   Cache-Control: no-store, max-age=0
 
+/login
+  Cache-Control: no-store, max-age=0
+
 /mfa.html
+  Cache-Control: no-store, max-age=0
+
+/mfa
   Cache-Control: no-store, max-age=0
 
 /security-settings.html
   Cache-Control: no-store, max-age=0
 
+/security-settings
+  Cache-Control: no-store, max-age=0
+
 /builder.html
   Cache-Control: no-store, max-age=0
 
+/builder
+  Cache-Control: no-store, max-age=0
+
 /admin.html
+  Cache-Control: no-store, max-age=0
+
+/admin
   Cache-Control: no-store, max-age=0

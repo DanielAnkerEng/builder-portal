@@ -34,9 +34,18 @@ rg -q '^  Referrer-Policy: no-referrer$' "$headers"
 rg -q '^  Permissions-Policy:' "$headers"
 rg -q '^  X-Content-Type-Options: nosniff$' "$headers"
 for page in login mfa security-settings builder admin; do
-  rg -q "^/$page\.html$" "$headers"
+  for route in "/$page" "/$page.html"; do
+    awk -v route="$route" '
+      /^[^[:space:]#]/ { active = ($0 == route); if (active) routes++ }
+      active && /^  Cache-Control:/ {
+        policies++
+        if ($0 == "  Cache-Control: no-store, max-age=0") valid++
+      }
+      END { exit !(routes == 1 && policies == 1 && valid == 1) }
+    ' "$headers"
+  done
 done
-test "$(rg -c '^  Cache-Control: no-store, max-age=0$' "$headers")" -eq 5
+test "$(rg -c '^  Cache-Control: no-store, max-age=0$' "$headers")" -eq 10
 
 preview_marker='production-auth-''preview'
 service_key='SUPABASE_''SERVICE_ROLE_KEY'
