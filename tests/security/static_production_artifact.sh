@@ -6,9 +6,9 @@ dist_dir="${1:-$repo_dir/dist}"
 
 test -d "$dist_dir"
 expected=(
-  _headers admin.html builder.html index.html login.html mfa.html security-settings.html site.html
-  css/admin.css css/builder.css css/login.css css/site.css css/styles.css
-  js/admin-dashboard-state.mjs js/admin.js js/api.js js/auth-storage.mjs js/auth.js js/builder-data.js js/builder.js
+  _headers admin.html builder.html demo.html index.html login.html mfa.html security-settings.html site.html
+  css/admin.css css/builder.css css/demo.css css/login.css css/marketing.css css/site.css css/styles.css
+  js/admin-dashboard-state.mjs js/admin.js js/api.js js/auth-storage.mjs js/auth.js js/builder-data.js js/builder.js js/demo-data.mjs js/demo.js
   js/login.js js/mfa-controller.mjs js/mfa.js js/post-auth-destination.mjs js/script.js js/security-settings.js js/site.js
   js/supabase-environment.mjs js/supabase-public-config.mjs js/supabase.js js/supabase.local.js
 )

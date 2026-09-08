@@ -5,27 +5,27 @@ const industries = [
     icon: '🌯',
     navName: 'Restaurant / takeaway',
     cardTitle: 'Restaurant / takeaway',
-    cardDesc: 'Meny, bestilling og åpningstider rett foran kunden.',
+    cardDesc: 'Meny, kontakt og åpningstider rett foran kunden.',
     tabLabel: 'Restaurant',
-    url: 'baeroskebab.no',
-    showTitle: 'Bæros Kebab',
-    showDesc: 'En sulten kunde skal kunne åpne siden, se menyen, og bestille på under 30 sekunder. Stort matbilde, tydelig CTA og åpningstider rett under logoen.',
-    features: ['Digital meny med priser', 'Bestill-knapp til nettbestilling', 'Åpningstider synlig på forsiden', 'Bilder av maten i fokus'],
+    url: 'bransjedemo.example',
+    showTitle: 'Glød Kjøkken (demo)',
+    showDesc: 'En sulten kunde skal kunne åpne siden og finne meny, kontakt og åpningstider på under 30 sekunder. Sterk atmosfære og tydelig struktur gjør valget enkelt.',
+    features: ['Oversiktlig digital meny', 'Tydelig vei til bestilling', 'Åpningstider synlig på forsiden', 'Atmosfære og mat i fokus'],
     bg: 'linear-gradient(150deg,#2b0f0a,#160705 60%)',
     accent: '#ff7a3d',
     accent2: '#ffb14e',
-    badge: 'Åpent nå · 11–23',
+    badge: 'FIKTIV DEMO',
     heroTag: 'Kebab & Grill',
     heroTitle: 'Ekte kebab.\nEkte smak.',
     heroSub: 'Laget fra bunnen hver dag med ferske råvarer, midt i sentrum.',
-    cta: 'Bestill nå',
+    cta: 'Se menyen',
     cards: [
-      { t: '🌯 Kebabrull', d: '139 kr' },
-      { t: '🍗 Kebabtallerken', d: '169 kr' },
-      { t: '🥤 Meny med drikke', d: '189 kr' },
+      { t: '🌯 Signaturrull', d: 'Husets favoritt' },
+      { t: '🔥 Grilltallerken', d: 'Rett fra grillen' },
+      { t: '🥗 Friske sider', d: 'Laget hver dag' },
     ],
-    footerLeft: '📍 Storgata 14, Oslo',
-    footerRight: 'Åpent 11–23 alle dager',
+    footerLeft: 'Fiktivt eksempel',
+    footerRight: 'Ingen innsending eller live-data',
   },
   {
     id: 'frisor',
@@ -34,25 +34,25 @@ const industries = [
     cardTitle: 'Frisør / skjønnhet',
     cardDesc: 'Timebestilling og porteføljebilder som selger stilen din.',
     tabLabel: 'Frisør',
-    url: 'studiofrisor.no',
+    url: 'bransjedemo.example',
     showTitle: 'Studio Frisør & Skjønnhet',
-    showDesc: 'Design som føles eksklusivt uten å være vanskelig å bruke. Kundene booker time direkte fra forsiden, på under ett minutt.',
-    features: ['Online timebestilling', 'Prisliste for alle behandlinger', 'Instagram-stil galleri', 'Google Reviews vist på forsiden'],
+    showDesc: 'Design som føles eksklusivt uten å være vanskelig å bruke. Kundene finner behandlingene og kan be om en time direkte fra forsiden.',
+    features: ['Enkel timeforespørsel', 'Tydelig behandlingsoversikt', 'Redaksjonelt galleri', 'Kundeomtaler på forsiden'],
     bg: 'linear-gradient(150deg,#2a0f24,#170513 60%)',
     accent: '#ff6fb5',
     accent2: '#c98bff',
-    badge: 'Ledige timer denne uken',
+    badge: 'FIKTIV DEMO',
     heroTag: 'Hår & Skjønnhet',
     heroTitle: 'Ny look,\nny selvtillit.',
     heroSub: 'Klipp, farge og styling av erfarne frisører i hjertet av byen.',
-    cta: 'Book time',
+    cta: 'Be om en time',
     cards: [
-      { t: '✂️ Klipp', d: 'fra 650 kr' },
-      { t: '🎨 Farge', d: 'fra 1200 kr' },
-      { t: '✨ Styling', d: 'fra 450 kr' },
+      { t: '✂️ Klipp', d: 'Personlig tilpasset' },
+      { t: '🎨 Farge', d: 'Dybde og glans' },
+      { t: '✨ Styling', d: 'Til hverdag og fest' },
     ],
-    footerLeft: '📍 Bogstadveien 22, Oslo',
-    footerRight: 'Book online 24/7',
+    footerLeft: 'Fiktivt eksempel',
+    footerRight: 'Ingen innsending eller live-data',
   },
   {
     id: 'handverker',
@@ -61,52 +61,52 @@ const industries = [
     cardTitle: 'Håndverker',
     cardDesc: 'Bygg tillit med referanseprosjekter og rask kontakt.',
     tabLabel: 'Håndverker',
-    url: 'haugenror.no',
-    showTitle: 'Haugen Rørlegger AS',
+    url: 'bransjedemo.example',
+    showTitle: 'Form Rørservice (demo)',
     showDesc: 'Trygghet og tillit i hver piksel. Store bilder av gjennomførte prosjekter, tydelig telefonnummer og enkel kontakt for befaring.',
-    features: ['Referanseprosjekter med bilder', 'Ring-knapp alltid synlig', 'Tilbudsskjema for befaring', 'Godkjenninger og sertifiseringer'],
+    features: ['Referanseprosjekter med bilder', 'Ring-knapp alltid synlig', 'Tilbudsskjema for befaring', 'Tydelig tjenestepresentasjon'],
     bg: 'linear-gradient(150deg,#0b1c2b,#050d16 60%)',
     accent: '#4f8bff',
     accent2: '#22d3ee',
-    badge: 'Døgnvakt tilgjengelig',
+    badge: 'FIKTIV DEMO',
     heroTag: 'Rørlegger',
     heroTitle: 'Rørleggerhjelp\ndu kan stole på.',
     heroSub: 'Fra akutt lekkasje til komplett baderomsrenovering.',
     cta: 'Få gratis befaring',
     cards: [
-      { t: '🚨 Akutt hjelp', d: 'Innen 1 time' },
-      { t: '🛁 Rehab bad', d: 'Fastpris' },
+      { t: '🚨 Akutt hjelp', d: 'Eksempel på tjeneste' },
+      { t: '🛁 Rehab bad', d: 'Fra idé til ferdig bad' },
       { t: '🏗️ Nyanlegg', d: 'Prosjekttilbud' },
     ],
-    footerLeft: '📍 Betjener hele Oslo-området',
-    footerRight: 'Ring: 900 00 000',
+    footerLeft: 'Fiktivt eksempel',
+    footerRight: 'Ingen innsending eller live-data',
   },
   {
     id: 'bilverksted',
     icon: '🚗',
     navName: 'Bilverksted',
     cardTitle: 'Bilverksted',
-    cardDesc: 'Book service og EU-kontroll direkte på nett.',
+    cardDesc: 'Finn riktig service og send en enkel forespørsel.',
     tabLabel: 'Bilverksted',
-    url: 'ekspressverksted.no',
+    url: 'bransjedemo.example',
     showTitle: 'Ekspress Bilverksted',
-    showDesc: 'Rett på sak: book service, se priser og finn verkstedet ditt på kartet. Ingen unødvendige steg mellom kunde og bestilling.',
-    features: ['Book service online', 'Fast pris på EU-kontroll', 'Dekkhotell-oversikt', 'Live status på bilen din'],
+    showDesc: 'Rett på sak: finn riktig tjeneste og verkstedet på kartet. Ingen unødvendige steg mellom kunde og forespørsel.',
+    features: ['Enkel serviceforespørsel', 'Tydelig tjenesteoversikt', 'Dekkhotell-informasjon', 'Praktisk kundeoppfølging'],
     bg: 'linear-gradient(150deg,#1b1b1f,#0a0a0c 60%)',
     accent: '#ff4d4d',
     accent2: '#ff9a5a',
-    badge: 'Ledig verkstedtid i dag',
+    badge: 'FIKTIV DEMO',
     heroTag: 'Bilverksted',
     heroTitle: 'Service. Dekk.\nEU-kontroll.',
-    heroSub: 'Rask og pålitelig service for alle bilmerker, samme dag.',
-    cta: 'Book verksted',
+    heroSub: 'Rask og pålitelig service for alle bilmerker, med oversiktlig tjenestepresentasjon.',
+    cta: 'Send forespørsel',
     cards: [
-      { t: '🛠️ Service', d: 'fra 1990 kr' },
-      { t: '🛞 Dekkskift', d: 'fra 490 kr' },
-      { t: '📋 EU-kontroll', d: '990 kr' },
+      { t: '🛠️ Service', d: 'For alle bilmerker' },
+      { t: '🛞 Dekkskift', d: 'Effektivt og trygt' },
+      { t: '📋 EU-kontroll', d: 'Bestill ønsket tid' },
     ],
-    footerLeft: '📍 Industriveien 8, Bergen',
-    footerRight: 'Åpent 07–17 man–fre',
+    footerLeft: 'Fiktivt eksempel',
+    footerRight: 'Ingen innsending eller live-data',
   },
   {
     id: 'eiendom',
@@ -115,25 +115,25 @@ const industries = [
     cardTitle: 'Eiendom',
     cardDesc: 'Vis frem boliger med stil, kart og visningspåmelding.',
     tabLabel: 'Eiendom',
-    url: 'fjordeiendom.no',
+    url: 'bransjedemo.example',
     showTitle: 'Fjord Eiendomsmegling',
-    showDesc: 'Magasinaktig design som får boligene til å skinne. Filtrerbar boligliste, stort bildefokus og enkel visningspåmelding.',
-    features: ['Boligliste med filter', 'Visningspåmelding', 'Interaktivt kart', 'Prisantydning og nøkkeltall'],
+    showDesc: 'Magasinaktig design som får boligene til å skinne. Eksempelinnhold for boliger og kontakt.',
+    features: ['Presentasjon av boligtyper', 'Visningspåmelding', 'Eksempel på beliggenhet', 'Prisantydning og nøkkeltall'],
     bg: 'linear-gradient(150deg,#161821,#0a0b10 60%)',
     accent: '#c9a15a',
     accent2: '#4f8bff',
-    badge: '12 boliger til salgs',
+    badge: 'FIKTIV DEMO',
     heroTag: 'Eiendomsmegling',
     heroTitle: 'Din bolig,\nvårt håndverk.',
     heroSub: 'Vi hjelper deg å finne, eller selge, hjemmet ditt.',
     cta: 'Se boliger',
     cards: [
-      { t: '🏡 Enebolig, Nordstrand', d: '8,9 mill' },
-      { t: '🏢 Leilighet, Grünerløkka', d: '4,2 mill' },
-      { t: '🏘️ Rekkehus, Bekkestua', d: '6,5 mill' },
+      { t: '🏡 Enebolig, Nordstrand', d: 'Eksempelbolig' },
+      { t: '🏢 Leilighet, Grünerløkka', d: 'Eksempelbolig' },
+      { t: '🏘️ Rekkehus, Bekkestua', d: 'Eksempelbolig' },
     ],
-    footerLeft: '📍 Karl Johans gate 5, Oslo',
-    footerRight: 'Gratis verdivurdering',
+    footerLeft: 'Fiktivt eksempel',
+    footerRight: 'Ingen innsending eller live-data',
   },
   {
     id: 'konsulent',
@@ -142,25 +142,25 @@ const industries = [
     cardTitle: 'Konsulent / regnskap',
     cardDesc: 'Profesjonell tillit fra første sekund, med enkel booking.',
     tabLabel: 'Konsulent',
-    url: 'nordregnskap.no',
+    url: 'bransjedemo.example',
     showTitle: 'Nord Regnskap & Rådgivning',
     showDesc: 'Ryddig, seriøst og tillitsvekkende. Perfekt for tjenester der kunden må stole på deg før de tar kontakt.',
-    features: ['Book gratis konsultasjon', 'Tydelig tjenesteoversikt', 'Kundecase og resultater', 'Sikker kontakt/kundeportal'],
+    features: ['Book gratis konsultasjon', 'Tydelig tjenesteoversikt', 'Eksempel på faglig innhold', 'Oversiktlig kontaktseksjon'],
     bg: 'linear-gradient(150deg,#0c1f1c,#05100d 60%)',
     accent: '#2fd6a7',
     accent2: '#22d3ee',
-    badge: 'Gratis førstegangssamtale',
+    badge: 'FIKTIV DEMO',
     heroTag: 'Regnskap & Rådgivning',
     heroTitle: 'Tall du\nkan stole på.',
     heroSub: 'Regnskap, lønn og rådgivning for små og mellomstore bedrifter.',
     cta: 'Book samtale',
     cards: [
-      { t: '📒 Regnskap', d: 'fra 990 kr/mnd' },
-      { t: '💡 Rådgivning', d: 'Timepris' },
-      { t: '🧾 Skatt & MVA', d: 'Fastpris' },
+      { t: '📒 Regnskap', d: 'Oversikt hele året' },
+      { t: '💡 Rådgivning', d: 'Beslutningsstøtte' },
+      { t: '🧾 Skatt & MVA', d: 'Riktig og ryddig' },
     ],
-    footerLeft: '📍 Rådhusgata 2, Trondheim',
-    footerRight: 'Svar innen 24 timer',
+    footerLeft: 'Fiktivt eksempel',
+    footerRight: 'Ingen innsending eller live-data',
   },
 ];
 
@@ -170,7 +170,8 @@ let currentView = 'desktop';
 /* ===================== RENDER: INDUSTRY CARDS ===================== */
 const industryGrid = document.getElementById('industryGrid');
 industries.forEach((ind, i) => {
-  const card = document.createElement('div');
+  const card = document.createElement('button');
+  card.type = 'button';
   card.className = 'industry-card';
   card.innerHTML = `
     <div class="industry-icon">${ind.icon}</div>
@@ -236,6 +237,7 @@ const showFeatures = document.getElementById('showFeatures');
 const browserUrl = document.getElementById('browserUrl');
 const sitePreviewDesktop = document.getElementById('sitePreviewDesktop');
 const sitePreviewMobile = document.getElementById('sitePreviewMobile');
+const showFullDemo = document.getElementById('showFullDemo');
 const tabButtons = () => document.querySelectorAll('.tab-btn');
 const industryCards = () => document.querySelectorAll('.industry-card');
 
@@ -248,6 +250,7 @@ function selectIndustry(i) {
   showDesc.textContent = ind.showDesc;
   showFeatures.innerHTML = ind.features.map(f => `<li>${f}</li>`).join('');
   browserUrl.textContent = ind.url;
+  showFullDemo.href = `demo.html?site=${encodeURIComponent(ind.id)}`;
 
   const html = buildPreviewHTML(ind);
   sitePreviewDesktop.innerHTML = html;
@@ -278,18 +281,14 @@ window.addEventListener('scroll', () => {
 const navToggle = document.getElementById('navToggle');
 navToggle.addEventListener('click', () => {
   const links = document.querySelector('.nav-links');
-  const isOpen = links.style.display === 'flex';
-  links.style.display = isOpen ? 'none' : 'flex';
-  links.style.cssText += isOpen ? '' : `
-    position:absolute; top:100%; left:0; right:0;
-    flex-direction:column; background:rgba(8,9,12,0.97);
-    padding:24px 32px; border-bottom:1px solid var(--border);
-    gap:18px;
-  `;
+  const isOpen = links.classList.contains('is-open');
+  navToggle.setAttribute('aria-expanded', String(!isOpen));
+  links.classList.toggle('is-open', !isOpen);
 });
 document.querySelectorAll('.nav-links a').forEach(a => {
   a.addEventListener('click', () => {
-    if (window.innerWidth <= 720) document.querySelector('.nav-links').style.display = 'none';
+    document.querySelector('.nav-links').classList.remove('is-open');
+    navToggle.setAttribute('aria-expanded', 'false');
   });
 });
 
@@ -305,27 +304,6 @@ const io = new IntersectionObserver((entries) => {
 }, { threshold: 0.15 });
 revealEls.forEach(el => io.observe(el));
 
-/* ===================== COUNT-UP STATS ===================== */
-const statNums = document.querySelectorAll('.stat-num');
-const statIO = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-    const el = entry.target;
-    const target = parseInt(el.dataset.count, 10);
-    const duration = 1400;
-    const start = performance.now();
-    function tick(now) {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      el.textContent = Math.round(eased * target);
-      if (progress < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-    statIO.unobserve(el);
-  });
-}, { threshold: 0.5 });
-statNums.forEach(el => statIO.observe(el));
-
 /* ===================== CURSOR GLOW ===================== */
 const cursorGlow = document.getElementById('cursorGlow');
 let glowX = 0, glowY = 0, targetX = 0, targetY = 0;
@@ -340,18 +318,3 @@ function animateGlow() {
   requestAnimationFrame(animateGlow);
 }
 animateGlow();
-
-/* ===================== CONTACT FORM (DEMO ONLY) ===================== */
-const contactForm = document.getElementById('contactForm');
-contactForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const btn = contactForm.querySelector('button[type="submit"] span');
-  const original = btn.textContent;
-  btn.textContent = 'Takk! Vi tar kontakt ✓';
-  contactForm.querySelector('button[type="submit"]').style.opacity = '0.85';
-  setTimeout(() => {
-    btn.textContent = original;
-    contactForm.querySelector('button[type="submit"]').style.opacity = '1';
-    contactForm.reset();
-  }, 2600);
-});
