@@ -1,7 +1,29 @@
 import { supabase } from './supabase.js'; import { requireAal2, signOut } from './auth.js'
 import { renderAdminDashboardState } from './admin-dashboard-state.mjs'
-const ctx=await requireAal2({platformAdmin:true}); document.getElementById('userEmail').textContent=`${ctx.profile.display_name} (${ctx.admin.admin_role})`;document.getElementById('logoutBtn').addEventListener('click',signOut)
-document.getElementById('userAvatarBtn').addEventListener('click',()=>document.getElementById('userDropdown').classList.toggle('open'))
+import { mountAdminShell, containAdminFocus } from './admin-shell.mjs'
+const ctx=await requireAal2({platformAdmin:true});
+const shell = mountAdminShell({ document, window, host: document.getElementById('adminShell'), content: document.getElementById('adminLegacyContent'), profile: ctx.profile, platformRole: ctx.admin.admin_role })
+shell.logout.addEventListener('click',signOut)
+const projectDialog = document.getElementById('newAccountModal')
+const projectTrigger = document.getElementById('newAccountBtn')
+function closeProjectDialog() {
+  projectDialog.classList.remove('open')
+  document.getElementById('adminShell').inert = false
+  projectTrigger.focus()
+}
+projectTrigger.addEventListener('click', () => {
+  document.getElementById('adminShell').inert = true
+  queueMicrotask(() => document.getElementById('na-displayname').focus())
+})
+document.getElementById('closeNewAccountModal').addEventListener('click', closeProjectDialog)
+projectDialog.addEventListener('keydown', event => {
+  if (event.key === 'Escape') closeProjectDialog()
+  else containAdminFocus(event, projectDialog)
+})
+// The existing provisioning handler closes the dialog after success.
+new MutationObserver(() => {
+  if (!projectDialog.classList.contains('open') && document.getElementById('adminShell').inert) closeProjectDialog()
+}).observe(projectDialog, { attributes: true, attributeFilter: ['class'] })
 const template=document.getElementById('na-template');BUILDER_TEMPLATES.forEach(t=>{const option=document.createElement('option');option.value=t.id;option.textContent=`${t.icon} ${t.label}`;template.append(option)})
 const grid=document.getElementById('accountGrid');async function render(){renderAdminDashboardState(document,'loading');const{data:websites=[],error}=await supabase.from('websites').select('id,name,public_slug,status,current_publication_id,companies(name)');if(error){grid.replaceChildren();renderAdminDashboardState(document,'error');return}grid.replaceChildren();renderAdminDashboardState(document,'success',websites);for(const site of websites){const card=document.createElement('article');card.className='account-card';const head=document.createElement('div');head.className='account-card-head';const title=document.createElement('div');title.className='account-card-title';const h=document.createElement('h3');h.textContent=site.name;const p=document.createElement('p');p.textContent=site.companies?.name||site.public_slug;title.append(h,p);head.append(title);const actions=document.createElement('div');actions.className='account-card-actions';const edit=document.createElement('a');edit.className='btn btn-primary btn-small';edit.href=`builder.html?website=${encodeURIComponent(site.id)}`;edit.textContent='Rediger nettside';const view=document.createElement('a');view.className='btn btn-outline btn-small';view.href=`site.html?slug=${encodeURIComponent(site.public_slug)}`;view.target='_blank';view.textContent='Se live';actions.append(edit,view);card.append(head,actions);grid.append(card)}}
 const modal=document.getElementById('newAccountModal'),form=document.getElementById('newAccountForm'),errorEl=document.getElementById('newAccountError');document.getElementById('newAccountBtn').addEventListener('click',()=>modal.classList.add('open'));document.getElementById('closeNewAccountModal').addEventListener('click',()=>modal.classList.remove('open'));form.addEventListener('submit',async e=>{e.preventDefault();errorEl.classList.remove('show');const body={companyName:document.getElementById('na-projectname').value.trim(),displayName:document.getElementById('na-displayname').value.trim(),email:document.getElementById('na-email').value.trim(),publicSlug:document.getElementById('na-public-slug').value.trim(),templateId:template.value,correlationId:crypto.randomUUID()};const{data,error}=await supabase.functions.invoke('admin-provision-company',{body});if(error||!data?.ok){errorEl.textContent=data?.error||'Opprettelsen mislyktes.';errorEl.classList.add('show');return}modal.classList.remove('open');form.reset();await render()});await render()

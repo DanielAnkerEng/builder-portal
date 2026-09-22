@@ -13,46 +13,25 @@
 </head>
 <body class="admin-body">
 
-<div class="noise-overlay"></div>
-
-<!-- TOPBAR -->
-<header class="topbar">
-  <div class="topbar-left">
-    <a href="index.html" class="logo">W<span>reach</span></a>
-    <div class="topbar-divider"></div>
-    <span class="admin-title-tag">Admin-oversikt</span>
-  </div>
-
-  <div class="topbar-right">
-    <div class="user-menu">
-      <button class="user-avatar admin-avatar" id="userAvatarBtn">AD</button>
-      <div class="user-dropdown" id="userDropdown">
-        <div class="user-email" id="userEmail">Laster bruker …</div>
-        <a href="index.html">Til forsiden</a>
-        <button id="logoutBtn">Logg ut</button>
-      </div>
-    </div>
-  </div>
-</header>
-
-<main class="admin-main">
+<div id="adminShell"><p class="admin-guard-loading" role="status">Laster arbeidsområde …</p></div>
+<section id="adminLegacyContent" hidden>
   <div class="admin-main-inner">
 
     <div class="admin-head">
       <div>
-        <h1>Alle nettsideprosjekter</h1>
-        <p class="admin-sub">Som admin har du full oversikt og kan redigere alle kundekontoer &mdash; inkludert kildekoden direkte.</p>
+        <h2>Nettsideprosjekter</h2>
+        <p class="admin-sub">Eksisterende prosjektoversikt. Kunde- og dashboardmoduler utvides i senere faser.</p>
       </div>
       <button class="btn btn-primary" id="newAccountBtn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        Ny konto
+        Opprett prosjekt
       </button>
     </div>
 
     <div class="admin-stats">
-      <div class="admin-stat"><span class="n" id="statTotal">Laster …</span><span class="l">Kontoer totalt</span></div>
-      <div class="admin-stat"><span class="n" id="statLive">Laster …</span><span class="l">Live nettsider</span></div>
-      <div class="admin-stat"><span class="n" id="statDraft">Laster …</span><span class="l">Under utvikling</span></div>
+      <div class="admin-stat"><span class="n" id="statTotal">Laster …</span><span class="l">Nettsideprosjekter</span></div>
+      <div class="admin-stat"><span class="n" id="statLive">Laster …</span><span class="l">Med publikasjon</span></div>
+      <div class="admin-stat"><span class="n" id="statDraft">Laster …</span><span class="l">Uten publikasjon</span></div>
     </div>
 
     <p class="admin-overview-status" id="adminOverviewStatus" role="status" aria-live="polite">Laster kontooversikt …</p>
@@ -60,14 +39,14 @@
     <div class="account-grid" id="accountGrid"></div>
 
   </div>
-</main>
+</section>
 
 <!-- NEW ACCOUNT MODAL -->
-<div class="modal-overlay" id="newAccountModal">
+<div class="modal-overlay" id="newAccountModal" role="dialog" aria-modal="true" aria-labelledby="newAccountTitle" tabindex="-1">
   <div class="modal modal-form">
     <div class="code-modal-head">
       <div>
-        <h3>Opprett ny konto</h3>
+        <h3 id="newAccountTitle">Opprett nytt prosjekt</h3>
         <p class="code-modal-sub">Kunden får sin egen nettside å redigere.</p>
       </div>
       <button class="icon-btn" id="closeNewAccountModal" aria-label="Lukk">
@@ -100,7 +79,7 @@
   >
 </label>
       <label class="b-field">
-        <span>Bransje (startmal)</span>
+        <span>Bransje (valg av startmal er ikke aktivert ennå)</span>
         <select id="na-template"></select>
       </label>
       <p class="auth-error" id="newAccountError"></p>

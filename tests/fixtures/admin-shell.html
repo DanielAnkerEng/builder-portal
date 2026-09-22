@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Admin shell – lokal presentasjonstest</title>
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/admin.css">
+</head>
+<body class="admin-body">
+  <div id="fixtureShell"></div>
+  <section id="fixtureContent" hidden>
+    <div class="admin-main-inner">
+      <div class="admin-head"><div><h2>Nettsideprosjekter</h2><p class="admin-sub">DEMO DATA · Kun lokal presentasjonstest. Ingen konto, session eller datatilgang.</p></div><button class="btn btn-primary" disabled>Opprett prosjekt (test)</button></div>
+      <div class="admin-stats">
+        <div class="admin-stat"><span class="n" id="statTotal">Laster …</span><span class="l">Nettsideprosjekter</span></div>
+        <div class="admin-stat"><span class="n" id="statLive">Laster …</span><span class="l">Med publikasjon</span></div>
+        <div class="admin-stat"><span class="n" id="statDraft">Laster …</span><span class="l">Uten publikasjon</span></div>
+      </div>
+      <p id="adminOverviewStatus" class="admin-overview-status" role="status"></p>
+      <div class="account-grid" id="fixtureGrid"></div>
+    </div>
+  </section>
+  <script type="module" src="admin-shell-fixture.mjs"></script>
+</body>
+</html>
