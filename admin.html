@@ -15,29 +15,12 @@
 
 <div id="adminShell"><p class="admin-guard-loading" role="status">Laster arbeidsområde …</p></div>
 <section id="adminLegacyContent" hidden>
-  <div class="admin-main-inner">
-
-    <div class="admin-head">
-      <div>
-        <h2>Nettsideprosjekter</h2>
-        <p class="admin-sub">Eksisterende prosjektoversikt. Kunde- og dashboardmoduler utvides i senere faser.</p>
-      </div>
+  <div id="adminDashboard"></div>
+  <div hidden>
       <button class="btn btn-primary" id="newAccountBtn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         Opprett prosjekt
       </button>
-    </div>
-
-    <div class="admin-stats">
-      <div class="admin-stat"><span class="n" id="statTotal">Laster …</span><span class="l">Nettsideprosjekter</span></div>
-      <div class="admin-stat"><span class="n" id="statLive">Laster …</span><span class="l">Med publikasjon</span></div>
-      <div class="admin-stat"><span class="n" id="statDraft">Laster …</span><span class="l">Uten publikasjon</span></div>
-    </div>
-
-    <p class="admin-overview-status" id="adminOverviewStatus" role="status" aria-live="polite">Laster kontooversikt …</p>
-
-    <div class="account-grid" id="accountGrid"></div>
-
   </div>
 </section>
 

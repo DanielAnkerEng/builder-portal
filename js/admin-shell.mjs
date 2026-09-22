@@ -97,7 +97,7 @@ export function mountAdminShell({ document, window, host, content, profile, plat
   const main = el('main', 'admin-main'); main.id = 'adminMain'; main.tabIndex = -1
   const pageHeader = el('div', 'admin-page-header')
   const title = el('h1', '', 'Dashboard'); title.tabIndex = -1
-  const subtitle = el('p', '', 'Dine nettsideprosjekter, samlet på ett sted.')
+  const subtitle = el('p', '', 'Oversikt over kunder, arbeid og det som krever oppmerksomhet.')
   pageHeader.append(el('p', 'admin-eyebrow', 'WREACH ADMIN'), title, subtitle)
   const future = el('div', 'admin-future'); future.hidden = true
   main.append(pageHeader, content, future); content.hidden = false
@@ -145,7 +145,7 @@ export function mountAdminShell({ document, window, host, content, profile, plat
     title.textContent = page.title; crumb.textContent = page.title
     document.title = `${page.title} | Wreach Admin`
     const dashboard = page.id === 'dashboard'
-    subtitle.textContent = dashboard ? 'Dine nettsideprosjekter, samlet på ett sted.' : 'Dette området er planlagt for en senere fase.'
+    subtitle.textContent = dashboard ? 'Oversikt over kunder, arbeid og det som krever oppmerksomhet.' : 'Dette området er planlagt for en senere fase.'
     content.hidden = !dashboard; future.hidden = dashboard
     if (!dashboard) future.replaceChildren(createAdminState(document, { title: `${page.title} kommer senere`, description: 'Denne modulen er ikke aktivert ennå. Bruk Dashboard for eksisterende nettsideprosjekter.' }))
     setMenu(false, false); setQuick(false)

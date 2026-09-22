@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Dashboard – isolert presentasjonstest</title>
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/builder.css">
+  <link rel="stylesheet" href="../../css/admin.css">
+</head>
+<body class="admin-body">
+  <div id="fixtureShell"></div>
+  <section id="fixtureContent" hidden>
+    <p>DEMO DATA · Isolert presentasjonstest. Ingen Auth, session eller datatilgang.</p>
+    <label>Visning <select id="fixtureState"><option value="demo">DEMO DATA</option><option value="empty">Tom</option><option value="loading">Laster</option><option value="error">Feil</option><option value="unavailable">Utilgjengelig</option></select></label>
+    <div id="fixtureDashboard"></div>
+  </section>
+  <script type="module" src="admin-dashboard-fixture.mjs"></script>
+</body>
+</html>

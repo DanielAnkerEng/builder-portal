@@ -48,6 +48,7 @@ test('admin guard precedes shell and existing trusted paths remain', () => {
   assert.match(source,/shell.logout.addEventListener\('click',signOut\)/)
   assert.match(source,/from\('websites'\)/)
   assert.match(source,/functions.invoke\('admin-provision-company'/)
-  assert.match(source,/builder.html\?website=/)
+  const dashboard = readFileSync(new URL('../../js/admin-dashboard.mjs',import.meta.url),'utf8')
+  assert.match(dashboard,/builder.html\?website=\$\{encodeURIComponent\(site.id\)\}/)
   assert.doesNotMatch(source,/innerHTML|outerHTML|insertAdjacentHTML|srcdoc|new Function/)
 })
