@@ -10,6 +10,7 @@ export const ADMIN_NAVIGATION = Object.freeze([
 
 const pages = ADMIN_NAVIGATION.flatMap(group => group.items)
 export function resolveAdminPage(hash) {
+  if (typeof hash === 'string' && (hash === '#customer' || hash.startsWith('#customer/'))) return pages.find(page => page.id === 'customers')
   return pages.find(page => `#${page.id}` === hash) || pages[0]
 }
 
@@ -40,7 +41,7 @@ export function containAdminFocus(event, container) {
   else if (!event.shiftKey && (focused === last || !container.contains(focused))) { event.preventDefault(); first.focus() }
 }
 
-export function mountAdminShell({ document, window, host, content, profile, platformRole }) {
+export function mountAdminShell({ document, window, host, content, profile, platformRole, modules = new Map() }) {
   const el = (tag, css, text) => adminElement(document, tag, css, text)
   const sidebar = el('aside', 'admin-sidebar')
   sidebar.id = 'adminNavigation'
@@ -145,9 +146,13 @@ export function mountAdminShell({ document, window, host, content, profile, plat
     title.textContent = page.title; crumb.textContent = page.title
     document.title = `${page.title} | Wreach Admin`
     const dashboard = page.id === 'dashboard'
-    subtitle.textContent = dashboard ? 'Oversikt over kunder, arbeid og det som krever oppmerksomhet.' : 'Dette området er planlagt for en senere fase.'
+    subtitle.textContent = dashboard ? 'Oversikt over kunder, arbeid og det som krever oppmerksomhet.' : page.id === 'customers' && modules.has('customers') ? 'Selskaper og nettsider samlet i kundens arbeidsområde.' : 'Dette området er planlagt for en senere fase.'
     content.hidden = !dashboard; future.hidden = dashboard
-    if (!dashboard) future.replaceChildren(createAdminState(document, { title: `${page.title} kommer senere`, description: 'Denne modulen er ikke aktivert ennå. Bruk Dashboard for eksisterende nettsideprosjekter.' }))
+    if (!dashboard) {
+      const module = modules.get(page.id)
+      if (module) { future.replaceChildren(module.element); module.route(window.location.hash) }
+      else future.replaceChildren(createAdminState(document, { title: `${page.title} kommer senere`, description: 'Denne modulen er ikke aktivert ennå. Bruk Dashboard for eksisterende nettsideprosjekter.' }))
+    }
     setMenu(false, false); setQuick(false)
     if (focus) title.focus()
   }
