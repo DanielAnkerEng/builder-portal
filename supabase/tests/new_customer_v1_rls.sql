@@ -195,13 +195,13 @@ select throws_ok('select * from public.company_internal_settings','42501',null,'
 select throws_ok('select * from public.company_assignments','42501',null,'Anonymous cannot read company_assignments');
 select throws_ok('select * from private.provisioning_operations','42501',null,'Anonymous cannot read operations');
 reset role;
--- TEMPORARY known legacy path: Phase B MUST remove this before V1 is complete.
-select ok(exists(select 1 from pg_policies where schemaname='public' and tablename='companies' and policyname='Admins can create companies'),'Known legacy INSERT policy deliberately retained in Phase A');
-select ok(has_table_privilege('authenticated','public.companies','INSERT'),'Known legacy company INSERT grant retained, NOT final write boundary');
+-- Phase B closes browser writes; legacy read still awaits explicit access mapping.
+select ok(not exists(select 1 from pg_policies where schemaname='public' and tablename='companies' and policyname='Admins can create companies'),'Phase B removed legacy INSERT policy');
+select ok(not has_table_privilege('authenticated','public.companies','INSERT'),'Phase B removed direct company INSERT grant');
 select ok(exists(select 1 from pg_policies where schemaname='public' and tablename='companies' and policyname='Customers can read own company'),'Legacy profile-based read remains pending access mapping');
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"a1000000-0000-4000-8000-000000000001","role":"authenticated","aal":"aal2"}',true);
-select lives_ok('insert into public.companies(name) values (''Known legacy path test'')','TEMPORARY: legacy admin INSERT still works; remove in Phase B');
+select throws_ok('insert into public.companies(name) values (''Known legacy path test'')','42501',null,'Phase B denies legacy direct admin INSERT');
 select set_config('request.jwt.claims','{"sub":"a1000000-0000-4000-8000-000000000002","role":"authenticated","aal":"aal2"}',true);
 select is((select count(*) from public.companies where id='c1000000-0000-4000-8000-000000000002'),1::bigint,'TEMPORARY: profiles.company_id read remains without membership');
 reset role;
