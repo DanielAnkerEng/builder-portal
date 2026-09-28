@@ -1,4 +1,4 @@
-import { createClient, type SupabaseClient, type User } from 'npm:@supabase/supabase-js@2'
+import { createClient, type SupabaseClient, type User } from 'npm:@supabase/supabase-js@2.112.4'
 
 export type SecurityContext = { user: User; userClient: SupabaseClient; adminClient: SupabaseClient }
 
@@ -13,17 +13,27 @@ export function correlationId(value: unknown): string {
     ? value : crypto.randomUUID()
 }
 
-export async function requireAal2(req: Request): Promise<SecurityContext> {
+export async function requireAal2(req: Request, { platformAdmin = false }: { platformAdmin?: boolean } = {}): Promise<SecurityContext> {
   const authorization = req.headers.get('Authorization') ?? ''
-  if (!authorization.startsWith('Bearer ')) throw new Response('Unauthorized', { status: 401 })
+  const match = /^Bearer ([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)$/i.exec(authorization)
+  if (!match) throw new Response('Unauthorized', { status: 401 })
+  const jwt = match[1]
   const url = env('SUPABASE_URL')
   const publishable = Deno.env.get('SUPABASE_PUBLISHABLE_KEY') ?? env('SUPABASE_ANON_KEY')
-  const secret = Deno.env.get('SUPABASE_SECRET_KEY') ?? env('SUPABASE_SERVICE_ROLE_KEY')
-  const userClient = createClient(url, publishable, { global: { headers: { Authorization: authorization } }, auth: { persistSession: false } })
-  const { data: { user }, error } = await userClient.auth.getUser()
+  const userClient = createClient(url, publishable, { global: { headers: { Authorization: `Bearer ${jwt}` } }, auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } })
+  const { data: { user }, error } = await userClient.auth.getUser(jwt)
   if (error || !user) throw new Response('Unauthorized', { status: 401 })
-  const { data: assurance, error: assuranceError } = await userClient.auth.mfa.getAuthenticatorAssuranceLevel()
-  if (assuranceError || assurance.currentLevel !== 'aal2') throw new Response('MFA required', { status: 403 })
+  // Explicit SAME JWT: Authorization headers do not establish an SDK session.
+  // The pinned SDK also verifies this token with Auth before returning assurance.
+  const { data: assurance, error: assuranceError } = await userClient.auth.mfa.getAuthenticatorAssuranceLevel(jwt)
+  if (assuranceError || assurance?.currentLevel !== 'aal2') throw new Response('MFA required', { status: 403 })
+  const { data: profile, error: profileError } = await userClient.from('profiles').select('status').eq('id', user.id).maybeSingle()
+  if (profileError || profile?.status !== 'active') throw new Response('Profile unavailable', { status: 403 })
+  if (platformAdmin) {
+    const { data: admin, error: adminError } = await userClient.from('platform_admins').select('user_id').eq('user_id', user.id).eq('is_active', true).maybeSingle()
+    if (adminError || !admin) throw new Response('Not authorized', { status: 403 })
+  }
+  const secret = Deno.env.get('SUPABASE_SECRET_KEY') ?? env('SUPABASE_SERVICE_ROLE_KEY')
   const adminClient = createClient(url, secret, { auth: { persistSession: false } })
   return { user, userClient, adminClient }
 }
@@ -42,4 +52,3 @@ export function text(value: unknown, max = 256): string {
   if (typeof value !== 'string' || value.length === 0 || value.length > max) throw new Response('Invalid input', { status: 400 })
   return value
 }
-
