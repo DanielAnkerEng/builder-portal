@@ -11,6 +11,41 @@ const ready = () => m.setStep(valid(), 5)
 const submit = () => m.prepareSubmission(ready(), () => id)
 const failed = () => m.recordOutcome(submit(), { status: 'failed', errorCode: 'INVALID_PAYLOAD' })
 
+for (const errorCode of ['UNAUTHENTICATED','MFA_REQUIRED','NOT_AUTHORIZED','PROFILE_INACTIVE','INVALID_PAYLOAD','INVALID_ASSIGNEE','ORGANIZATION_NUMBER_EXISTS','TRANSPORT_ERROR']) {
+  test(`unresolved history survives later request ${errorCode}`, () => {
+    const original = submit()
+    const uncertain = m.recordOutcome(original, { status:'uncertain', errorCode:'TRANSPORT_ERROR' })
+    const retry = m.retrySubmission(uncertain)
+    assert.equal(retry.submission.unresolved,true)
+    const result = m.recordOutcome(retry,{status:errorCode === 'TRANSPORT_ERROR' ? 'uncertain' : 'failed',errorCode})
+    assert.equal(result.submission.status,'uncertain')
+    assert.equal(result.submission.unresolved,true)
+    assert.equal(result.submission.errorCode,errorCode)
+    assert.equal(result.submission.payload,original.submission.payload)
+    assert.equal(result.submission.idempotencyKey,original.submission.idempotencyKey)
+    assert.ok(Object.isFrozen(result.submission.payload.company))
+    let generated = 0
+    assert.throws(()=>m.prepareSubmission(result,()=>{generated++;return other}))
+    assert.equal(generated,0)
+    assert.throws(()=>m.resumeEditing(result))
+    assert.throws(()=>m.updateCompany(result,{name:'Changed'}))
+  })
+}
+test('trusted completion or persisted failure alone clears unresolved history',()=>{
+  const s=m.recordOutcome(submit(),{status:'uncertain',errorCode:'TRANSPORT_ERROR'})
+  const done=m.recordOutcome(s,{status:'completed',operationId:id,companyId:other})
+  assert.equal(done.submission.unresolved,false)
+  for(const errorCode of ['INVALID_ASSIGNEE','ORGANIZATION_NUMBER_EXISTS']) {
+    const failed=m.recordOutcome(s,{status:'failed',errorCode,operationId:id})
+    assert.equal(failed.submission.unresolved,false)
+    assert.equal(failed.submission.status,'failed')
+    const edit=m.updateCompany(m.resumeEditing(failed),{name:'Changed'})
+    assert.equal(m.prepareSubmission(edit,()=>other).submission.idempotencyKey,other)
+  }
+  const auth=m.recordOutcome(s,{status:'failed',errorCode:'UNAUTHENTICATED',operationId:id})
+  assert.equal(auth.submission.unresolved,true)
+})
+
 test('initial state is immutable, pristine and memory-only', () => {
   const s = fresh()
   assert.equal(s.step, 1)

@@ -90,7 +90,7 @@ test('malicious company/project names are rendered as text nodes',async()=>{
 test('future filters/action disabled; no fabricated services, responsibility or status',async()=>{
  const ui=await mounted();assert.equal(flatten(ui.element).filter(n=>n.tag==='select'&&n.disabled).length,3)
  assert(flatten(ui.element).some(n=>n.tag==='button'&&n.disabled))
- ui.route(`#customer/${a}`);assert.match(text(ui.element),/Tjenester er ikke konfigurert ennå/)
+ ui.route(`#customer/${a}`);assert.match(text(ui.element),/Tjenestedata vises ikke i dette arbeidsområdet ennå/)
  assert.doesNotMatch(text(ui.element),/Daniel|Christian|Google Ads|Meta Ads|50%/)
  ui.route(`#customer/${a}/seo`);assert.match(text(ui.element),/SEO kommer senere/)
 })

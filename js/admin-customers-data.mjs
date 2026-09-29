@@ -8,6 +8,7 @@ export const CUSTOMER_TABS = Object.freeze([
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 export const validCompanyId = value => typeof value === 'string' && uuid.test(value)
 export function customerRoute(hash) {
+  if (hash === '#customers/new') return { kind: 'new' }
   if (hash === '#customers') return { kind: 'list' }
   const match = /^#customer\/([^/]+)(?:\/([a-z]+))?$/.exec(hash)
   if (!match || !validCompanyId(match[1])) return { kind: 'invalid' }

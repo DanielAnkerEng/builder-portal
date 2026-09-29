@@ -10,6 +10,7 @@ export const ADMIN_NAVIGATION = Object.freeze([
 
 const pages = ADMIN_NAVIGATION.flatMap(group => group.items)
 export function resolveAdminPage(hash) {
+  if (hash === '#customers/new') return pages.find(page => page.id === 'customers')
   if (typeof hash === 'string' && (hash === '#customer' || hash.startsWith('#customer/'))) return pages.find(page => page.id === 'customers')
   return pages.find(page => `#${page.id}` === hash) || pages[0]
 }
@@ -93,6 +94,10 @@ export function mountAdminShell({ document, window, host, content, profile, plat
   quickPanel.append(el('p', '', 'Kommer i senere faser'))
   for (const label of ['Ny kunde', 'Ny oppgave', 'Ny kampanje', 'Nytt innhold', 'Registrer lead']) {
     const button = el('button', '', label); button.type = 'button'; button.disabled = true; quickPanel.append(button)
+    if (label === 'Ny kunde' && modules.get('customers')?.canCreate) {
+      button.disabled = false
+      button.addEventListener('click', () => { window.location.hash = '#customers/new'; setQuick(false) })
+    }
   }
   quickWrap.append(quick, quickPanel); topbar.append(menu, breadcrumbs, quickWrap)
   const main = el('main', 'admin-main'); main.id = 'adminMain'; main.tabIndex = -1
@@ -137,14 +142,16 @@ export function mountAdminShell({ document, window, host, content, profile, plat
   }
   document.addEventListener('click', clickAway)
   document.addEventListener('keydown', keys)
+  let acceptedHash = window.location.hash
   function renderPage(focus = false) {
     const page = resolveAdminPage(window.location.hash)
     for (const entry of links) {
       if (entry.page.id === page.id) entry.link.setAttribute('aria-current', 'page')
       else entry.link.removeAttribute('aria-current')
     }
-    title.textContent = page.title; crumb.textContent = page.title
-    document.title = `${page.title} | Wreach Admin`
+    const creating = window.location.hash === '#customers/new'
+    title.textContent = creating ? 'Ny kunde' : page.title; crumb.textContent = creating ? 'Kunder / Ny kunde' : page.title
+    document.title = `${title.textContent} | Wreach Admin`
     const dashboard = page.id === 'dashboard'
     subtitle.textContent = dashboard ? 'Oversikt over kunder, arbeid og det som krever oppmerksomhet.' : page.id === 'customers' && modules.has('customers') ? 'Selskaper og nettsider samlet i kundens arbeidsområde.' : 'Dette området er planlagt for en senere fase.'
     content.hidden = !dashboard; future.hidden = dashboard
@@ -156,7 +163,16 @@ export function mountAdminShell({ document, window, host, content, profile, plat
     setMenu(false, false); setQuick(false)
     if (focus) title.focus()
   }
-  const routeChanged = () => renderPage(true)
+  const routeChanged = () => {
+    const previous = modules.get(resolveAdminPage(acceptedHash).id)
+    if (window.location.hash !== acceptedHash && previous?.beforeLeave && !previous.beforeLeave(window.location.hash)) {
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}${acceptedHash}`)
+      return
+    }
+    previous?.leave?.(window.location.hash)
+    acceptedHash = window.location.hash
+    renderPage(true)
+  }
   for (const { link } of links) link.addEventListener('click', () => { if (link.hash === window.location.hash) { setMenu(false, false); title.focus() } })
   window.addEventListener('hashchange', routeChanged); renderPage()
   return { logout, setMenu, destroy() { mobile.removeEventListener('change', resized); window.removeEventListener('hashchange', routeChanged); document.removeEventListener('click', clickAway); document.removeEventListener('keydown', keys); document.body.classList.remove('admin-nav-open') } }

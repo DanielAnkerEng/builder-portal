@@ -7,6 +7,7 @@ dist_dir="$repo_dir/dist"
 html_files=(index.html demo.html login.html mfa.html security-settings.html admin.html builder.html site.html)
 css_files=(styles.css marketing.css demo.css login.css admin.css builder.css site.css)
 js_files=(
+  admin-new-customer-state.mjs admin-new-customer-api.mjs admin-new-customer.mjs
   admin-customers.mjs admin-customers-data.mjs admin-dashboard.mjs admin-dashboard-state.mjs admin-shell.mjs admin.js api.js auth-storage.mjs auth.js builder-data.js builder.js demo-data.mjs demo.js login.js
   mfa-controller.mjs mfa.js post-auth-destination.mjs script.js security-settings.js site.js
   supabase-environment.mjs supabase-public-config.mjs supabase.js supabase.local.js

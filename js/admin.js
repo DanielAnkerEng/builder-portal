@@ -3,8 +3,9 @@ import { mountDashboard, loadDashboardWebsites } from './admin-dashboard.mjs'
 import { mountAdminShell, containAdminFocus } from './admin-shell.mjs'
 import { mountCustomers } from './admin-customers.mjs'
 import { readCustomers } from './admin-customers-data.mjs'
+import { createNewCustomerApi } from './admin-new-customer-api.mjs'
 const ctx=await requireAal2({platformAdmin:true});
-const customers = mountCustomers({ document, load: () => readCustomers(supabase) })
+const customers = mountCustomers({ document, window, load: () => readCustomers(supabase), newCustomerApi: createNewCustomerApi(supabase) })
 const shell = mountAdminShell({ document, window, host: document.getElementById('adminShell'), content: document.getElementById('adminLegacyContent'), profile: ctx.profile, platformRole: ctx.admin.admin_role, modules: new Map([['customers', customers]]) })
 shell.logout.addEventListener('click',signOut)
 const projectDialog = document.getElementById('newAccountModal')

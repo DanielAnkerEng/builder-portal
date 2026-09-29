@@ -23,7 +23,7 @@ function frozen(value) {
   return value
 }
 function fail(code) { throw new Error(code) }
-function editable(state) { if (state.submission.status !== 'editing') fail('EDITING_REQUIRED') }
+function editable(state) { if (state.submission.status !== 'editing' || state.submission.unresolved) fail('EDITING_REQUIRED') }
 function object(value) { return value !== null && typeof value === 'object' && !Array.isArray(value) }
 function textFields(value, fields) {
   return object(value) && Object.keys(value).every(key => fields.includes(key)) &&
@@ -37,7 +37,7 @@ const blank = fields => Object.fromEntries(fields.map(key => [key, '']))
 export function createWizardState() {
   return frozen({ step: 1, company: blank(companyFields), contact: blank(contactFields), services: [],
     internal: { lifecycleStatus: 'onboarding', assignments: {} },
-    submission: { status: 'editing', payload: null, idempotencyKey: null, operationId: null, companyId: null, errorCode: null } })
+    submission: { status: 'editing', unresolved: false, payload: null, idempotencyKey: null, operationId: null, companyId: null, errorCode: null } })
 }
 export function setStep(state, step) {
   editable(state)
@@ -145,7 +145,7 @@ export function prepareSubmission(state, randomUUID = () => globalThis.crypto.ra
   const key = same ? previous.idempotencyKey : randomUUID()
   if (typeof key !== 'string' || !uuidV4.test(key)) fail('INVALID_IDEMPOTENCY_KEY')
   if (!same && key === previous.idempotencyKey) fail('IDEMPOTENCY_KEY_REUSE')
-  return frozen({ ...state, submission: { status: 'submitting', payload: same ? previous.payload : payload,
+  return frozen({ ...state, submission: { status: 'submitting', unresolved: false, payload: same ? previous.payload : payload,
     idempotencyKey: key, operationId: same ? previous.operationId : null, companyId: null, errorCode: null } })
 }
 export function recordOutcome(state, outcome) {
@@ -154,7 +154,7 @@ export function recordOutcome(state, outcome) {
   if (outcome.status === 'completed') {
     if (typeof outcome.operationId !== 'string' || typeof outcome.companyId !== 'string' ||
       !uuidV4.test(outcome.operationId) || !uuidV4.test(outcome.companyId)) fail('INVALID_RESULT_IDS')
-    return frozen({ ...state, submission: { ...state.submission, status: 'completed', operationId: outcome.operationId,
+    return frozen({ ...state, submission: { ...state.submission, status: 'completed', unresolved: false, operationId: outcome.operationId,
       companyId: outcome.companyId, errorCode: null } })
   }
   const code = outcome.errorCode
@@ -162,7 +162,13 @@ export function recordOutcome(state, outcome) {
   if (outcome.status === 'uncertain' && !uncertainCodes.has(code)) fail('INVALID_UNCERTAIN_REASON')
   if (!['failed', 'uncertain'].includes(outcome.status)) fail('INVALID_OUTCOME')
   if (outcome.operationId != null && (typeof outcome.operationId !== 'string' || !uuidV4.test(outcome.operationId))) fail('INVALID_RESULT_IDS')
-  return frozen({ ...state, submission: { ...state.submission, status: outcome.status, errorCode: code,
+  // A later request rejection cannot resolve an earlier possibly committed write.
+  // D2 validates persisted failures: only these two codes have an operation ID.
+  const persistedFailure = outcome.status === 'failed' && uuidV4.test(outcome.operationId ?? '') &&
+    ['INVALID_ASSIGNEE', 'ORGANIZATION_NUMBER_EXISTS'].includes(code)
+  const unresolved = outcome.status === 'uncertain' || (state.submission.unresolved && !persistedFailure)
+  return frozen({ ...state, submission: { ...state.submission, status: unresolved ? 'uncertain' : outcome.status,
+    unresolved: Boolean(unresolved), errorCode: code,
     operationId: outcome.operationId ?? state.submission.operationId } })
 }
 export function retrySubmission(state) {
@@ -172,7 +178,7 @@ export function retrySubmission(state) {
   return frozen({ ...state, submission: { ...attempt, status: 'submitting', errorCode: null } })
 }
 export function resumeEditing(state) {
-  if (state.submission.status !== 'failed') fail('CONFIRMED_FAILURE_REQUIRED')
+  if (state.submission.status !== 'failed' || state.submission.unresolved) fail('CONFIRMED_FAILURE_REQUIRED')
   return frozen({ ...state, submission: { ...state.submission, status: 'editing' } })
 }
 export function navigationState(state) {

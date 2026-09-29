@@ -1,13 +1,15 @@
 import { adminElement, createAdminState } from './admin-shell.mjs'
 import { createProjectRow } from './admin-dashboard.mjs'
 import { CUSTOMER_TABS, customerRoute, customerHref, selectCustomers, validCompanyId } from './admin-customers-data.mjs'
+import { mountNewCustomer } from './admin-new-customer.mjs'
 
-export function mountCustomers({ document, load }) {
+export function mountCustomers({ document, load, window, newCustomerApi }) {
   const el = (tag, css, text) => adminElement(document, tag, css, text)
   const element = el('div', 'customers-module')
   let state = typeof load === 'function' ? 'idle' : 'unavailable'
   let data = { customers: [], orphans: [] }, hash = '#customers', pending = false
   const options = { search: '', filter: 'all', sort: 'asc' }
+  let wizard = null
   function link(label, href, css = '') {
     const node = el('a', css, label); node.href = href; return node
   }
@@ -24,6 +26,7 @@ export function mountCustomers({ document, load }) {
     const header = el('div', 'customers-list-head')
     header.append(el('p', '', 'Registrerte selskaper, også uten nettsider. Livssyklus og kundeansvar er ikke registrert i denne oversikten.'))
     const add = el('button', 'btn btn-primary', '+ Ny kunde · kommer senere'); add.type = 'button'; add.disabled = true
+    if (newCustomerApi) { add.textContent = '+ Ny kunde'; add.disabled = false; add.addEventListener('click', () => { window.location.hash = '#customers/new' }) }
     header.append(add)
     const toolbar = el('div', 'customers-toolbar')
     function control(label, node) {
@@ -95,7 +98,7 @@ export function mountCustomers({ document, load }) {
       websites.append(el('h3', '', 'Nettsider'), projectList(customer)); body.append(websites)
       const future = el('div', 'customer-future-summary')
       future.append(el('h3', '', 'Videre oppfølging'),
-        el('p', '', 'Tjenester er ikke konfigurert ennå.'),
+        el('p', '', 'Tjenestedata vises ikke i dette arbeidsområdet ennå.'),
         el('p', '', 'Ansvar og onboarding er ikke tilgjengelig ennå.'),
         el('p', '', 'Oppgaver, godkjenninger, varsler, resultater og aktivitet vises når modulene kobles til. Ingen overvåking er aktivert her.'))
       body.append(future)
@@ -105,6 +108,13 @@ export function mountCustomers({ document, load }) {
   function render() {
     element.dataset.state = state; element.setAttribute('aria-busy', String(state === 'loading'))
     const route = customerRoute(hash)
+    if (route.kind === 'new' && newCustomerApi) {
+      if (!wizard) wizard = mountNewCustomer({ document, window, api: newCustomerApi,
+        navigate: target => { window.location.hash = target },
+        refreshCustomer: async id => { await refresh(); return state === 'real' && data.customers.some(customer => customer.id === id) },
+      })
+      element.replaceChildren(wizard.element); return
+    }
     if (route.kind === 'invalid') { element.replaceChildren(link('← Tilbake til Kunder','#customers'), message('error','Ugyldig kundeadresse','Velg en kunde fra oversikten.')); return }
     if (state !== 'real') {
       const messages = {
@@ -121,8 +131,10 @@ export function mountCustomers({ document, load }) {
     if (route.kind === 'list') renderList(); else renderWorkspace(route)
   }
   async function refresh() {
-    if (pending || typeof load !== 'function') return
-    pending = true; state = 'loading'; render()
+    if (pending) { await pending; return }
+    if (typeof load !== 'function') return
+    state = 'loading'; render()
+    pending = (async () => {
     try {
       const result = await load()
       if (!result || !Array.isArray(result.customers) || !Array.isArray(result.orphans) || result.customers.some(customer =>
@@ -132,7 +144,13 @@ export function mountCustomers({ document, load }) {
       )) throw new Error('CUSTOMER_DATA_INVALID')
       data = result; state = 'real'
     } catch { data = { customers:[], orphans:[] }; state = 'error' }
-    finally { pending = false; render() }
+    finally { render() }
+    })()
+    await pending; pending = false
   }
-  return { element, route(nextHash) { hash = nextHash; render(); if (state === 'idle' && customerRoute(hash).kind !== 'invalid') void refresh() } }
+  return { element, canCreate: Boolean(newCustomerApi),
+    beforeLeave(nextHash) { return nextHash === '#customers/new' || !wizard || wizard.canLeave() },
+    leave(nextHash) { if (nextHash !== '#customers/new' && wizard) { wizard.destroy(); wizard = null } },
+    route(nextHash) { hash = nextHash; render(); if (state === 'idle' && ['list', 'workspace'].includes(customerRoute(hash).kind)) void refresh() },
+  }
 }
