@@ -97,7 +97,8 @@ test('No session synthesis, browser storage, JWT decoding or sensitive logging',
   assert.match(source,/getAuthenticatorAssuranceLevel\(jwt\)/)
   assert.match(source,/supabase-js@2\.112\.4/)
 })
-const consumers = ['save-draft','publish-site','manage-security-keys','critical-company-action','admin-provision-company','import-legacy-site','create-customer']
+// Retired admin-provision-company is covered by no-write tombstone tests.
+const consumers = ['save-draft','publish-site','manage-security-keys','critical-company-action','import-legacy-site','create-customer']
 for (const name of consumers) {
   test(name+' rejects AAL1 through actual shared helper', async () => {
     const f = await fixture({ aal:'aal1' })

@@ -78,3 +78,6 @@ browser UI smoke test. Full authenticated browser verification remains
 required before production deployment. No production access, deployment,
 commit, push or merge was performed. Local Auth test execution is explicitly
 opt-in via `WREACH_LOCAL_AUTH_TESTS=1`; the ordinary suite skips it.
+> P1 current status: legacy provisioning is retired locally as a no-write 410
+> tombstone; historical observations below describe the earlier implementation.
+> See [retirement/cutover notes](legacy-provisioning-retirement.md). Not deployed.

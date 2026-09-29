@@ -1,3 +1,25 @@
-import { bodyObject, correlationId, json, requireAal2, text } from '../_shared/security.ts'
-Deno.serve(async req=>{if(req.method!=='POST')return json({error:'METHOD_NOT_ALLOWED'},405);try{const{user,userClient,adminClient}=await requireAal2(req);const{data:admin}=await userClient.from('platform_admins').select('user_id').eq('user_id',user.id).eq('is_active',true).maybeSingle();if(!admin)return json({error:'NOT_AUTHORIZED'},403);const b=await bodyObject(req),companyName=text(b.companyName),publicSlug=text(b.publicSlug,80).toLowerCase(),email=text(b.email).trim().toLowerCase(),displayName=text(b.displayName);if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(publicSlug))return json({error:'INVALID_SLUG'},400);const{data:company,error:ce}=await adminClient.from('companies').insert({name:companyName,is_active:true}).select('id').single();if(ce)return json({error:'COMPANY_CREATE_FAILED'},400);let invitedId:string|null=null;try{const{data:invited,error:ie}=await adminClient.auth.admin.inviteUserByEmail(email);if(ie||!invited.user)throw ie??new Error('invite failed');invitedId=invited.user.id;const{error:pe}=await adminClient.from('profiles').upsert({id:invitedId,email,display_name:displayName,status:'active'});if(pe)throw pe;const{error:me}=await adminClient.from('company_memberships').insert({company_id:company.id,user_id:invitedId,role:'owner',status:'invited',invited_by:user.id});if(me)throw me;const{data:website,error:we}=await adminClient.from('websites').insert({company_id:company.id,name:companyName,public_slug:publicSlug,created_by:user.id}).select('id').single();if(we)throw we;await adminClient.from('audit_events').insert({actor_user_id:user.id,company_id:company.id,event_type:'company.provision',result:'success',target_type:'company',target_id:company.id,authorization_requirements:['aal2','platform_admin'],request_correlation_id:correlationId(b.correlationId),metadata:{resource_name:companyName}});return json({ok:true,companyId:company.id,websiteId:website.id,userId:invitedId})}catch{if(invitedId)await adminClient.auth.admin.deleteUser(invitedId);await adminClient.from('companies').delete().eq('id',company.id);return json({error:'PROVISION_ROLLED_BACK'},500)}}catch(e){if(e instanceof Response)return e;return json({error:'PROVISION_FAILED'},500)}})
-
+// Retired route: no clients, credentials, body reads or external side effects.
+// Genuine JWT verification remains the configured gateway's responsibility.
+const origins = new Set(['https://wreach.no', 'http://127.0.0.1:4175', 'http://localhost:4175'])
+const allowedHeaders = ['authorization', 'apikey', 'content-type', 'x-client-info']
+Deno.serve((req: Request): Response => {
+  const origin = req.headers.get('origin')
+  const headers = new Headers({ 'Cache-Control': 'no-store', Vary: 'Origin' })
+  if (origin && origins.has(origin)) {
+    headers.set('Access-Control-Allow-Origin', origin)
+    headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS')
+    headers.set('Access-Control-Allow-Headers', allowedHeaders.join(', '))
+  }
+  const fail = (code: string, status: number) => Response.json({ ok: false, error: { code } }, { status, headers })
+  if (origin && !origins.has(origin)) return fail('NOT_AUTHORIZED', 403)
+  if (req.method === 'OPTIONS') {
+    const requested = req.headers.get('access-control-request-headers')
+    if (!origin || req.headers.get('access-control-request-method') !== 'POST' ||
+      (requested && requested.split(',').some(h => !allowedHeaders.includes(h.trim().toLowerCase()))))
+      return fail('INVALID_REQUEST', 400)
+    return new Response(null, { status: 204, headers })
+  }
+  // Presence check only, not a substitute for verify_jwt=true.
+  if (!req.headers.get('authorization')?.startsWith('Bearer ')) return fail('UNAUTHENTICATED', 401)
+  return fail('LEGACY_PROVISIONING_RETIRED', 410)
+})

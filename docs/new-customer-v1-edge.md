@@ -165,3 +165,6 @@ Legacy admin-provision-company still exists and requires coordinated retirement;
 legacy profiles.company_id read access remains unchanged. No migration, RLS,
 Phase A/B RPC, existing Edge operation, frontend or Auth settings were changed.
 No commit, push, merge, deployment or production operation was performed.
+> P1 current status: legacy provisioning is retired locally as a no-write 410
+> tombstone; historical observations below describe the earlier implementation.
+> See [retirement/cutover notes](legacy-provisioning-retirement.md). Not deployed.

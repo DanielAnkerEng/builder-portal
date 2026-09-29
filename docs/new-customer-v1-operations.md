@@ -144,3 +144,6 @@ authorization, not real browser password/TOTP login.
 
 No Edge Function, frontend wizard, invitation or website workflow is implemented.
 No production inspection/change, commit, push, merge or deploy is part of Phase B.
+> P1 current status: legacy provisioning is retired locally as a no-write 410
+> tombstone; historical observations below describe the earlier implementation.
+> See [retirement/cutover notes](legacy-provisioning-retirement.md). Not deployed.

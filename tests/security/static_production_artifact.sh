@@ -5,6 +5,10 @@ repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 dist_dir="${1:-$repo_dir/dist}"
 
 test -d "$dist_dir"
+if rg -q 'admin-provision-company|newAccountModal|newAccountForm|newAccountBtn' "$dist_dir/js" "$dist_dir/admin.html"; then
+  echo 'Retired provisioning must not be present in the frontend artifact' >&2
+  exit 1
+fi
 expected=(
   js/admin-new-customer-state.mjs js/admin-new-customer-api.mjs js/admin-new-customer.mjs
   _headers admin.html builder.html demo.html index.html login.html mfa.html security-settings.html site.html

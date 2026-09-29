@@ -107,3 +107,6 @@ security scripts: 9 passed, 0 failed, including current dist artifact inspection
 
 Authenticated local AAL2 Admin V2 runtime smoke testing remains pending and must
 be completed before production deployment. Phase B+ is not implemented here.
+> P1 current status: legacy provisioning is retired locally as a no-write 410
+> tombstone; historical observations below describe the earlier implementation.
+> See [retirement/cutover notes](legacy-provisioning-retirement.md). Not deployed.
