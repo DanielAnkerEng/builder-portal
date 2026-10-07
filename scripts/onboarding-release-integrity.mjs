@@ -6,6 +6,10 @@ import {createHash} from 'node:crypto'
 import {join,dirname,resolve,relative} from 'node:path'
 
 export const BASELINE='6e0a9aaea3875d6cf3c5d7ddcf238f403e977a39'
+export const RELEASE_MIGRATIONS=Object.freeze([
+  '20261006130000_customer_onboarding.sql','20261006140000_customer_invitation_recovery.sql',
+  '20261007180000_membership_write_permissions.sql'
+])
 export const ROLLBACK_OVERLAY=Object.freeze([
   'onboarding.html','js/onboarding.js','js/customer-onboarding.mjs','js/auth.js',
   'js/post-auth-destination.mjs','js/supabase.js','_headers'
@@ -14,7 +18,7 @@ const packagedBackend=[
   'maintenance/supabase/functions/create-customer/index.ts','maintenance/supabase/config.toml',
   'new-edge/supabase/functions/create-customer/index.ts','new-edge/supabase/functions/_shared/security.ts',
   'new-edge/supabase/functions/_shared/new-customer.ts','new-edge/supabase/config.toml',
-  'migrations/20261006130000_customer_onboarding.sql','migrations/20261006140000_customer_invitation_recovery.sql'
+  ...RELEASE_MIGRATIONS.map(file=>'migrations/'+file)
 ]
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex')
 const check=(condition,message)=>{if(!condition)throw new Error(message)}
@@ -26,8 +30,7 @@ export const BACKEND_SOURCES=Object.freeze({
   'new-edge/supabase/functions/create-customer/index.ts':'supabase/functions/create-customer/index.ts',
   'new-edge/supabase/functions/_shared/security.ts':'supabase/functions/_shared/security.ts',
   'new-edge/supabase/functions/_shared/new-customer.ts':'supabase/functions/_shared/new-customer.ts',
-  'migrations/20261006130000_customer_onboarding.sql':'supabase/migrations/20261006130000_customer_onboarding.sql',
-  'migrations/20261006140000_customer_invitation_recovery.sql':'supabase/migrations/20261006140000_customer_invitation_recovery.sql'
+  ...Object.fromEntries(RELEASE_MIGRATIONS.map(file=>['migrations/'+file,'supabase/migrations/'+file]))
 })
 export const EDGE_CONFIG='[functions.create-customer]\nenabled = true\nverify_jwt = true\n'
 
@@ -38,7 +41,9 @@ export function releaseSourceFiles(build) {
     ...Object.values(BACKEND_SOURCES),'supabase/config.toml',
     'scripts/build-production.sh','scripts/build-onboarding-release.mjs','scripts/onboarding-release-integrity.mjs',
     'tests/security/static_production_artifact.sh','tests/security/onboarding-release.test.mjs',
-    'tests/security/onboarding-bootstrap.test.mjs'])].sort()
+    'tests/security/onboarding-bootstrap.test.mjs','supabase/tests/membership_write_permissions.sql',
+    'tests/security/membership-permissions.test.mjs','tests/security/membership-permissions-local.test.mjs',
+    'tests/security/helpers/isolated-supabase.mjs'])].sort()
 }
 
 export function readSourceProvenance(root) {

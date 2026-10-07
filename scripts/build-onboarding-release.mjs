@@ -6,7 +6,7 @@ import {tmpdir} from 'node:os'
 import {resolve,dirname,join,relative} from 'node:path'
 import {fileURLToPath} from 'node:url'
 import assert from 'node:assert/strict'
-import {BASELINE,EDGE_CONFIG,ROLLBACK_OVERLAY,productionFiles,readSourceProvenance,verifyOnboardingRelease} from './onboarding-release-integrity.mjs'
+import {BASELINE,EDGE_CONFIG,ROLLBACK_OVERLAY,RELEASE_MIGRATIONS,productionFiles,readSourceProvenance,verifyOnboardingRelease} from './onboarding-release-integrity.mjs'
 if(process.argv.length!==2)throw new Error('No target overrides supported')
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..')
 const baseline=BASELINE
@@ -29,7 +29,7 @@ copy('deploy/supabase/create-customer-maintenance/index.ts','maintenance/supabas
 copy('deploy/supabase/create-customer-maintenance/config.toml','maintenance/supabase/config.toml')
 for(const file of ['create-customer/index.ts','_shared/security.ts','_shared/new-customer.ts'])copy('supabase/functions/'+file,'new-edge/supabase/functions/'+file)
 put('new-edge/supabase/config.toml',EDGE_CONFIG)
-for(const file of ['20261006130000_customer_onboarding.sql','20261006140000_customer_invitation_recovery.sql'])copy('supabase/migrations/'+file,'migrations/'+file)
+for(const file of RELEASE_MIGRATIONS)copy('supabase/migrations/'+file,'migrations/'+file)
 function walk(dir){return readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(join(dir,e.name)):[join(dir,e.name)])}
 for(const file of walk(join(root,'dist')))copy(relative(root,file),'frontend/'+relative(join(root,'dist'),file))
 // Reconstruct the approved previous UI from Git, never from a mutable checkout.

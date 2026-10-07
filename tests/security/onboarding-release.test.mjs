@@ -4,10 +4,19 @@ import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync,cpSync,chmodSync
 import {tmpdir} from 'node:os'
 import {join,resolve} from 'node:path'
 import {execFileSync} from 'node:child_process'
-import {BASELINE,ROLLBACK_OVERLAY,productionFiles,releaseSourceFiles,readSourceProvenance,verifySourceProvenance,verifySdkArtifacts,verifyOnboardingRelease} from '../../scripts/onboarding-release-integrity.mjs'
+import {createHash} from 'node:crypto'
+import {BASELINE,ROLLBACK_OVERLAY,RELEASE_MIGRATIONS,productionFiles,releaseSourceFiles,readSourceProvenance,verifySourceProvenance,verifySdkArtifacts,verifyOnboardingRelease} from '../../scripts/onboarding-release-integrity.mjs'
 
 const repo=resolve(import.meta.dirname,'../..')
 const source=readFileSync(join(repo,'js/supabase.js'),'utf8')
+const hardening='migrations/20261007180000_membership_write_permissions.sql'
+test('hardening migration is an explicit ordered release source',()=>{
+  assert.deepEqual(RELEASE_MIGRATIONS,[
+    '20261006130000_customer_onboarding.sql','20261006140000_customer_invitation_recovery.sql',
+    '20261007180000_membership_write_permissions.sql'
+  ])
+  assert.ok(releaseSourceFiles(readFileSync(join(repo,'scripts/build-production.sh'),'utf8')).includes('supabase/'+hardening))
+})
 function fixture(t) {
   const root=mkdtempSync(join(tmpdir(),'wreach-release-regression-'))
   t.after(()=>rmSync(root,{recursive:true,force:true}))
@@ -131,6 +140,16 @@ test('actual generated release: allowlists, source bytes, SDK, routes, hashes an
     }
     assert.equal(verifyOnboardingRelease(candidate,options).sdkVersion,'2.117.2')
     for(const [name,mutate] of [
+      ['missing hardening migration',root=>rmSync(join(root,hardening))],
+      ['tampered hardening migration',root=>writeFileSync(join(root,hardening),'-- synthetic tamper\n')],
+      ['self-consistent tampered migration manifest still fails source comparison',root=>{
+        const bytes=Buffer.from('-- synthetic tamper\n'),p=join(root,'manifest.json'),m=JSON.parse(readFileSync(p))
+        writeFileSync(join(root,hardening),bytes)
+        const entry=m.files.find(e=>e.path===hardening)
+        entry.bytes=bytes.length;entry.sha256=createHash('sha256').update(bytes).digest('hex')
+        m.version='sha256:'+createHash('sha256').update(JSON.stringify(m.files)).digest('hex')
+        writeFileSync(p,JSON.stringify(m))
+      }],
       ['missing SDK overlay',root=>writeFileSync(join(root,'rollback-frontend/js/supabase.js'),source.replace('@2.117.2','@2'))],
       ['tampered historical reference',root=>writeFileSync(join(root,'previous-frontend/js/supabase.js'),source)],
       ['missing landing route',root=>rmSync(join(root,'rollback-frontend/onboarding.html'))],
