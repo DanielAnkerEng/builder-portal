@@ -1,3 +1,4 @@
+import { getOnboardingStatus } from './customer-onboarding.mjs'
 export async function resolvePostAuthDestination(supabase) {
   const { data: sessionData, error: sessionError } = await supabase.auth.getSession()
   const session = sessionData?.session
@@ -14,7 +15,10 @@ export async function resolvePostAuthDestination(supabase) {
     .maybeSingle()
 
   if (roleError) throw new Error('POST_AUTH_ROLE_LOOKUP_FAILED')
-  if (!platformAdmin) return 'builder.html'
+  if (!platformAdmin) {
+    const onboarding = await getOnboardingStatus(supabase)
+    return onboarding.status === 'invited' ? 'onboarding.html' : 'builder.html'
+  }
   if (platformAdmin.admin_role === 'owner' || platformAdmin.admin_role === 'admin') return 'admin.html'
   throw new Error('POST_AUTH_ROLE_INVALID')
 }

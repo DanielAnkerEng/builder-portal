@@ -11,6 +11,7 @@ function fakeSupabase({ role = null, roleError = null, session = true, aal = 'aa
   }
   return {
     calls,
+    rpc: async () => ({ data: { ok: true, status: 'none' }, error: null }),
     auth: {
       getSession: async () => ({ data: { session: session ? { user: { id: 'current-user' } } : null }, error: null }),
       mfa: { getAuthenticatorAssuranceLevel: async () => ({ data: { currentLevel: aal }, error: null }) }
@@ -27,3 +28,12 @@ test('lookup is scoped to the current active user', async () => { const client =
 test('missing session fails closed before role lookup', async () => { const client = fakeSupabase({ session: false }); await assert.rejects(resolvePostAuthDestination(client), /POST_AUTH_SESSION_REQUIRED/); assert.equal(client.calls.length, 0) })
 test('AAL1 fails closed before role lookup', async () => { const client = fakeSupabase({ aal: 'aal1' }); await assert.rejects(resolvePostAuthDestination(client), /POST_AUTH_AAL2_REQUIRED/); assert.equal(client.calls.length, 0) })
 test('unexpected platform role fails closed', async () => await assert.rejects(resolvePostAuthDestination(fakeSupabase({ role: 'legacy-admin' })), /POST_AUTH_ROLE_INVALID/))
+test('pending customer returns to onboarding instead of builder', async () => {
+  const client = fakeSupabase()
+  client.rpc = async () => ({ data: { ok: true, status: 'invited', invitationId: '11111111-1111-4111-8111-111111111111', role: 'editor', passwordRequired: false } })
+  assert.equal(await resolvePostAuthDestination(client), 'onboarding.html')
+})
+test('onboarding state errors fail closed, never builder fallback', async () => {
+  const client = fakeSupabase(); client.rpc = async () => ({ error: new Error('private') })
+  await assert.rejects(resolvePostAuthDestination(client), /INVITATION_UNAVAILABLE/)
+})

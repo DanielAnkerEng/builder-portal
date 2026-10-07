@@ -5,8 +5,9 @@ import { mountAdminShell } from './admin-shell.mjs'
 import { mountCustomers } from './admin-customers.mjs'
 import { readCustomers } from './admin-customers-data.mjs'
 import { createNewCustomerApi } from './admin-new-customer-api.mjs'
+import { createCustomerInviteApi } from './admin-customer-invite.mjs'
 const ctx=await requireAal2({platformAdmin:true});
-const customers = mountCustomers({ document, window, load: () => readCustomers(supabase), newCustomerApi: createNewCustomerApi(supabase) })
+const customers = mountCustomers({ document, window, load: () => readCustomers(supabase), newCustomerApi: createNewCustomerApi(supabase), createInviteApi: () => createCustomerInviteApi(supabase) })
 const shell = mountAdminShell({ document, window, host: document.getElementById('adminShell'), content: document.getElementById('adminLegacyContent'), profile: ctx.profile, platformRole: ctx.admin.admin_role, modules: new Map([['customers', customers]]) })
 shell.logout.addEventListener('click',signOut)
 const dashboard = mountDashboard({ document, host: document.getElementById('adminDashboard') })

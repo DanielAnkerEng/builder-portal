@@ -36,3 +36,9 @@
 
 /admin
   Cache-Control: no-store, max-age=0
+
+/onboarding
+  Cache-Control: no-store, max-age=0
+
+/onboarding.html
+  Cache-Control: no-store, max-age=0

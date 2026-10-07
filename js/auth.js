@@ -1,4 +1,5 @@
 import { clearWreachAuthSession, supabase } from './supabase.js'
+import { getOnboardingStatus } from './customer-onboarding.mjs'
 export async function requireAal2({ platformAdmin = false } = {}) {
   const { data: { session } } = await supabase.auth.getSession(); if (!session) return redirect('login.html')
   const { data: assurance, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel(); if (error || assurance.currentLevel !== 'aal2') return redirect('mfa.html')
@@ -6,6 +7,7 @@ export async function requireAal2({ platformAdmin = false } = {}) {
   if (profileError || profile?.status !== 'active') throw new Error('Profile unavailable')
   const { data: admin } = await supabase.from('platform_admins').select('admin_role').eq('user_id', session.user.id).eq('is_active', true).maybeSingle()
   if (platformAdmin && !admin) return redirect('builder.html')
+  if (!admin && (await getOnboardingStatus(supabase)).status === 'invited') return redirect('onboarding.html')
   const { data: memberships = [] } = await supabase.from('company_memberships').select('company_id,role,status').eq('user_id', session.user.id).eq('status', 'active')
   return { session, user: session.user, profile, admin, memberships, isPlatformAdmin: Boolean(admin) }
 }

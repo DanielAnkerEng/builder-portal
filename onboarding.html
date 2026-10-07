@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>Aktiver kundetilgang | Wreach</title><link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="css/login.css"></head>
+<body class="auth-body"><main class="auth-wrap"><a href="index.html" class="logo auth-logo">Wreach</a><section class="auth-card">
+<h1>Aktiver kundetilgang</h1><p class="auth-sub">Opprett passord og bekreft tofaktor før selskapets data blir tilgjengelige.</p>
+<p id="onboardingStatus" role="status">Kontrollerer invitasjonen …</p>
+<form id="onboardingPasswordForm" class="auth-form" hidden>
+<label class="field"><span>Nytt passord (minst 12 tegn)</span><input id="onboardingPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label>
+<label class="field"><span>Gjenta passord</span><input id="onboardingConfirmation" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></label>
+<button class="btn btn-primary btn-full" type="submit">Lagre passord</button></form>
+<a id="onboardingMfa" class="btn btn-primary btn-full" href="mfa.html" hidden>Fortsett til obligatorisk 2FA</a>
+<button id="onboardingAccept" class="btn btn-primary btn-full" type="button" hidden>Aktiver kundetilgang</button>
+<a id="onboardingWorkspace" class="btn btn-primary btn-full" href="builder.html" hidden>Åpne kundeområdet</a>
+<p id="onboardingError" role="alert" class="auth-error"></p>
+<button id="onboardingRefresh" class="btn btn-ghost btn-full" type="button">Kontroller status på nytt</button>
+<button id="onboardingLogout" class="btn btn-ghost btn-full" type="button">Logg ut / tilbake til innlogging</button>
+<p class="auth-footnote">Lenken er personlig. Er den ugyldig, utløpt eller allerede brukt, logg inn med ditt etablerte passord eller kontakt Wreach. Ingen tilgang aktiveres uten gyldig invitasjon og 2FA.</p>
+</section></main><script type="module" src="js/onboarding.js"></script></body></html>

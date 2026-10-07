@@ -10,6 +10,7 @@ if rg -q 'admin-provision-company|newAccountModal|newAccountForm|newAccountBtn' 
   exit 1
 fi
 expected=(
+  onboarding.html js/admin-customer-invite.mjs js/customer-onboarding.mjs js/onboarding.js
   js/admin-new-customer-state.mjs js/admin-new-customer-api.mjs js/admin-new-customer.mjs
   _headers admin.html builder.html demo.html index.html login.html mfa.html security-settings.html site.html
   css/admin.css css/builder.css css/demo.css css/login.css css/marketing.css css/site.css css/styles.css
@@ -38,7 +39,7 @@ rg -q "frame-ancestors 'none'" "$headers"
 rg -q '^  Referrer-Policy: no-referrer$' "$headers"
 rg -q '^  Permissions-Policy:' "$headers"
 rg -q '^  X-Content-Type-Options: nosniff$' "$headers"
-for page in login mfa security-settings builder admin; do
+for page in login mfa security-settings builder admin onboarding; do
   for route in "/$page" "/$page.html"; do
     awk -v route="$route" '
       /^[^[:space:]#]/ { active = ($0 == route); if (active) routes++ }
@@ -50,7 +51,7 @@ for page in login mfa security-settings builder admin; do
     ' "$headers"
   done
 done
-test "$(rg -c '^  Cache-Control: no-store, max-age=0$' "$headers")" -eq 10
+test "$(rg -c '^  Cache-Control: no-store, max-age=0$' "$headers")" -eq 12
 
 preview_marker='production-auth-''preview'
 service_key='SUPABASE_''SERVICE_ROLE_KEY'

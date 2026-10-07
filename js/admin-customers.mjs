@@ -2,8 +2,9 @@ import { adminElement, createAdminState } from './admin-shell.mjs'
 import { createProjectRow } from './admin-dashboard.mjs'
 import { CUSTOMER_TABS, customerRoute, customerHref, selectCustomers, validCompanyId } from './admin-customers-data.mjs'
 import { mountNewCustomer } from './admin-new-customer.mjs'
+import { mountCustomerInvite } from './admin-customer-invite.mjs'
 
-export function mountCustomers({ document, load, window, newCustomerApi }) {
+export function mountCustomers({ document, load, window, newCustomerApi, createInviteApi }) {
   const el = (tag, css, text) => adminElement(document, tag, css, text)
   const element = el('div', 'customers-module')
   let state = typeof load === 'function' ? 'idle' : 'unavailable'
@@ -103,6 +104,7 @@ export function mountCustomers({ document, load, window, newCustomerApi }) {
         el('p', '', 'Oppgaver, godkjenninger, varsler, resultater og aktivitet vises når modulene kobles til. Ingen overvåking er aktivert her.'))
       body.append(future)
     } else body.append(message('unavailable', `${tab.label} kommer senere`, 'Denne kundemodulen er ikke koblet til. Ingen data eller handlinger er tilgjengelige ennå.'))
+    if (route.tab === 'overview' && createInviteApi) body.append(mountCustomerInvite({ document, companyId: customer.id, createApi: createInviteApi }))
     element.replaceChildren(header, nav, body)
   }
   function render() {

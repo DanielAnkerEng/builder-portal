@@ -5,6 +5,8 @@ import { stripTypeScriptTypes } from 'node:module'
 
 const root = new URL('../../', import.meta.url)
 const source = await readFile(new URL('supabase/functions/_shared/security.ts', root), 'utf8')
+const transportSource = await readFile(new URL('supabase/functions/_shared/new-customer.ts', root), 'utf8')
+const transportUrl = 'data:text/javascript;base64,' + Buffer.from(stripTypeScriptTypes(transportSource)).toString('base64')
 // Test-only SDK double: no production token, signing key or alternative app auth path.
 const token = 'e30.eyJ0ZXN0Ijp0cnVlfQ.signature'
 let serial = 0
@@ -105,7 +107,7 @@ for (const name of consumers) {
     let handler
     globalThis.Deno.serve = fn => { handler = fn }
     const text = await readFile(new URL('supabase/functions/'+name+'/index.ts',root),'utf8')
-    const js = stripTypeScriptTypes(text.replace("'../_shared/security.ts'",JSON.stringify(f.url)))
+    const js = stripTypeScriptTypes(text.replace("'../_shared/security.ts'",JSON.stringify(f.url)).replace("'../_shared/new-customer.ts'",JSON.stringify(transportUrl)))
     await import('data:text/javascript;base64,'+Buffer.from(js+'\n// '+serial++).toString('base64'))
     assert.equal((await handler(req('Bearer '+token))).status,403)
     assert.equal(f.configurations.length,1)
@@ -115,7 +117,7 @@ for (const name of consumers) {
     let handler
     globalThis.Deno.serve = fn => { handler = fn }
     const text = await readFile(new URL('supabase/functions/'+name+'/index.ts',root),'utf8')
-    const js = stripTypeScriptTypes(text.replace("'../_shared/security.ts'",JSON.stringify(f.url)))
+    const js = stripTypeScriptTypes(text.replace("'../_shared/security.ts'",JSON.stringify(f.url)).replace("'../_shared/new-customer.ts'",JSON.stringify(transportUrl)))
     await import('data:text/javascript;base64,'+Buffer.from(js+'\n// '+serial++).toString('base64'))
     assert.equal((await handler(req('Bearer '+token))).status,400)
     assert.equal(f.configurations.length,2)

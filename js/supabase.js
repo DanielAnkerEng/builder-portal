@@ -1,4 +1,5 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+// Keep the tested SDK graph stable across page loads and Auth redirects.
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.117.2'
 import { isLocalSupabaseHost } from './supabase-environment.mjs'
 import { createBrowserAuthStorage } from './auth-storage.mjs'
 import { PRODUCTION_PUBLIC_CONFIG, validateProductionPublicConfig } from './supabase-public-config.mjs'
