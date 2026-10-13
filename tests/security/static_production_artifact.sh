@@ -10,6 +10,38 @@ if rg -q 'admin-provision-company|newAccountModal|newAccountForm|newAccountBtn' 
   exit 1
 fi
 expected=(
+  css/public-fonts.css js/demo-renderer.mjs js/marketing-scenes.mjs
+  assets/marketing/OFL-Fraunces.txt
+  assets/marketing/OFL-Manrope.txt
+  assets/marketing/auto-detail-1600.webp
+  assets/marketing/auto-detail-640.webp
+  assets/marketing/auto-workshop-1600.webp
+  assets/marketing/auto-workshop-640.webp
+  assets/marketing/consulting-office-1600.webp
+  assets/marketing/consulting-office-640.webp
+  assets/marketing/credits.json
+  assets/marketing/estate-cabin-1600.webp
+  assets/marketing/estate-cabin-640.webp
+  assets/marketing/estate-house-1600.webp
+  assets/marketing/estate-house-640.webp
+  assets/marketing/fraunces-latin.woff2
+  assets/marketing/manrope-latin.woff2
+  assets/marketing/restaurant-food-1600.webp
+  assets/marketing/restaurant-food-640.webp
+  assets/marketing/restaurant-room-1600.webp
+  assets/marketing/restaurant-room-640.webp
+  assets/marketing/salon-detail-1600.webp
+  assets/marketing/salon-detail-640.webp
+  assets/marketing/salon-hair-1600.webp
+  assets/marketing/salon-hair-640.webp
+  assets/marketing/salon-room-1600.webp
+  assets/marketing/salon-room-640.webp
+  assets/marketing/trade-bath-1600.webp
+  assets/marketing/trade-bath-640.webp
+  assets/marketing/trade-detail-1600.webp
+  assets/marketing/trade-detail-640.webp
+  assets/marketing/wreach-web-studio-1536.webp
+  assets/marketing/wreach-web-studio-640.webp
   js/admin-new-customer-state.mjs js/admin-new-customer-api.mjs js/admin-new-customer.mjs
   _headers admin.html builder.html demo.html index.html login.html mfa.html security-settings.html site.html
   css/admin.css css/builder.css css/demo.css css/login.css css/marketing.css css/site.css css/styles.css
