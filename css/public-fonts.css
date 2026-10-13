@@ -1,0 +1,14 @@
+@font-face {
+  font-family:Manrope;
+  src:url('../assets/marketing/manrope-latin.woff2') format('woff2');
+  font-style:normal;
+  font-weight:400 800;
+  font-display:swap
+}
+@font-face {
+  font-family:Fraunces;
+  src:url('../assets/marketing/fraunces-latin.woff2') format('woff2');
+  font-style:normal;
+  font-weight:400 600;
+  font-display:swap
+}

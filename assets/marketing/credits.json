@@ -1,0 +1,116 @@
+{
+  "notice": "Bransjebildene er lisensierte illustrasjonsbilder. Forsidemotivet er en AI-generert illustrasjon av nettsidearbeid. Ingen av motivene fremstilles som faktiske Wreach-kontorer, ansatte, kunder eller leverte prosjekter.",
+  "generatedImages": [
+    {
+      "name": "wreach-web-studio",
+      "source": "OpenAI ImageGen (built-in)",
+      "created": "2026-10-08",
+      "widths": [
+        640,
+        1536
+      ],
+      "usage": "AI-generert illustrasjon av nettsidedesign. Brukes i forsidens hovedbilde, ikke som dokumentasjon av et ekte kontor eller kundeprosjekt.",
+      "promptSummary": "Fotorealistisk, mørkt skandinavisk webstudio med nettsideoppsett på skjerm og laptop, papirskisser, varm eik og ledig plass til overskrift på venstre side. Ingen personer, logoer eller lesbar tekst.",
+      "prompt": "Use case: photorealistic-natural. Asset type: wide website hero background for Wreach, a Norwegian web design and development studio. Create a premium editorial photograph of a modern small digital design studio, communicating the craft of building beautiful websites, NOT architecture sales, restaurants or generic corporate meetings. A large slim monitor and a laptop on a real warm oak desk show elegant generic responsive WEBSITE LAYOUTS: clear modular cream page sections, photography blocks, muted olive navigation and tiny abstract text lines, not analytics charts, not source code, not blank screens. Position the workstation and recognizable screens in the RIGHT HALF, centered around x=70%, with a dark textured warm charcoal/forest-green wall and negative space on the LEFT for a real HTML headline. Large monitor screen is the visual focus. Low-key daylight, tactile wood, paper wireframe sketches and a dark keyboard; refined believable real materials, lived-in but tidy. Wide landscape 3:2 composition suitable for desktop and centered mobile crops, high-resolution. Palette matches Wreach: ink #171b1b, warm paper #f3f0e8, restrained pale lime #d3e59f. No people, no logos, no branding, no legible words, no floating elements, no neon, no hands, no watermarks. This is a fictional editorial illustration, not a claim of real offices. Image only, no baked-in headline."
+    }
+  ],
+  "downloaded": "2026-10-08",
+  "images": [
+    {
+      "name": "restaurant-food",
+      "source": "https://unsplash.com/photos/cooked-food-on-white-ceramic-plate-_WI3DGseB3g",
+      "image": "https://images.unsplash.com/photo-1616669944447-d65d41a222bd",
+      "license": "https://unsplash.com/license",
+      "usage": "Illustrasjonsfoto i fiktive demoer. Ikke Wreach-kunder, prosjekter eller ansatte."
+    },
+    {
+      "name": "restaurant-room",
+      "source": "https://unsplash.com/photos/white-ceramic-plate-on-brown-wooden-table-5JwBbnyZzfc",
+      "image": "https://images.unsplash.com/photo-1599458252573-56ae36120de1",
+      "license": "https://unsplash.com/license",
+      "usage": "Illustrasjonsfoto i fiktive demoer. Ikke Wreach-kunder, prosjekter eller ansatte."
+    },
+    {
+      "name": "salon-room",
+      "source": "https://unsplash.com/photos/a-modern-hair-salon-interior-with-stylish-chairs-and-mirrors-_Fy7Kq0w6OI",
+      "image": "https://images.unsplash.com/photo-1781450090585-1a511b7066d9",
+      "license": "https://unsplash.com/license",
+      "usage": "Illustrasjonsfoto i fiktive demoer. Ikke Wreach-kunder, prosjekter eller ansatte."
+    },
+    {
+      "name": "salon-detail",
+      "source": "https://unsplash.com/photos/a-hair-salon-with-chairs-and-a-mirror-u-jq0g_ZdZE",
+      "image": "https://images.unsplash.com/photo-1637777277435-3c44f82fd0c9",
+      "license": "https://unsplash.com/license",
+      "usage": "Illustrasjonsfoto i fiktive demoer. Ikke Wreach-kunder, prosjekter eller ansatte."
+    },
+    {
+      "name": "auto-workshop",
+      "source": "https://unsplash.com/photos/mechanic-working-on-a-car-engine-in-a-workshop-XP8o9_Arwqg",
+      "image": "https://images.unsplash.com/photo-1771340012319-0b4fca008b54",
+      "license": "https://unsplash.com/license",
+      "usage": "Illustrasjonsfoto i fiktive demoer. Ikke Wreach-kunder, prosjekter eller ansatte."
+    },
+    {
+      "name": "auto-detail",
+      "source": "https://unsplash.com/photos/a-car-being-worked-on-by-a-mechanic-i6jWI52j8Lk",
+      "image": "https://images.unsplash.com/photo-1717736712592-32616de7dda0",
+      "license": "https://unsplash.com/license",
+      "usage": "Illustrasjonsfoto i fiktive demoer. Ikke Wreach-kunder, prosjekter eller ansatte."
+    },
+    {
+      "name": "estate-cabin",
+      "source": "https://unsplash.com/photos/gray-wooden-house-in-forest-2VslRz5G8fo",
+      "image": "https://images.unsplash.com/photo-1542690969-5a2050285637",
+      "license": "https://unsplash.com/license",
+      "usage": "Illustrasjonsfoto i fiktive demoer. Ikke Wreach-kunder, prosjekter eller ansatte."
+    },
+    {
+      "name": "consulting-office",
+      "source": "https://unsplash.com/photos/an-empty-office-with-a-long-table-and-chairs-DeDWCcLUHSs",
+      "image": "https://images.unsplash.com/photo-1720139290958-d8676702c3ed",
+      "license": "https://unsplash.com/license",
+      "usage": "Illustrasjonsfoto i fiktive demoer. Ikke Wreach-kunder, prosjekter eller ansatte."
+    },
+    {
+      "name": "trade-bath",
+      "source": "https://unsplash.com/photos/modern-bathroom-with-double-sinks-and-freestanding-bathtub-j7Uv1Y_A7dY",
+      "image": "https://images.unsplash.com/photo-1770941450515-50f2b8ca380b",
+      "license": "https://unsplash.com/license",
+      "usage": "Illustrasjonsfoto i fiktive demoer. Ikke Wreach-kunder, prosjekter eller ansatte."
+    },
+    {
+      "name": "trade-detail",
+      "source": "https://unsplash.com/photos/modern-bathroom-with-shower-and-vanity-g51F6-WYzyU",
+      "image": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a",
+      "license": "https://unsplash.com/license",
+      "usage": "Illustrasjonsfoto i fiktive demoer. Ikke Wreach-kunder, prosjekter eller ansatte."
+    },
+    {
+      "name": "estate-house",
+      "source": "https://unsplash.com/photos/white-and-blue-concrete-building-tVzyDSV84w8",
+      "image": "https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4",
+      "license": "https://unsplash.com/license",
+      "usage": "Illustrasjonsfoto i fiktive demoer. Ikke Wreach-kunder, prosjekter eller ansatte."
+    },
+    {
+      "name": "salon-hair",
+      "source": "https://unsplash.com/photos/a-woman-with-her-hair-blowing-in-the-wind-vsyA8HBxa_I",
+      "image": "https://images.unsplash.com/photo-1635085421227-6d6d1532f149",
+      "license": "https://unsplash.com/license",
+      "usage": "Illustrasjonsfoto i fiktive demoer. Ikke Wreach-kunder, prosjekter eller ansatte."
+    }
+  ],
+  "fonts": [
+    {
+      "name": "Manrope",
+      "source": "https://github.com/google/fonts/tree/main/ofl/manrope",
+      "license": "OFL-Manrope.txt"
+    },
+    {
+      "name": "Fraunces",
+      "source": "https://github.com/google/fonts/tree/main/ofl/fraunces",
+      "license": "OFL-Fraunces.txt"
+    }
+  ]
+}

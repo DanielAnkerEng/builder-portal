@@ -1,12 +1,70 @@
+// One source of truth for the exhibition and all six fictional demo sites.
 export const DEMOS = Object.freeze({
-  restaurant:{theme:'restaurant',label:'Restaurant',name:'Glød Kjøkken',kicker:'Flammer, råvarer og ekte håndverk',title:'Grillet med varme.\nServert med stolthet.',intro:'Et moderne nabolagskjøkken med smaker som samler folk rundt bordet.',cta:'Se menyen',badge:'Fiktiv bransjedemo',visual:'Fra grillen',services:[['Signaturrullen','Saftig kjøtt, friske grønnsaker og husets dressing.'],['Rett fra grillen','Tilberedt på bestilling med den smaken du kommer tilbake for.'],['Nabolagets møteplass','Uformelt, varmt og alltid hyggelig.']],quote:'«Rett fra grillen, akkurat slik vi liker det.»',contact:'Fiktiv virksomhet – ingen besøksadresse eller kontaktkanal.'},
-  frisor:{theme:'salon',label:'Hår & skjønnhet',name:'Studio Frisør',kicker:'Rolig luksus i hjertet av byen',title:'Hår som føles\nsom deg.',intro:'Personlig klipp, farge og styling i et studio med tid til detaljene.',cta:'Be om en time',badge:'Fiktiv bransjedemo',visual:'Form · farge · følelse',services:[['Signaturklipp','En form som fungerer fra salongen til hverdagen.'],['Farge med dybde','Nyanser utviklet for hudtone, stil og vedlikehold.'],['Styling','En rolig stund før hverdagens eller livets store øyeblikk.']],quote:'«Vakkert hår starter med å bli sett.»',contact:'Fiktiv virksomhet – ingen besøksadresse eller kontaktkanal.'},
-  handverker:{theme:'trade',label:'Rørlegger',name:'Form Rørservice',kicker:'Fagfolk når det gjelder',title:'Trygt utført.\nRyddig levert.',intro:'Fra akutt lekkasje til komplett bad – med tydelige avtaler og dokumentert arbeid.',cta:'Be om befaring',badge:'Fiktiv bransjedemo',visual:'Bad · vann · vedlikehold',services:[['Akutt hjelp','Rask respons når vannet ikke kan vente.'],['Bad og våtrom','Én faglig partner fra planlegging til ferdig resultat.'],['Service og vedlikehold','Forebygg problemer og forleng levetiden på anlegget.']],quote:'«Vi kommer når vi sier – og rydder når vi går.»',contact:'Fiktiv virksomhet – ingen besøksadresse eller kontaktkanal.'},
-  bilverksted:{theme:'auto',label:'Bilverksted',name:'Ekspress Verksted',kicker:'Presist arbeid. Tydelige råd.',title:'Bedre flyt.\nTryggere vei.',intro:'Service og vedlikehold for alle bilmerker, med enkel dialog hele veien.',cta:'Send forespørsel',badge:'Fiktiv bransjedemo',visual:'Kontroll på veien',services:[['Service','Systematisk vedlikehold tilpasset bilen og kjøremønsteret.'],['Dekk og hjul','Trygt veigrep, riktig oppbevaring og effektivt skift.'],['EU-kontroll','En ryddig gjennomgang med tydelig forklaring.']],quote:'«Du skal forstå hva bilen trenger – og hvorfor.»',contact:'Fiktiv virksomhet – ingen besøksadresse eller kontaktkanal.'},
-  eiendom:{theme:'estate',label:'Eiendomsmegling',name:'Fjord Eiendom',kicker:'Hjem med historie. Salg med retning.',title:'Der neste kapittel\nbegynner.',intro:'Lokal markedskunnskap, gjennomtenkt presentasjon og trygg rådgivning.',cta:'Utforsk boligene',badge:'Fiktiv bransjedemo',visual:'Lys · rom · utsikt',services:[['Kuraterte boliger','Hjem presentert med respekt for arkitektur og atmosfære.'],['Lokal rådgivning','Innsikt som gir tryggere valg – enten du kjøper eller selger.'],['Helhetlig salg','Fra første vurdering til overleverte nøkler.']],quote:'«Vi selger ikke bare kvadratmeter. Vi formidler muligheter.»',contact:'Fiktiv virksomhet – ingen besøksadresse eller kontaktkanal.'},
-  konsulent:{theme:'consulting',label:'Regnskap & rådgivning',name:'Nord Rådgivning',kicker:'Oversikt som gir handlekraft',title:'Klarhet i tallene.\nRo i beslutningene.',intro:'Regnskap, rapportering og rådgivning for bedrifter som vil styre med bedre innsikt.',cta:'Avtal en samtale',badge:'Fiktiv bransjedemo',visual:'Innsikt · retning · kontroll',services:[['Løpende regnskap','Ryddige prosesser og oppdatert oversikt gjennom året.'],['Rapportering','Tall forklart slik at de kan brukes i praksis.'],['Rådgivning','En erfaren sparringspartner når valgene betyr mest.']],quote:'«God rådgivning gjør komplekse valg enklere.»',contact:'Fiktiv virksomhet – ingen besøksadresse eller kontaktkanal.'}
-})
+  restaurant: {
+    key: 'restaurant', theme: 'restaurant', label: 'Restaurant', name: 'Bord & Jord',
+    kicker: 'Kjøkkenet følger sesongen.', title: 'Bli sittende litt til.',
+    intro: 'En liten nabolagsrestaurant med plass til lange samtaler og råvarer i sesong.',
+    cta: 'Se menyen', target: 'meny', hero: 'restaurant-room', heroAlt: 'Varmt lys over et dekket restaurantbord – illustrasjonsfoto',
+    side: 'restaurant-food', sideAlt: 'Sesongrett på en håndlaget tallerken – illustrasjonsfoto',
+    nav: [['Meny', 'meny'], ['Om stedet', 'stedet'], ['Et bord til deg', 'besok']],
+    services: [['Smått først', 'Noe å dele mens samtalen kommer i gang.'], ['Fra kjøkkenet', 'Sesongens smaker på en tallerken.'], ['En søt avslutning', 'Bli sittende litt til.']],
+    menu: {
+      Middag: [['Ovnsbakt torsk', 'Erter, brunet smør og sprø potet'], ['Grillet blomkål', 'Hvit bønnekrem, urter og ristede frø'], ['Langtidsbakt okse', 'Rotgrønnsaker og en fyldig sjy']],
+      Smått: [['Surdeigsbrød', 'Pisket smør og flaksalt'], ['Beter fra ovnen', 'Geitost, valnøtter og sitron'], ['Sprø poteter', 'Urtemajones og gressløk']],
+      Dessert: [['Eple & vanilje', 'Lune epler, sprø havre og vaniljekrem'], ['Mørk sjokolade', 'Bær og en liten klype havsalt']],
+    },
+  },
+  frisor: {
+    key: 'frisor', theme: 'salon', label: 'Frisør', name: 'FORM studio',
+    kicker: 'Hår er personlig.', title: 'Din form. Ditt uttrykk.',
+    intro: 'Et rolig rom for nye ideer. Vi finner et uttrykk som passer håret ditt, hverdagen din og deg.',
+    cta: 'Finn din behandling', target: 'behandlinger', hero: 'salon-hair', heroAlt: 'Hår i bevegelse og mykt motlys – redaksjonelt illustrasjonsfoto, ikke en kunde',
+    side: 'salon-room', sideAlt: 'Lys frisørsalong med buede speil – illustrasjonsfoto',
+    nav: [['Behandlinger', 'behandlinger'], ['Inspirasjon', 'galleri'], ['Studioet', 'studio']],
+    services: [['Klipp & form', 'Fra en liten justering til en ny fasong. En konsultasjon er starten på en klipp tilpasset deg.'], ['Farge & spill', 'Myke overganger, lysere partier eller en tydelig forandring. Vi snakker om vedlikehold før vi begynner.'], ['Pleie & styling', 'Gi håret litt ekstra oppmerksomhet. Behandling og styling tilpasses hårets utgangspunkt.']],
+  },
+  handverker: {
+    key: 'handverker', theme: 'trade', label: 'Håndverker', name: 'FJELL & FORM',
+    kicker: 'Materialer. Mennesker. Håndverk.', title: 'Rom som varer.',
+    intro: 'Oppussing, tilbygg og innredning. Vi gjør store planer til oversiktlige prosjekter, ett steg av gangen.',
+    cta: 'Utforsk prosjekter', target: 'prosjekter', hero: 'trade-bath', heroAlt: 'Moderne baderom med badekar – illustrasjonsfoto, ikke et levert prosjekt',
+    side: 'trade-detail', sideAlt: 'Detaljer i et oppusset baderom – illustrasjonsfoto',
+    nav: [['Tjenester', 'tjenester'], ['Prosjekter', 'prosjekter'], ['Slik jobber vi', 'prosess']],
+    services: [['Oppussing', 'Helhetlig fornyelse av rom, med materialvalg og fremdrift avklart før oppstart.'], ['Tilbygg', 'Mer plass, med en plan som tar hensyn til både huset og hverdagen rundt.'], ['Innredning', 'Detaljene som får rommet til å fungere. Fra oppbevaring til den siste listen.']],
+  },
+  bilverksted: {
+    key: 'bilverksted', theme: 'auto', label: 'Bilverksted', name: 'DREI / verksted',
+    kicker: 'Service / vedlikehold / feilsøking', title: 'Neste kilometer starter her.',
+    intro: 'Forstå hva bilen trenger. Få en oversiktlig plan for service, vedlikehold og veien videre.',
+    cta: 'Hva trenger bilen?', target: 'service', hero: 'auto-workshop', heroAlt: 'Mekaniker ved en bilmotor – illustrasjonsfoto, ikke verkstedets ansatte',
+    side: 'auto-detail', sideAlt: 'Arbeid på bil i et verksted – illustrasjonsfoto',
+    nav: [['Tjenester', 'service'], ['Slik foregår det', 'prosess'], ['Vanlige spørsmål', 'sporsmal']],
+    services: [['Service', 'Planlagt vedlikehold med utgangspunkt i bilens behov. Arbeid og omfang avklares før bilen settes inn.'], ['Feilsøking', 'En ulyd eller et varsel? Vi starter med å finne årsaken og forklarer hva som bør gjøres videre.'], ['Hjul & dekk', 'Dekkskift og vurdering av slitasje. Vi hjelper deg å forstå hva som er klart for neste sesong.']],
+  },
+  eiendom: {
+    key: 'eiendom', theme: 'estate', label: 'Eiendom', name: 'ROM eiendom',
+    kicker: 'Et nytt sted å høre til.', title: 'Plass til neste kapittel.',
+    intro: 'Lys, linjer og rom for hverdagen. Finn et sted du kan se deg selv.',
+    cta: 'Utforsk boligene', target: 'boliger', hero: 'estate-house', heroAlt: 'Moderne hus med store vinduer – illustrasjonsfoto, ikke en bolig til salgs',
+    side: 'estate-cabin', sideAlt: 'Trehytte i skog – illustrasjonsfoto, ikke en bolig til salgs',
+    nav: [['Boliger', 'boliger'], ['Å selge', 'selge'], ['Vår tilnærming', 'tilnaerming']],
+    services: [['Bli kjent', 'Vi starter med boligen og det som gjør den spesiell.'], ['Lag en plan', 'Presentasjon, fremdrift og forventninger avklares sammen.'], ['Neste kapittel', 'En ryddig prosess fra første samtale til overlevering.']],
+    properties: [
+      {name: 'Lysningen', type: 'Enebolig', image: 'estate-house', facts: '4 rom · 146 m²', description: 'Åpne oppholdsrom vendt mot hagen. Store vindusflater slipper lyset langt inn, mens overdekkede uteplasser gir skygge på varme dager.', rooms:'4', area:'146 m²', features:['Åpent kjøkken og stue med utgang til terrasse', 'Tre soverom samlet i en roligere del av huset', 'Overdekket uteplass og skjermet hage'], materials:'Lyse pussflater, store glassfelt og varme innslag av tre.', surroundings:'Et tenkt boligmiljø med grønne uteområder. Ingen faktisk adresse eller beliggenhet er tilknyttet.'},
+      {name: 'Skogro', type: 'Hytte', image: 'estate-cabin', facts: '3 rom · 74 m²', description: 'Et lite tilfluktssted mellom trærne. Oppholdsrommet samler utsikten, mens en enkel materialpalett gir naturen hovedrollen.', rooms:'3', area:'74 m²', features:['Sammenhengende oppholdsrom mot skogen', 'To soverom og en kompakt entré', 'Terrasse i nivå med terrenget'], materials:'Mørk trekledning og naturlige overflater med synlig struktur.', surroundings:'Et illustrert skogsmiljø, uten faktisk tomt, adresse eller salgsobjekt.'},
+    ],
+  },
+  konsulent: {
+    key: 'konsulent', theme: 'consulting', label: 'Konsulent & regnskap', name: 'RETNING',
+    kicker: 'Oversikt før neste beslutning.', title: 'Mindre usikkerhet. Mer retning.',
+    intro: 'Regnskap og rådgivning forklart med vanlige ord. Et tydelig grunnlag for valgene som ligger foran deg.',
+    cta: 'Finn ditt startpunkt', target: 'tjenester', hero: null, heroAlt: '',
+    side: null, sideAlt: '',
+    nav: [['Tjenester', 'tjenester'], ['Samarbeid', 'samarbeid'], ['Spørsmål', 'sporsmal']],
+    services: [['Regnskap', 'En ryddig oversikt over tallene. Oppgaver, ansvar og leveranse må avklares ut fra virksomhetens behov.'], ['Økonomisk oversikt', 'Sett tallene i sammenheng. Budsjett og enkle oversikter kan gi et bedre utgangspunkt for planlegging.'], ['Rådgivning', 'En samtalepartner når noe skal endres. Vi begynner med situasjonen din, ikke med en standardløsning.']],
+  },
+});
 
 export function resolveDemo(key) {
-  return typeof key === 'string' && Object.hasOwn(DEMOS, key) ? DEMOS[key] : DEMOS.restaurant
+  return typeof key === 'string' && Object.hasOwn(DEMOS, key) ? DEMOS[key] : DEMOS.restaurant;
 }

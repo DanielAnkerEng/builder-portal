@@ -25,7 +25,10 @@ test('demo stays static and uses safe rendering', () => {
 test('marketing does not claim contact submission or invented results', () => {
   const html = readFileSync(new URL('../../index.html', import.meta.url), 'utf8')
   const script = readFileSync(new URL('../../js/script.js', import.meta.url), 'utf8')
-  assert.match(html, /Kontaktskjema kommer snart/)
+  assert.match(html, /Kontaktkanalen er ikke åpnet/)
+  assert.match(html, /Ingen henvendelse kan sendes her/)
+  assert.match(html, /Engangskjøp/)
+  assert.match(html, /Separat tjeneste/)
   assert.doesNotMatch(html, /<form|testimonial|data-count|Leverte nettsider/)
   assert.doesNotMatch(script, /Takk! Vi tar kontakt|contactForm/)
 })

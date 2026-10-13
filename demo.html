@@ -1,19 +1,22 @@
-<!DOCTYPE html>
-<html lang="no">
+<!doctype html>
+<html lang="nb">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex,nofollow">
-<title>Nettsideeksempel | Wreach</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/demo.css">
-</head>
-<body>
-  <a class="demo-return" href="index.html#portfolio" aria-label="Tilbake til Wreach">← Tilbake til Wreach</a>
-  <p class="demo-notice">DEMO · Fiktiv virksomhet. Ingen bestillinger, henvendelser eller live-data.</p>
-  <main id="demoRoot" aria-live="polite"></main>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Utforsk en fiktiv bransjenettside fra Wreach. Designforslag, ikke en virkelig virksomhet.">
+  <title>Bransjedemo — Wreach</title>
+  <link rel="stylesheet" href="css/public-fonts.css">
+  <link rel="stylesheet" href="css/demo.css">
   <script type="module" src="js/demo.js"></script>
+</head>
+<body class="demo-page">
+  <a class="demo-skip" href="#demoRoot">Hopp til innhold</a>
+  <aside class="demo-toolbar" aria-label="Om demonstrasjonen">
+    <a href="index.html#nettsider" class="demo-back">← Tilbake til Wreach</a>
+    <span>Fiktiv virksomhet <span class="toolbar-detail">· et designforslag, ikke et kundeprosjekt</span></span>
+    <span class="demo-toolbar-brand" aria-hidden="true">Wreach↗</span>
+  </aside>
+  <main id="demoRoot" tabindex="-1"><noscript>Slå på JavaScript for å utforske demonstrasjonen. Ingen bestillinger eller henvendelser sendes fra denne siden.</noscript></main>
 </body>
 </html>
