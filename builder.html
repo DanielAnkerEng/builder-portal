@@ -264,6 +264,20 @@
       </div>
 
     </div>
+    <details class="draft-recovery" id="draftRecovery">
+      <summary>Sikre utkast / avklar lagring</summary>
+      <button type="button" class="btn btn-outline btn-full" id="exportDraftBtn">Last ned hele åpne utkastet (JSON)</button>
+      <p id="exportStatus" role="status"></p>
+      <p>Eksporten inneholder alle sider, også ulagrede endringer. Ingen automatisk sikkerhetskopi på enheten. Nettleseren kan advare ved navigasjon, men ikke alltid ved lukking eller krasj.</p>
+      <button type="button" class="btn btn-outline btn-full" id="recoveryRead">Kontroller serverversjonen — kun lesing</button>
+      <p id="recoveryMessage" role="status" aria-live="polite">Lesekontrollen pauser lagring til du velger veien videre.</p>
+      <ul id="recoveryDifferences" aria-label="Alle forskjeller mellom ditt åpne utkast og kontrollert serverversjon"></ul>
+      <button type="button" class="btn btn-outline btn-full" id="recoveryKeep" disabled>Bruk mitt åpne utkast på serveren …</button>
+      <button type="button" class="btn btn-outline btn-full" id="recoveryAdopt" disabled>Åpne den kontrollerte serverkopien …</button>
+      <p id="recoveryWarning" role="alert"></p>
+      <button type="button" class="btn btn-primary btn-full" id="recoveryConfirm" hidden>Bekreft dette valget</button>
+      <button type="button" class="btn btn-outline btn-full" id="recoveryCancel" hidden>Avbryt — behold begge versjoner</button>
+    </details>
     <div class="customer-save-bar" id="customerSaveBar" style="display:none;">
       <div><strong>Lagre endringene dine</strong><span id="customerSaveHint">Alle endringer er lagret</span></div>
       <button class="btn btn-primary btn-full" id="customerSaveBtn" type="button">Lagre endringer</button>

@@ -3,6 +3,7 @@ import { requireAal2, signOut } from './auth.js'
 import { loadWebsiteDraft, publishSite, saveDraft } from './api.js'
 import { SECTION_TYPES, copy, emptyDraft, normalizeSections, addPage, addSection, moveSection, templateDraft, renderDraftPage } from './builder-editor.mjs'
 import { renameWebsite } from './builder-project-api.mjs'
+import { classifyDraft, draftComparison, renderDraftComparison, openDraftCopy, draftExport } from './builder-recovery.mjs'
 
 const ctx=await requireAal2();const params=new URLSearchParams(location.search);let websiteId=params.get('website')
 if(!websiteId){const{data}=await supabase.from('websites').select('id').limit(1).maybeSingle();websiteId=data?.id}
@@ -19,7 +20,10 @@ const loaded=await loadWebsiteDraft(websiteId),website=loaded.website;let revisi
 const wide=['businessName','accent','accent2','bg','domain','language','status','seoTitle','seoDesc','templateId'];
 let siteData=normalizeSections(migrateToPages(copy(loaded.draft.content))||emptyDraft(website.name));siteData.status='draft';let state=flatten();let saveTimer=null
 let saving=null,editVersion=0,savedEditVersion=0,templateBusy=false,publishBusy=false,saveBlocked=false
-const isAdmin=ctx.isPlatformAdmin;document.getElementById('userEmail').textContent=`${ctx.profile.display_name} (${isAdmin?'Wreach-admin':'kunde'})`;document.getElementById('userAvatarBtn').textContent=ctx.profile.display_name.slice(0,2).toUpperCase();document.getElementById('logoutBtn').addEventListener('click',signOut);document.getElementById('userAvatarBtn').addEventListener('click',()=>document.getElementById('userDropdown').classList.toggle('open'))
+let confirmedDraft=copy(loaded.draft),attemptedDraft=null,observedDraft=null,readEpoch=0,reading=false,recoveryChoice=null,recovering=false
+const mayLoseWork=()=>saveBlocked||saving||templateBusy||editVersion!==savedEditVersion
+window.addEventListener('beforeunload',event=>{if(mayLoseWork()){event.preventDefault();event.returnValue=''}})
+const isAdmin=ctx.isPlatformAdmin;document.getElementById('userEmail').textContent=`${ctx.profile.display_name} (${isAdmin?'Wreach-admin':'kunde'})`;document.getElementById('userAvatarBtn').textContent=ctx.profile.display_name.slice(0,2).toUpperCase();document.getElementById('logoutBtn').addEventListener('click',()=>{if(!mayLoseWork()||window.confirm('Åpne endringer eller uavklart lagring kan gå tapt. Avbryt for å eksportere hele utkastet først. Vil du logge ut?'))return signOut()});document.getElementById('userAvatarBtn').addEventListener('click',()=>document.getElementById('userDropdown').classList.toggle('open'))
 document.getElementById('projectName').value=website.name;document.getElementById('ownerTag').textContent=`${website.name} · privat utkast`;document.getElementById('ownerTag').style.display='inline-block';document.getElementById('customerSaveBar').style.display='block';document.getElementById('viewSiteBtn').href=`site.html?slug=${encodeURIComponent(website.public_slug)}`
 document.getElementById('f-status').value='draft';document.getElementById('f-status').disabled=true
 document.getElementById('codeBtn').disabled=true;document.getElementById('codeBtn').title='Egendefinert JavaScript er deaktivert i Security V2'
@@ -36,21 +40,84 @@ function render(){const html=preview();document.getElementById('previewDesktop')
 function cancelAutosave(){clearTimeout(saveTimer);saveTimer=null}
 function resumeAutosave(){
   cancelAutosave()
-  if(editVersion!==savedEditVersion&&!saveBlocked&&!templateBusy&&!publishBusy&&!document.getElementById('templateModal').classList.contains('open'))
+  if(editVersion!==savedEditVersion&&!saveBlocked&&!recovering&&!templateBusy&&!publishBusy&&!document.getElementById('templateModal').classList.contains('open'))
     saveTimer=setTimeout(()=>{saveTimer=null;return persist(false)},800)
 }
-function schedule(){editVersion++;document.getElementById('saveStatus').textContent=saveBlocked?'Lagring må avklares før flere endringer lagres.':'Ulagrede endringer';document.getElementById('customerSaveHint').textContent='Du har endringer som ikke er lagret';resumeAutosave()}
+function schedule(){editVersion++;cancelRecoveryChoice();document.getElementById('saveStatus').textContent=saveBlocked?'Lagring må avklares før flere endringer lagres.':'Ulagrede endringer';document.getElementById('customerSaveHint').textContent='Du har endringer som ikke er lagret';if(observedDraft)describeRecovery();resumeAutosave()}
 function savedFeedback(show){document.getElementById('saveStatus').textContent=show?'Lagret ✓':'Alt lagret';document.getElementById('customerSaveHint').textContent=`Privat utkast · revisjon ${revision}`;document.getElementById('lastSavedInfo').textContent='Nå nettopp'}
-async function persist(show=true){
+async function persist(show=true,recoverySave=false){
   cancelAutosave()
-  if(templateBusy)return false
+  if(templateBusy||(recovering&&!recoverySave))return false
   if(saveBlocked){document.getElementById('saveStatus').textContent='Lagring er satt på pause. Åpne redigeringer er beholdt; avklar lagret tilstand før nytt forsøk.';return false}
   if(saving){if(!await saving)return false;if(savedEditVersion===editVersion)return true;return persist(show)}
   commit();const version=editVersion,snapshot=copy(siteData)
-  saving=(async()=>{try{const saved=await saveDraft(websiteId,snapshot,revision);revision=Number(saved.revision);savedEditVersion=version;if(version===editVersion)savedFeedback(show);return true}catch(error){saveBlocked=true;cancelAutosave();document.getElementById('saveStatus').textContent=error.code==='STALE_REVISION'?'Nyere versjon finnes. Endringene dine er fortsatt åpne.':'Lagring kunne ikke bekreftes. Endringene dine er fortsatt åpne. Avklar lagret tilstand før nytt forsøk.';return false}})()
+  attemptedDraft={content:copy(snapshot),revision};observedDraft=null;readEpoch++
+  saving=(async()=>{try{const saved=await saveDraft(websiteId,snapshot,revision);revision=Number(saved.revision);confirmedDraft={content:copy(snapshot),revision};attemptedDraft=null;savedEditVersion=version;if(version===editVersion)savedFeedback(show);return true}catch(error){saveBlocked=true;cancelAutosave();showRecovery();document.getElementById('saveStatus').textContent=error.code==='STALE_REVISION'?'Nyere versjon finnes. Endringene dine er fortsatt åpne.':'Lagring kunne ikke bekreftes. Endringene dine er fortsatt åpne. Avklar lagret tilstand før nytt forsøk.';return false}})()
   try{return await saving}finally{saving=null}
 }
 document.getElementById('saveBtn').addEventListener('click',()=>persist(true));document.getElementById('customerSaveBtn').addEventListener('click',()=>persist(true))
+// Recovery is explicit and memory-only. A read never adopts data or resumes writes.
+function currentDraft(){return openDraftCopy(siteData,state,wide,PAGE_CONTENT_KEYS)}
+function cancelRecoveryChoice(){recoveryChoice=null;document.getElementById('recoveryConfirm').hidden=true;document.getElementById('recoveryCancel').hidden=true;document.getElementById('recoveryWarning').textContent=''}
+function recoveryActions(enabled){for(const id of ['recoveryKeep','recoveryAdopt'])document.getElementById(id).disabled=!enabled}
+function showRecovery(){document.getElementById('draftRecovery').open=true;document.getElementById('recoveryDifferences').replaceChildren();recoveryActions(false);document.getElementById('recoveryMessage').textContent='Lagring er pauset. Last ned hele utkastet, og kontroller serverversjonen. Ingen automatisk gjentakelse.'}
+function describeRecovery(){
+  const kind=classifyDraft(confirmedDraft,attemptedDraft,observedDraft),differences=draftComparison(currentDraft(),observedDraft.content)
+  const label={previous:'Serveren har fortsatt sist bekreftede innhold og revisjon.',attempt:'Serverinnholdet samsvarer med lagringsforsøket ved en nyere revisjon. Dette beviser innholdet, ikke hvem som skrev det.',different:'Serveren har en annen versjon. Ingen automatisk sammenslåing eller overskriving.'}[kind]
+  document.getElementById('recoveryMessage').textContent=`${label} Bekreftet revisjon ${confirmedDraft.revision}; kontrollert revisjon ${observedDraft.revision}. ${differences.length} forskjeller mot ditt åpne utkast. ${differences.length?'Alle forskjeller vises nedenfor. Lange verdier kan åpnes i sin helhet.':'Innholdet er likt.'}`
+  renderDraftComparison(document,document.getElementById('recoveryDifferences'),differences)
+  recoveryActions(true)
+}
+document.getElementById('recoveryRead').addEventListener('click',async()=>{
+  if(reading||saving||templateBusy||publishBusy||recovering)return
+  cancelAutosave();saveBlocked=true;reading=true;const epoch=++readEpoch;observedDraft=null;cancelRecoveryChoice();showRecovery()
+  document.getElementById('saveStatus').textContent='Lagring er pauset mens servertilstanden avklares.'
+  document.getElementById('recoveryRead').disabled=true;document.getElementById('recoveryMessage').textContent='Kontrollerer serverversjonen … Ingen lagring utføres.'
+  try{
+    const result=await loadWebsiteDraft(websiteId);if(epoch!==readEpoch)return
+    if(result.website.id!==websiteId)throw Error('WRONG_PROJECT')
+    classifyDraft(confirmedDraft,attemptedDraft,result.draft)
+    if(result.draft.content!==null)normalizeSections(migrateToPages(copy(result.draft.content)))
+    observedDraft=copy(result.draft);describeRecovery()
+  }catch{if(epoch===readEpoch){observedDraft=null;recoveryActions(false);document.getElementById('recoveryMessage').textContent='Servertilstanden kunne ikke kontrolleres. Åpne endringer er beholdt. Eksporter utkastet, eller prøv lesekontrollen igjen. Lagring og publisering er fortsatt pauset.'}}
+  finally{if(epoch===readEpoch){reading=false;document.getElementById('recoveryRead').disabled=false}}
+})
+function chooseRecovery(choice){
+  if(!observedDraft||reading||recovering||saving||templateBusy||publishBusy)return
+  recoveryChoice={choice,version:editVersion,epoch:readEpoch};document.getElementById('recoveryConfirm').hidden=false;document.getElementById('recoveryCancel').hidden=false
+  document.getElementById('recoveryWarning').textContent=choice==='keep'?'Du erstatter hele serverutkastet med alle åpne sider, seksjoner og innstillinger. Serverendringer som ikke finnes her, erstattes. Revisjonen kontrolleres ved lagring. Bekreft bare etter at forskjellene er vurdert.':'Du erstatter alle åpne redigeringer med den kontrollerte serverkopien. Lokale endringer går tapt. Last ned JSON først hvis du vil beholde dem. Kopien kan være eldre enn en senere serverendring.'
+  document.getElementById('recoveryConfirm').focus()
+}
+document.getElementById('recoveryKeep').addEventListener('click',()=>chooseRecovery('keep'))
+document.getElementById('recoveryAdopt').addEventListener('click',()=>chooseRecovery('adopt'))
+document.getElementById('recoveryCancel').addEventListener('click',()=>{const target=recoveryChoice?.choice==='adopt'?'recoveryAdopt':'recoveryKeep';cancelRecoveryChoice();document.getElementById(target).focus()})
+document.getElementById('recoveryConfirm').addEventListener('click',async()=>{
+  if(!recoveryChoice||recovering||reading||saving||templateBusy||publishBusy||!observedDraft)return
+  const choice=recoveryChoice,server=copy(observedDraft)
+  if(choice.version!==editVersion||choice.epoch!==readEpoch){cancelRecoveryChoice();return}
+  cancelRecoveryChoice();recovering=true;recoveryActions(false);document.getElementById('recoveryRead').disabled=true;document.getElementById('draftRecovery').setAttribute('aria-busy','true')
+  try{
+    if(choice.choice==='adopt'){
+      siteData=normalizeSections(migrateToPages(copy(server.content))||emptyDraft(website.name));siteData.status='draft';state=flatten();refreshFields();renderEditing();render()
+      revision=server.revision;confirmedDraft=server;attemptedDraft=null;observedDraft=null;editVersion++;savedEditVersion=editVersion;saveBlocked=false
+      document.getElementById('saveStatus').textContent='Kontrollert serverkopi åpnet. Ingen skriving utført.'
+      document.getElementById('customerSaveHint').textContent=`Kontrollert revisjon ${revision}`
+    }else{
+      document.getElementById('saveStatus').textContent='Lagrer det uttrykkelig valgte utkastet …'
+      revision=server.revision;confirmedDraft=server;saveBlocked=false
+      const saved=await persist(true,true)
+      if(saved&&choice.version!==editVersion){saveBlocked=true;showRecovery();document.getElementById('saveStatus').textContent='Kontrollert utkast lagret, men du har nyere åpne endringer. Kontroller serveren før neste lagring.'}
+    }
+    if(!saveBlocked){document.getElementById('recoveryMessage').textContent='Avklaringen er fullført. Vanlig lagring er tilgjengelig.';document.getElementById('recoveryDifferences').replaceChildren()}
+  }finally{recovering=false;document.getElementById('recoveryRead').disabled=false;document.getElementById('draftRecovery').setAttribute('aria-busy','false');if(document.activeElement===document.body||document.activeElement===document.getElementById('recoveryConfirm'))document.getElementById('recoveryRead').focus()}
+})
+function exportOpenDraft(){
+  const blob=new Blob([draftExport(websiteId,currentDraft())],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a')
+  link.href=url;link.download='wreach-utkast.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)
+  document.getElementById('exportStatus').textContent='JSON-nedlasting er startet. Kontroller at filen er lagret på enheten. Dette lagrer ikke til serveren.'
+}
+document.getElementById('exportDraftBtn').addEventListener('click',exportOpenDraft)
+document.getElementById('downloadDataBtn').addEventListener('click',exportOpenDraft)
 const modal=document.getElementById('publishModal'),publishError=document.getElementById('publishError')
 document.getElementById('publishBtn').addEventListener('click',()=>{publishError.classList.remove('show');openPublishDialog()})
 document.getElementById('closeModal').addEventListener('click',()=>closePublishDialog())
@@ -145,15 +212,17 @@ function openTemplateDialog(id){
 function closeTemplateDialog(){if(templateBusy)return;templateModal.classList.remove('open');document.body.style.overflow=templateOverflow;dialogBackground.forEach((el,i)=>{el.inert=templateInert[i]});templateReturnFocus?.focus();if(!templateAttempted)resumeAutosave()}
 byId('cancelTemplateBtn').addEventListener('click',closeTemplateDialog)
 byId('confirmTemplateBtn').addEventListener('click',async()=>{
-  if(templateBusy||saveBlocked){byId('templateError').textContent='Lagret tilstand må avklares før nytt malbytte. Åpne redigeringer er beholdt.';return}templateBusy=true;templateControls.forEach(el=>{el.disabled=true});byId('templateError').textContent='Lagrer privat utkast …';cancelAutosave()
+  if(templateBusy||saveBlocked||recovering||reading){byId('templateError').textContent='Lagret tilstand må avklares før nytt malbytte. Åpne redigeringer er beholdt.';return}templateBusy=true;templateControls.forEach(el=>{el.disabled=true});byId('templateError').textContent='Lagrer privat utkast …';cancelAutosave()
   try{
     if(saving&&!await saving)throw Error('SAVE_FAILED')
     commit();const candidate=templateDraft(siteData,selectedTemplate,byId('replaceTemplateContent').checked)
     templateAttempted=true
+    attemptedDraft={content:copy(candidate),revision};observedDraft=null;readEpoch++
     const saved=await saveDraft(websiteId,candidate,revision)
+    confirmedDraft={content:copy(candidate),revision:Number(saved.revision)};attemptedDraft=null
     revision=Number(saved.revision);savedEditVersion=editVersion;siteData=candidate;state=flatten();refreshFields();renderEditing();render();savedFeedback(true)
     templateBusy=false;closeTemplateDialog()
-  }catch(error){saveBlocked=true;cancelAutosave();byId('saveStatus').textContent='Malbytte må avklares før videre lagring. Åpne redigeringer er beholdt.';byId('templateError').textContent=error.code==='STALE_REVISION'?'En nyere revisjon finnes. Malbyttet er ikke lagret. Dine åpne redigeringer er beholdt. Avbryt og avklar versjonen før nytt forsøk.':'Malbyttet kunne ikke bekreftes lagret. Dine åpne redigeringer er beholdt. Ikke gjenta ved uklart nettverksresultat før lagret tilstand er kontrollert.'}
+  }catch(error){saveBlocked=true;cancelAutosave();showRecovery();byId('saveStatus').textContent='Malbytte må avklares før videre lagring. Åpne redigeringer er beholdt.';byId('templateError').textContent=error.code==='STALE_REVISION'?'En nyere revisjon finnes. Malbyttet er ikke lagret. Dine åpne redigeringer er beholdt. Avbryt og avklar versjonen før nytt forsøk.':'Malbyttet kunne ikke bekreftes lagret. Dine åpne redigeringer er beholdt. Ikke gjenta ved uklart nettverksresultat før lagret tilstand er kontrollert.'}
   finally{templateBusy=false;templateControls.forEach(el=>{el.disabled=false})}
 })
 templateModal.addEventListener('keydown',event=>{
@@ -219,4 +288,4 @@ modal.addEventListener('keydown',event=>{
   }
 })
 // END BUILDER PRESENTATION CONTROLS
-document.getElementById('copyCodeBtn').disabled=true;document.getElementById('downloadDataBtn').style.display='none';document.getElementById('downloadHtmlBtn').style.display='none';render()
+document.getElementById('copyCodeBtn').disabled=true;document.getElementById('downloadDataBtn').style.display='';document.getElementById('downloadHtmlBtn').style.display='none';render()

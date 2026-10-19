@@ -156,3 +156,16 @@
 .builder-body .site-preview .gallery img { max-width:100%; height:auto; }
 .builder-body .site-preview-mobile .draft-layout .cards { grid-template-columns:1fr; }
 .builder-body #templateModal .modal { max-height:85dvh; overflow-y:auto; }
+.builder-body .draft-recovery { flex:0 1 auto; min-height:44px; max-height:45dvh; overflow:auto; padding:14px 20px; border-top:1px solid #b7c1aa; font-size:13px; overflow-wrap:anywhere; }
+.builder-body .sidebar-panels { min-height:100px; }
+.builder-body .draft-recovery summary { cursor:pointer; font-weight:700; padding:8px 0; }
+.builder-body .draft-recovery .btn { margin-top:8px; white-space:normal; height:auto; }
+.builder-body .draft-recovery :focus-visible { outline:3px solid #405735; outline-offset:3px; }
+.builder-body #recoveryWarning:not(:empty) { border-left:3px solid #8b3d16; padding-left:10px; }
+.builder-body #recoveryDifferences { list-style:none; padding:0; }
+.builder-body .recovery-difference { margin:12px 0; padding:12px; background:#fff; border:1px solid #b7c1aa; border-radius:8px; }
+.builder-body .recovery-difference h3 { margin:0 0 10px; font-size:14px; line-height:1.5; }
+.builder-body .recovery-values { margin:0; }
+.builder-body .recovery-values dt { margin:10px 0 4px; font-weight:700; }
+.builder-body .recovery-values dd { margin:0; padding:8px; background:#f0f2e9; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.5; }
+.builder-body .recovery-difference details { margin-top:8px; }

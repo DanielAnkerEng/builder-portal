@@ -4,6 +4,7 @@ import vm from 'node:vm'
 import {readFileSync} from 'node:fs'
 import {execFileSync} from 'node:child_process'
 import * as editor from '../../js/builder-editor.mjs'
+import * as recovery from '../../js/builder-recovery.mjs'
 import {randomUUID} from 'node:crypto'
 
 const root=new URL('../../',import.meta.url)
@@ -17,7 +18,7 @@ function projectContent(){return {
   pages:[{id:'home',slug:'',name:'Forside',heroTitle:'Synthetic heading',heroSub:'Synthetic text',
     cta:'Example',aboutTitle:'About',aboutText:'Synthetic only',offerings:[],gallery:[],sections:[{id:'hero',name:'Hero',enabled:true},{id:'about',name:'About',enabled:true}]}]
 }}
-function harness({content=projectContent(),search='',denied=false,mobile=false,save=null,rename=null,publish=null}={}){
+function harness({content=projectContent(),search='',denied=false,mobile=false,save=null,rename=null,publish=null,load=null,confirm=false}={}){
   const calls=[],saved=[],published=[],pendingTimers=new Map(),timerErrors=[]
   let now=0,timerId=0
   const timers={get length(){return pendingTimers.size}}
@@ -34,9 +35,9 @@ function harness({content=projectContent(),search='',denied=false,mobile=false,s
     now=end;await flush();assert.deepEqual(timerErrors,[],'timer callback must not reject')
   }
   const document={activeElement:null}
-  const node=()=>{
+  const node=(tagName='div')=>{
     const classes=new Set()
-    return {value:'',textContent:'',innerHTML:'',disabled:false,hidden:false,inert:false,style:{},events:{},children:[],attrs:{},dataset:{},
+    return {tagName,value:'',textContent:'',innerHTML:'',disabled:false,hidden:false,inert:false,style:{},events:{},children:[],attrs:{},dataset:{},
       classList:{add:c=>classes.add(c),remove:c=>classes.delete(c),contains:c=>classes.has(c),toggle:(c,on)=>{const add=on??!classes.has(c);if(add)classes.add(c);else classes.delete(c)}},
       focus(){document.activeElement=this},setAttribute(key,value){this.attrs[key]=value},
       append(...children){this.children.push(...children)},replaceChildren(...children){this.children=children},querySelector(){return this.children.find(c=>typeof c.events.click==='function')},click(){return this.events.click?.()},addEventListener(type,fn){this.events[type]=fn}}
@@ -52,20 +53,21 @@ function harness({content=projectContent(),search='',denied=false,mobile=false,s
     querySelector:selector=>{const result={'.sidebar-tabs':tablist,'.topbar':topbar,'.builder-shell':shell}[selector];assert(result,selector);return result},
     querySelectorAll:selector=>{const result={'.sidebar-tabs .sidebar-tab':panelButtons,'.topbar-center .view-btn[data-view]':viewButtons}[selector];assert(result,selector);return result}})
   document.body.style.overflow='auto'
+  const windowEvents={},downloads=[]
   const context=vm.createContext({
-    ...editor,crypto:{randomUUID},
-    document,window:{matchMedia:query=>{assert.equal(query,'(max-width: 780px)');return {matches:mobile}}},
+    ...editor,...recovery,crypto:{randomUUID},Blob,URL:{createObjectURL(blob){downloads.push(blob);return 'blob:synthetic'},revokeObjectURL(){}},
+    document,window:{addEventListener(type,fn){windowEvents[type]=fn},confirm:()=>confirm,matchMedia:query=>{assert.equal(query,'(max-width: 780px)');return {matches:mobile}}},
     URLSearchParams,location:{search,reload(){throw Error('Unexpected navigation')}},
     requireAal2:async()=>{calls.push('aal2');if(denied)throw Error('guard denied');return {isPlatformAdmin:false,profile:{display_name:'Synthetic customer'}}},
     supabase:{from(table){assert.equal(table,'websites');return {select(fields){assert.equal(fields,'id');return this},limit(n){assert.equal(n,1);return this},async maybeSingle(){calls.push('lookup');return {data:{id:websiteId},error:null}}}}},
-    loadWebsiteDraft:async id=>{assert.equal(id,websiteId);calls.push('load');return {website:{id,company_id:'synthetic-company',name:'Synthetic project',public_slug:'synthetic-project'},draft:{content,revision:1}}},
+    loadWebsiteDraft:async id=>{assert.equal(id,websiteId);calls.push('load');const result={website:{id,company_id:'synthetic-company',name:'Synthetic project',public_slug:'synthetic-project'},draft:{content,revision:1}};return load&&calls.filter(c=>c==='load').length>1?load(result):result},
     saveDraft:async(id,body,revision)=>{saved.push({id,body:JSON.parse(JSON.stringify(body)),revision});return save?save(id,body,revision):{revision:revision+1}},
     renameWebsite:async(id,name)=>{calls.push('rename');return rename?rename(id,name):{name:name.trim()}},
     publishSite:async(id,revision,key)=>{published.push({id,revision,key});if(!publish)throw Error('Unexpected simulated publish');return publish(id,revision,key)},
     signOut:()=>calls.push('signOut'),setTimeout:setTimer,clearTimeout:clearTimer
   })
   vm.runInContext(dataSource,context)
-  return {elements,calls,saved,published,timers,advance,flush,document,panelButtons,viewButtons,topbar,shell,dialog,run:(code=source)=>vm.runInContext('(async()=>{\n'+code.replace(/^import .*$/gm,'')+'\n})()',context)}
+  return {elements,calls,saved,published,timers,advance,flush,document,panelButtons,viewButtons,topbar,shell,dialog,downloads,windowEvents,run:(code=source)=>vm.runInContext('(async()=>{\n'+code.replace(/^import .*$/gm,'')+'\n})()',context)}
 }
 test('actual complete Builder module initializes real project content and renders both previews',async()=>{
   const h=harness();await h.run()
@@ -315,4 +317,127 @@ test('an unexpected edit during publish response is never described as published
 test('publication rejection is visible, preserves edits and does not claim success',async()=>{
   const h=harness({publish:async()=>{throw Object.assign(Error('private error'),{code:'STALE_REVISION'})}});await h.run();edit(h,'Kept');preparePublish(h);await h.elements.confirmPublishBtn.click()
   assert.equal(h.published.length,1);assert.match(h.elements.publishError.textContent,/avklar versjonen/);assert(h.elements.publishModal.classList.contains('open'));assert.doesNotMatch(h.elements.saveStatus.textContent,/Publisert/)
+})
+
+for(const outcome of ['previous','attempt','different'])test('real recovery reads '+outcome+' without writes or replacing later edits, then explicitly saves observed revision',async()=>{
+  let server={content:projectContent(),revision:1},count=0
+  const h=harness({save:async(id,body,revision)=>{if(++count===1){if(outcome==='attempt')server={content:editor.copy(body),revision:2};if(outcome==='different'){server={content:projectContent(),revision:4};server.content.pages[0].heroTitle='Another editor'}throw Error('network')}
+    assert.equal(revision,server.revision);server={content:editor.copy(body),revision:revision+1};return {revision:server.revision}},load:async result=>({...result,draft:server})})
+  await h.run();edit(h,'Attempt');await h.elements.saveBtn.click();edit(h,'Later')
+  await h.elements.recoveryRead.click();assert.equal(h.saved.length,1);assert.equal(h.elements['f-heroTitle'].value,'Later')
+  assert.match(h.elements.recoveryMessage.textContent,outcome==='previous'?/sist bekreftede/:outcome==='attempt'?/samsvarer med lagringsforsøket/:/annen versjon/)
+  h.elements.recoveryKeep.click();assert.equal(h.saved.length,1);h.elements.recoveryCancel.click();assert.equal(h.saved.length,1)
+  h.elements.recoveryKeep.click();await h.elements.recoveryConfirm.click()
+  assert.equal(h.saved.length,2);assert.equal(server.content.pages[0].heroTitle,'Later');assert.match(h.elements.saveStatus.textContent,/Lagret/)
+  await h.advance(3000);assert.equal(h.saved.length,2)
+})
+test('new revision conflict after inspection preserves all local edits and blocks every publish',async()=>{
+  const h=harness({save:async()=>{throw Object.assign(Error('conflict'),{code:'STALE_REVISION'})}})
+  await h.run();edit(h,'Local');await h.elements.saveBtn.click();await h.elements.recoveryRead.click();h.elements.recoveryKeep.click();await h.elements.recoveryConfirm.click()
+  assert.equal(h.saved.length,2);assert.equal(h.elements['f-heroTitle'].value,'Local');preparePublish(h);await h.elements.confirmPublishBtn.click();assert.equal(h.published.length,0);assert.equal(h.saved.length,2)
+})
+test('duplicate reads are single-flight and later local edits invalidate a pending recovery confirmation',async()=>{
+  let finish
+  const h=harness({load:r=>new Promise(resolve=>{finish=()=>resolve(r)})});await h.run();edit(h,'Before')
+  const reading=h.elements.recoveryRead.click();await h.elements.recoveryRead.click();assert.equal(h.calls.filter(c=>c==='load').length,2)
+  edit(h,'During read');finish();await reading;assert.equal(h.elements['f-heroTitle'].value,'During read');assert.equal(h.saved.length,0)
+  h.elements.recoveryKeep.click();edit(h,'After choice');await h.elements.recoveryConfirm.click();await h.advance(3000);assert.equal(h.saved.length,0);assert(h.elements.recoveryConfirm.hidden)
+})
+test('read failure or regressive revision clears old choices and leaves saving paused',async()=>{
+  let count=0
+  const h=harness({load:async r=>{if(++count===1)return r;if(count===2)throw Error('sensitive failure');return {...r,draft:{content:r.draft.content,revision:0}}}})
+  await h.run();edit(h,'Keep');await h.elements.recoveryRead.click();h.elements.recoveryKeep.click()
+  for(let n=0;n<2;n++){await h.elements.recoveryRead.click();await h.elements.recoveryConfirm.click();await h.elements.saveBtn.click();assert.equal(h.saved.length,0);assert(h.elements.recoveryKeep.disabled);assert.match(h.elements.recoveryMessage.textContent,/kunne ikke kontrolleres/);assert.doesNotMatch(h.elements.recoveryMessage.textContent,/sensitive/)}
+})
+test('duplicate recovery writes are ignored and edits during chosen write stay open and paused',async()=>{
+  let finish
+  const h=harness({save:()=>new Promise(resolve=>{finish=()=>resolve({revision:2})})});await h.run();edit(h,'First');await h.elements.recoveryRead.click();h.elements.recoveryKeep.click()
+  const writing=h.elements.recoveryConfirm.click();await h.elements.recoveryConfirm.click();await h.elements.recoveryRead.click();assert.equal(h.saved.length,1);assert.equal(h.calls.filter(c=>c==='load').length,2)
+  edit(h,'Later');finish();await writing;await h.advance(3000);assert.equal(h.saved.length,1);assert.equal(h.elements['f-heroTitle'].value,'Later');assert.match(h.elements.saveStatus.textContent,/nyere åpne/)
+})
+test('template response loss preserves current local document even when attempted template is on server',async()=>{
+  let server
+  const h=harness({save:async(id,body)=>{server={content:editor.copy(body),revision:2};throw Error('network')},load:async r=>({...r,draft:server})})
+  await h.run();edit(h,'Original');h.elements['f-template'].value='konsulent';h.elements['f-template'].events.change();await h.elements.confirmTemplateBtn.click();h.elements.cancelTemplateBtn.click();edit(h,'Later original')
+  await h.elements.recoveryRead.click();assert.match(h.elements.recoveryMessage.textContent,/samsvarer med lagringsforsøket/);assert.equal(h.elements['f-template'].value,'restaurant');assert.equal(h.elements['f-heroTitle'].value,'Later original')
+})
+test('full export is a detached content-only copy, includes inactive pages/order/latest fields, performs no writes',async()=>{
+  const content=projectContent();content.pages.push({...editor.copy(content.pages[0]),id:'other',name:'Other'});const before=JSON.stringify(content)
+  const h=harness({content});await h.run();edit(h,'Unsaved export');h.elements.publishPersonalKey.value='synthetic-runtime-do-not-export';h.elements.exportDraftBtn.click()
+  const text=await h.downloads[0].text(),data=JSON.parse(text)
+  assert.deepEqual(Object.keys(data),['format','formatVersion','websiteId','content']);assert.equal(data.content.pages[0].heroTitle,'Unsaved export');assert.deepEqual(data.content.pages[1],content.pages[1]);assert.deepEqual(data.content.pages[0].sections,content.pages[0].sections)
+  assert.doesNotMatch(text,/synthetic-runtime|session|access_token|refresh_token|password|totp/i);assert.equal(JSON.stringify(content),before);assert.equal(h.saved.length,0);assert.equal(h.elements.saveStatus.textContent,'Ulagrede endringer')
+})
+test('adopt requires explicit confirmation, exports first, writes nothing and uses observed revision on next edit',async()=>{
+  const h=harness({load:async r=>({...r,draft:{content:r.draft.content,revision:7}})});await h.run();edit(h,'Discard only after consent');await h.elements.recoveryRead.click()
+  h.elements.recoveryAdopt.click();assert.match(h.elements.recoveryWarning.textContent,/Lokale endringer går tapt/);h.elements.exportDraftBtn.click();await h.elements.recoveryConfirm.click()
+  assert.equal(h.elements['f-heroTitle'].value,'Synthetic heading');assert.equal(h.saved.length,0);edit(h,'New');await h.elements.saveBtn.click();assert.equal(h.saved[0].revision,7)
+})
+test('navigation and logout warn for dirty or unresolved state, canceled logout preserves work',async()=>{
+  const h=harness();await h.run();let prevented=false;const event={preventDefault(){prevented=true}}
+  h.windowEvents.beforeunload(event);assert.equal(prevented,false);edit(h,'Keep');h.windowEvents.beforeunload(event);assert(prevented);assert.equal(event.returnValue,'')
+  h.elements.logoutBtn.click();assert(!h.calls.includes('signOut'));await h.elements.saveBtn.click();h.elements.logoutBtn.click();assert(h.calls.includes('signOut'))
+})
+test('canonical comparison ignores object-key order but preserves array order and requires content plus revision',()=>{
+  assert(recovery.sameDraft({a:1,b:{x:2,y:3}},{b:{y:3,x:2},a:1}));assert(!recovery.sameDraft([1,2],[2,1]))
+  const confirmed={content:{title:'old'},revision:1},attempt={content:{title:'new'},revision:1}
+  assert.equal(recovery.classifyDraft(confirmed,attempt,{content:{title:'other'},revision:9}),'different')
+  assert.equal(recovery.classifyDraft(confirmed,attempt,{content:{title:'new'},revision:1}),'different')
+})
+test('manual save, publish and template cannot queue another write while explicit recovery is in flight',async()=>{
+  let finish
+  const h=harness({save:()=>new Promise(resolve=>{finish=()=>resolve({revision:2})})});await h.run();edit(h,'Chosen');await h.elements.recoveryRead.click();h.elements.recoveryKeep.click()
+  const writing=h.elements.recoveryConfirm.click();edit(h,'Not confirmed yet');await h.elements.saveBtn.click();await h.elements.customerSaveBtn.click()
+  preparePublish(h);await h.elements.confirmPublishBtn.click();h.elements.closeModal.click()
+  h.elements['f-template'].value='konsulent';h.elements['f-template'].events.change();await h.elements.confirmTemplateBtn.click();h.elements.cancelTemplateBtn.click()
+  assert.equal(h.saved.length,1);assert.equal(h.published.length,0);finish();await writing;await h.advance(4000);assert.equal(h.saved.length,1);assert.equal(h.elements['f-heroTitle'].value,'Not confirmed yet')
+})
+
+const descendants = node => [node, ...node.children.flatMap(descendants)]
+const visibleText = node => descendants(node).map(item => item.textContent).join('\n')
+test('product recovery shows both actual values and friendly page/field names; editing refreshes and invalidates consent',async()=>{
+  const h=harness({load:async r=>{const content=editor.copy(r.draft.content);content.pages[0].heroTitle='Serverens nye overskrift';return {...r,draft:{content,revision:2}}}})
+  await h.run();edit(h,'Min åpne overskrift');await h.elements.recoveryRead.click()
+  let text=visibleText(h.elements.recoveryDifferences)
+  for(const value of ['Forside → Hovedoverskrift','Ditt åpne utkast','Kontrollert serverversjon','Min åpne overskrift','Serverens nye overskrift'])assert(text.includes(value),value)
+  assert(!text.includes('pages.0.heroTitle'));h.elements.recoveryKeep.click();edit(h,'Min senere endring')
+  text=visibleText(h.elements.recoveryDifferences);assert(text.includes('Min senere endring'));assert(!text.includes('Min åpne overskrift'))
+  assert(h.elements.recoveryConfirm.hidden);await h.elements.recoveryConfirm.click();await h.advance(3000)
+  assert.equal(h.saved.length,0);assert.equal(h.published.length,0)
+})
+test('product comparison aligns moved pages and sections by stable ID, not position',async()=>{
+  const content=projectContent();content.pages.push({...editor.copy(content.pages[0]),id:'contact',name:'Kontakt',heroTitle:'Kontaktoverskrift'})
+  const h=harness({content,load:async r=>{const server=editor.copy(r.draft.content);server.pages.reverse();server.pages[1].sections.reverse();return {...r,draft:{content:server,revision:2}}}})
+  await h.run();await h.elements.recoveryRead.click()
+  const items=h.elements.recoveryDifferences.children
+  assert.equal(items.length,2);const text=visibleText(h.elements.recoveryDifferences)
+  for(const value of ['Siderekkefølge','Forside → Seksjonsrekkefølge','1. Forside [home]','1. Kontakt [contact]','1. Toppbanner [hero]','1. Om oss [about]'])assert(text.includes(value),value)
+  assert(!text.includes('Hovedoverskrift'));await h.advance(3000);assert.equal(h.saved.length,0)
+})
+test('product comparison exposes added/removed pages, sections and every difference beyond twenty',async()=>{
+  const content=projectContent();content.pages.push({...editor.copy(content.pages[0]),id:'local-only',name:'Lokal side'})
+  const h=harness({content,load:async r=>{const server=editor.copy(r.draft.content);server.pages[1]={...server.pages[1],id:'server-only',name:'Serverside'};server.pages[0].sections=[{id:'hero',name:'Hero',enabled:true},{id:'contact',name:'Kontakt',enabled:true}];for(let i=0;i<25;i++)server['extra'+i]='Serverfelt '+i;return {...r,draft:{content:server,revision:2}}}})
+  await h.run();await h.elements.recoveryRead.click();const text=visibleText(h.elements.recoveryDifferences)
+  assert(h.elements.recoveryDifferences.children.length>25)
+  for(const value of ['Lokal side → Side bare i ditt åpne utkast','Serverside → Side bare på serveren','Forside → Om oss → Seksjon bare i ditt åpne utkast','Forside → Kontakt → Seksjon bare på serveren','Serverfelt 24','Ikke til stede'])assert(text.includes(value),value)
+  await h.advance(3000);assert.equal(h.saved.length,0);assert.equal(h.published.length,0)
+})
+test('product renders full long values safely as text in native expandable comparisons, with no writes',async()=>{
+  const local='<img src=x onerror="globalThis.attack=true">'+'Lokal tekst '.repeat(60)+'LOKAL SLUTT'
+  const server='<script>globalThis.attack=true</script>'+'Servertekst '.repeat(60)+'SERVER SLUTT'
+  const h=harness({load:async r=>{const content=editor.copy(r.draft.content);content.pages[0].heroTitle=server;return {...r,draft:{content,revision:2}}}})
+  await h.run();edit(h,local);await h.elements.recoveryRead.click()
+  const nodes=descendants(h.elements.recoveryDifferences),details=nodes.find(n=>n.tagName==='details')
+  assert(details);assert.equal(details.children[0].tagName,'summary');assert.equal(details.children[0].textContent,'Vis hele forskjellen')
+  assert(nodes.some(n=>n.tagName==='dd'&&n.textContent===local));assert(nodes.some(n=>n.tagName==='dd'&&n.textContent===server))
+  assert(nodes.some(n=>n.tagName==='dd'&&n.textContent.endsWith(' …')))
+  assert(nodes.every(n=>n.innerHTML===''));assert(!nodes.some(n=>['img','script','iframe'].includes(n.tagName)))
+  details.open=true;details.open=false;await h.advance(3000)
+  assert.equal(h.saved.length,0);assert.equal(h.published.length,0);assert.equal(h.calls.filter(c=>c==='load').length,2)
+})
+test('new failed server check removes stale comparison values without resuming saving',async()=>{
+  let read=0;const h=harness({load:async r=>{if(++read===2)throw Error('read failed');return r}})
+  await h.run();edit(h,'Only local');await h.elements.recoveryRead.click();assert(h.elements.recoveryDifferences.children.length)
+  await h.elements.recoveryRead.click();assert.equal(h.elements.recoveryDifferences.children.length,0);assert(h.elements.recoveryKeep.disabled)
+  await h.advance(3000);assert.equal(h.saved.length,0)
 })
