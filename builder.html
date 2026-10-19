@@ -4,11 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nettsidebygger | Wreach</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/public-fonts.css">
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/builder.css">
+<link rel="stylesheet" href="css/portal-theme.css">
 </head>
 <body class="builder-body">
 
@@ -41,7 +40,7 @@
   </div>
 
   <div class="topbar-right">
-    <span class="save-status" id="saveStatus">Alt lagret</span>
+    <span class="save-status" id="saveStatus">Lagring ikke bekreftet</span>
     <button class="btn btn-ghost btn-small" id="codeBtn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M8 5L2 12l6 7M16 5l6 7-6 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Kode
@@ -146,11 +145,12 @@
         <div class="field-divider"></div>
 
         <div class="tech-info">
-          <div class="tech-info-row"><span>SSL-sertifikat</span><strong class="ok">Aktivert ✓</strong></div>
-          <div class="tech-info-row"><span>Hosting</span><strong>Wreach Cloud</strong></div>
-          <div class="tech-info-row"><span>CDN</span><strong class="ok">Aktivert ✓</strong></div>
-          <div class="tech-info-row"><span>Backup</span><strong>Daglig</strong></div>
-          <div class="tech-info-row"><span>Sist lagret</span><strong id="lastSavedInfo">Nå nettopp</strong></div>
+          <div class="tech-info-row"><span>Nettsideverktøy</span><strong>Wreach</strong></div>
+          <div class="tech-info-row"><span>SSL-sertifikat</span><strong>Ikke verifisert her</strong></div>
+          <div class="tech-info-row"><span>Hosting</span><strong>Ikke verifisert her</strong></div>
+          <div class="tech-info-row"><span>CDN</span><strong>Ikke verifisert her</strong></div>
+          <div class="tech-info-row"><span>Backup</span><strong>Ikke verifisert her</strong></div>
+          <div class="tech-info-row"><span>Sist lagret</span><strong id="lastSavedInfo">Ingen lagring bekreftet i denne økten</strong></div>
         </div>
       </div>
 

@@ -5,7 +5,7 @@ repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 dist_dir="$repo_dir/dist"
 
 html_files=(index.html demo.html login.html mfa.html security-settings.html admin.html builder.html site.html)
-css_files=(styles.css marketing.css demo.css public-fonts.css login.css admin.css builder.css site.css)
+css_files=(styles.css marketing.css demo.css public-fonts.css portal-theme.css login.css admin.css builder.css site.css)
 js_files=(
   admin-new-customer-state.mjs admin-new-customer-api.mjs admin-new-customer.mjs
   admin-customers.mjs admin-customers-data.mjs admin-dashboard.mjs admin-dashboard-state.mjs admin-shell.mjs admin.js api.js auth-storage.mjs auth.js builder-data.js builder.js demo-data.mjs demo.js login.js
@@ -14,6 +14,8 @@ js_files=(
 )
 
 public_assets=(
+wreach-design-desk-640.webp
+wreach-design-desk-1024.webp
 OFL-Fraunces.txt
 OFL-Manrope.txt
 auto-detail-1600.webp

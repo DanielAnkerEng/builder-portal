@@ -1,0 +1,139 @@
+/* Wreach's public visual language, scoped to the existing protected interfaces.
+   Presentation only: no change to hidden states, authorization or customer content. */
+:where(.auth-body, .admin-body, .builder-body) {
+  --bg: #f3f0e8;
+  --bg-alt: #ebece3;
+  --surface: #fcfbf6;
+  --surface-2: #f5f4ec;
+  --border: #d7dacd;
+  --border-strong: #a8b09e;
+  --text: #171b1b;
+  --text-dim: #5d665b;
+  --text-dimmer: #626b5d;
+  --accent: #d3e59f;
+  --accent-2: #526241;
+  --accent-warm: #795333;
+  --gradient: linear-gradient(#d3e59f, #d3e59f);
+  --gradient-soft: linear-gradient(#e8eddb, #e8eddb);
+  --radius: 8px;
+  --radius-sm: 4px;
+  font-family: Manrope, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+:where(.auth-body, .admin-body, .builder-body) :where(button, input, select, textarea) { font: inherit; }
+:where(.auth-body, .admin-body, .builder-body) :focus-visible { outline: 3px solid #526241; outline-offset: 4px; }
+:where(.auth-body, .admin-body, .builder-body) .logo { font-family: Manrope, Arial, sans-serif; font-weight: 800; letter-spacing: -.065em; color: inherit; }
+:where(.auth-body, .admin-body, .builder-body) .logo span { background: none; color: inherit; -webkit-text-fill-color: currentColor; }
+:where(.auth-body, .admin-body, .builder-body) .btn { border-radius: 4px; box-shadow: none; transition: background .15s, border-color .15s; }
+:where(.auth-body, .admin-body, .builder-body) .btn-primary { background: #d3e59f; color: #171b1b; border-color: #d3e59f; }
+:where(.auth-body, .admin-body, .builder-body) .btn-primary:hover { background: #e3efc2; border-color: #a5b780; box-shadow: none; transform: none; }
+:where(.auth-body, .admin-body, .builder-body) .btn-ghost,
+:where(.auth-body, .admin-body, .builder-body) .btn-outline { background: transparent; color: var(--text); border-color: var(--border-strong); backdrop-filter: none; }
+:where(.auth-body, .admin-body, .builder-body) .btn-ghost:hover,
+:where(.auth-body, .admin-body, .builder-body) .btn-outline:hover { background: #e8eddb; border-color: #526241; transform: none; }
+:where(.auth-body, .admin-body, .builder-body) button:disabled { cursor: not-allowed; opacity: .55; }
+:where(.auth-body, .admin-body, .builder-body) .noise-overlay { display: none; }
+:where(.auth-body, .admin-body, .builder-body) .eyebrow { color: #526241; letter-spacing: .15em; font-size: 10px; }
+:where(.auth-body, .admin-body, .builder-body) .eyebrow::before { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  :where(.auth-body, .admin-body, .builder-body) *,
+  :where(.auth-body, .admin-body, .builder-body) *::before,
+  :where(.auth-body, .admin-body, .builder-body) *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* Keep the basic product preview readable, independent of marketing hero styles. */
+.builder-body .site-preview { background: #ffffff; color: #171b1b; overflow-wrap: anywhere; }
+.builder-body .site-preview .hero { min-height: 0; display: block; padding: 48px 28px; }
+.builder-body .site-preview .section { padding: 32px 28px; }
+.builder-body .site-preview h1 { font-size: 32px; line-height: 1.2; }
+.builder-body .site-preview h2 { font-size: 24px; line-height: 1.3; }
+.builder-body .site-preview p { margin: 12px 0; }
+.builder-body .site-preview .button { display: inline-block; padding: 10px 18px; border: 2px solid var(--accent); border-radius: 4px; }
+.builder-body .site-preview-mobile h1 { font-size: 26px; }
+
+/* Customer workspace chrome. */
+.builder-body { height: 100dvh; background: #e4e7db; }
+.builder-body .topbar { min-height: 82px; height: auto; padding: 18px 24px; gap: 20px; background: #171b1b; color: #f3f0e8; border-bottom-color: #3d453c; backdrop-filter: none; flex-wrap: wrap; }
+.builder-body .topbar-left { min-width: 0; gap: 14px; flex-wrap: wrap; }
+.builder-body .topbar .logo { font-size: 28px; }
+.builder-body .topbar-divider { background: #58624e; }
+.builder-body .project-name-input { color: #f3f0e8; font-size: 13px; width: 190px; max-width: 100%; }
+.builder-body .project-name-input:focus { border-color: #d3e59f; color: #f3f0e8; }
+.builder-body .owner-tag { color: #d3e59f; background: #2d362a; border-radius: 3px; max-width: 220px; overflow-wrap: anywhere; white-space: normal; font-size: 10px; }
+.builder-body .topbar-center { position: static; transform: none; margin-left: auto; }
+.builder-body .topbar-center .view-toggle { background: #2d362a; border: 1px solid #58624e; border-radius: 4px; }
+.builder-body .topbar-center .view-btn { border-radius: 2px; color: #cbd1c2; }
+.builder-body .topbar-center .view-btn.active { background: #d3e59f; color: #171b1b; }
+.builder-body .topbar-right { flex-wrap: wrap; gap: 8px; margin-left: auto; }
+.builder-body .topbar .btn-ghost,
+.builder-body .btn-back-admin { color: #e4e8dd; background: transparent; border-color: #58624e; border-radius: 4px; }
+.builder-body .topbar .btn-ghost:hover { color: #171b1b; background: #d3e59f; }
+.builder-body .topbar :focus-visible { outline-color: #d3e59f; }
+.builder-body .save-status { color: #bfc7b8; font-size: 11px; }
+.builder-body .user-avatar { background: #d3e59f; color: #171b1b; border-radius: 4px; }
+.builder-body .user-dropdown { color: #171b1b; box-shadow: 0 12px 40px #171b1b20; }
+.builder-body #logoutBtn { color: #a1352b; }
+.builder-body .sidebar { width: 360px; background: #f3f0e8; border-color: #cbd1c1; }
+.builder-body .sidebar-tabs { background: #ebece3; border-color: #cbd1c1; }
+.builder-body .sidebar-tab { padding: 20px 8px; color: #626b5d; }
+.builder-body .sidebar-tab.active { color: #253321; border-color: #526241; background: #dfe7cf; }
+.builder-body .panel { padding: 32px 28px 44px; }
+.builder-body .panel-title { font: 400 32px/1.1 Fraunces, Georgia, serif; letter-spacing: -.04em; margin-bottom: 14px; }
+.builder-body .panel-desc { font-size: 12px; line-height: 1.8; }
+.builder-body .b-field input:focus,
+.builder-body .b-field textarea:focus,
+.builder-body .b-field select:focus { border-color: #526241; }
+.builder-body .b-field :focus-visible,
+.builder-body .project-name-input:focus-visible { outline: 3px solid #526241; outline-offset: 3px; }
+.builder-body .topbar .project-name-input:focus-visible { outline-color: #d3e59f; }
+.builder-body .domain-status { color: #37513a; background: #e0ead8; }
+.builder-body .tech-info-row strong.ok { color: #37513a; }
+.builder-body .tech-info-row { gap: 16px; align-items: flex-start; }
+.builder-body .tech-info-row strong { max-width: 24ch; text-align: right; overflow-wrap: anywhere; }
+.builder-body .tech-info { border-radius: 4px; }
+.builder-body .switch-track { background: #697561; }
+.builder-body .switch input:checked + .switch-track { background: #526241; }
+.builder-body .switch:has(input:focus-visible) .switch-track { outline: 3px solid #526241; outline-offset: 4px; }
+.builder-body .customer-save-bar { background: #e5e9da; border-color: #cbd1c1; box-shadow: none; padding: 20px 28px; }
+.builder-body .canvas { background: #dfe3d7; padding: 40px; }
+.builder-body .canvas .mockup-desktop { border-radius: 6px; box-shadow: 0 18px 60px #171b1b1a; }
+.builder-body .canvas .mockup-mobile { box-shadow: 0 12px 40px #171b1b25, 0 0 0 7px #293227; }
+.builder-body #mockupDesktop:not([hidden]),
+.builder-body #mockupMobile:not([hidden]) { display: block; }
+.builder-body .browser-bar { background: #f5f4ec; color: #526241; border-color: #cbd1c1; }
+.builder-body .modal-overlay { padding: 20px; overflow-y: auto; }
+.builder-body .modal { max-height: calc(100dvh - 40px); overflow-y: auto; box-shadow: 0 24px 70px #171b1b30; }
+.builder-body .modal h3 { font: 400 30px/1.15 Fraunces, Georgia, serif; }
+.builder-body .modal input[type=password] { background: #fcfbf6; color: #171b1b; border: 1px solid #a8b09e; border-radius: 4px; padding: 12px; width: 100%; }
+.builder-body .auth-error { display: none; }
+.builder-body .auth-error.show { display: block; padding: 12px 14px; margin: 14px 0; border: 1px solid #ddb7ab; background: #f7e9e3; color: #963c33; overflow-wrap: anywhere; }
+.builder-body .modal .btn + .btn { margin-top: 12px; }
+.builder-body .missing { max-width: 760px; margin: 12vh auto; padding: 40px; color: #171b1b; }
+.builder-body .missing h1 { font: 400 clamp(32px,5vw,54px)/1.15 Fraunces, Georgia, serif; }
+.builder-body .missing .btn { margin-top: 24px; }
+@media (max-width: 1200px) {
+  .builder-body .topbar-center { order: 3; margin: 0; }
+  .builder-body .topbar { gap: 12px; }
+  .builder-body .sidebar { width: 320px; }
+  .builder-body .canvas { padding: 24px; }
+}
+@media (max-width: 780px) {
+  .builder-body { height: auto; min-height: 100dvh; }
+  .builder-body .topbar { padding: 18px 16px; }
+  .builder-body .topbar-left { width: 100%; gap: 10px; }
+  .builder-body .topbar-right { margin: 0; width: 100%; }
+  .builder-body .topbar-center { display: flex; }
+  .builder-body .topbar-center .view-toggle { display: flex; }
+  .builder-body .topbar-right .btn { font-size: 11px; padding: 9px 10px; }
+  .builder-body .save-status { width: 100%; }
+  .builder-body .user-menu { margin-left: auto; }
+  .builder-body .sidebar { width: 100%; }
+  .builder-body .sidebar-panels { max-height: 52dvh; }
+  .builder-body .panel { padding: 26px 20px; }
+  .builder-body .customer-save-bar { padding: 18px 20px; }
+  .builder-body .canvas { padding: 28px 18px; min-height: 660px; }
+  .builder-body .canvas .mockup-mobile { width: min(300px,calc(100vw - 50px)); }
+  .builder-body .offering-row input { min-width: 0; width: 0; }
+  .builder-body .b-field input, .builder-body .b-field textarea,
+  .builder-body .b-field select { font-size: 16px; }
+}

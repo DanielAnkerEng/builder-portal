@@ -1,17 +1,23 @@
 {
-  "notice": "Bransjebildene er lisensierte illustrasjonsbilder. Forsidemotivet er en AI-generert illustrasjon av nettsidearbeid. Ingen av motivene fremstilles som faktiske Wreach-kontorer, ansatte, kunder eller leverte prosjekter.",
+  "notice": "Bransjebildene er lisensierte illustrasjonsbilder. Forside- og innloggingsmotivene er AI-genererte illustrasjoner av nettsidearbeid. Ingen av motivene fremstilles som faktiske Wreach-kontorer, ansatte, kunder eller leverte prosjekter.",
   "generatedImages": [
     {
       "name": "wreach-web-studio",
       "source": "OpenAI ImageGen (built-in)",
       "created": "2026-10-08",
-      "widths": [
-        640,
-        1536
-      ],
+      "widths": [640, 1536],
       "usage": "AI-generert illustrasjon av nettsidedesign. Brukes i forsidens hovedbilde, ikke som dokumentasjon av et ekte kontor eller kundeprosjekt.",
       "promptSummary": "Fotorealistisk, mørkt skandinavisk webstudio med nettsideoppsett på skjerm og laptop, papirskisser, varm eik og ledig plass til overskrift på venstre side. Ingen personer, logoer eller lesbar tekst.",
       "prompt": "Use case: photorealistic-natural. Asset type: wide website hero background for Wreach, a Norwegian web design and development studio. Create a premium editorial photograph of a modern small digital design studio, communicating the craft of building beautiful websites, NOT architecture sales, restaurants or generic corporate meetings. A large slim monitor and a laptop on a real warm oak desk show elegant generic responsive WEBSITE LAYOUTS: clear modular cream page sections, photography blocks, muted olive navigation and tiny abstract text lines, not analytics charts, not source code, not blank screens. Position the workstation and recognizable screens in the RIGHT HALF, centered around x=70%, with a dark textured warm charcoal/forest-green wall and negative space on the LEFT for a real HTML headline. Large monitor screen is the visual focus. Low-key daylight, tactile wood, paper wireframe sketches and a dark keyboard; refined believable real materials, lived-in but tidy. Wide landscape 3:2 composition suitable for desktop and centered mobile crops, high-resolution. Palette matches Wreach: ink #171b1b, warm paper #f3f0e8, restrained pale lime #d3e59f. No people, no logos, no branding, no legible words, no floating elements, no neon, no hands, no watermarks. This is a fictional editorial illustration, not a claim of real offices. Image only, no baked-in headline."
+    },
+    {
+      "name": "wreach-design-desk",
+      "source": "OpenAI ImageGen (built-in)",
+      "created": "2026-10-08",
+      "widths": [640, 1024],
+      "usage": "Dekorativ AI-generert illustrasjon på innloggingen. Ingen faktiske kundedata eller Wreach-arbeidsplasser er avbildet.",
+      "promptSummary": "Fotorealistisk, vertikalt utsnitt av laptop og mobil med samsvarende nettsideoppsett, designskisser og mørkt eikebord. Varmt sidelys, krem og dempet lime. Ingen personer, logoer eller lesbar tekst.",
+      "prompt": "Use case: photorealistic-natural. Asset type: tall editorial photograph for Wreach web-studio login welcome panel. A close three-quarter view of an open slim matte-black laptop on a tactile dark oak creative-work desk. Its screen clearly shows an elegant responsive website design with warm cream background, olive accents, a large editorial image block and careful column layout, abstract tiny text lines only; a smartphone beside it shows the same layout adapted to mobile. A few paper website wireframe sketches and a fine pencil tell the story of thoughtful web design. NOT a house photo, NOT a cafe, NOT software source code, NOT analytics graphs. No people or hands. Composition portrait 2:3: screens and design work in the upper middle/right half, darker quiet desk area across lower half/left so HTML welcome text remains readable over it. Mood: premium Scandinavian editorial, warm sidelight, rich charcoal #171b1b shadows, paper cream #f3f0e8, restrained pale lime #d3e59f accents. Realistic perspective and device construction, natural wood grain and screen reflections, high-resolution, no logos, no legible text, no watermarks, no artificial glowing tech effects. Fictional illustration of digital craft, not a real office. Image only."
     }
   ],
   "downloaded": "2026-10-08",

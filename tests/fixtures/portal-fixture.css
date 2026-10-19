@@ -1,0 +1,7 @@
+/* Local presentation fixtures only; never included in the production allowlist. */
+.auth-body { flex-direction: column; }
+.fixture-note { margin: 0; padding: 12px 20px; width: 100%; background: #e5ecd3; color: #263d1c; font: 12px/1.7 Manrope, sans-serif; }
+.fixture-placeholder { padding: 32px; color: #263d1c; background: #f3f0e8; }
+#fixtureContent > p { padding: 12px 16px; margin-bottom: 16px; border-left: 3px solid #647e46; background: #e5ecd3; color: #263d1c; font-size: 13px; line-height: 1.7; }
+#fixtureContent > label { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; font-size: 13px; }
+#fixtureState { min-height: 44px; padding: 8px 12px; background: #fcfbf6; color: #171b1b; border: 1px solid #a8b09e; border-radius: 4px; }
