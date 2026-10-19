@@ -66,8 +66,10 @@
 .builder-body .topbar-center .view-btn.active { background: #d3e59f; color: #171b1b; }
 .builder-body .topbar-right { flex-wrap: wrap; gap: 8px; margin-left: auto; }
 .builder-body .topbar .btn-ghost,
+.builder-body .topbar #renameProjectBtn,
 .builder-body .btn-back-admin { color: #e4e8dd; background: transparent; border-color: #58624e; border-radius: 4px; }
-.builder-body .topbar .btn-ghost:hover { color: #171b1b; background: #d3e59f; }
+.builder-body .topbar .btn-ghost:hover,
+.builder-body .topbar #renameProjectBtn:hover { color: #171b1b; background: #d3e59f; }
 .builder-body .topbar :focus-visible { outline-color: #d3e59f; }
 .builder-body .save-status { color: #bfc7b8; font-size: 11px; }
 .builder-body .user-avatar { background: #d3e59f; color: #171b1b; border-radius: 4px; }
@@ -137,3 +139,20 @@
   .builder-body .b-field input, .builder-body .b-field textarea,
   .builder-body .b-field select { font-size: 16px; }
 }
+/* Draft editing tools, scoped to the customer Builder. */
+.builder-body .builder-section-row { display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:10px 0; border-bottom:1px solid #d1d5c8; }
+.builder-body .builder-section-row label { flex:1 1 100px; display:flex; gap:8px; align-items:center; }
+.builder-body #pageList, .builder-body #addSectionMenu.open { display:flex; flex-direction:column; gap:8px; }
+.builder-body #pageList [aria-pressed="true"] { outline:2px solid #405735; background:#d3e59f; }
+.builder-body #renameStatus { max-width:180px; font-size:12px; }
+.builder-body .domain-status { color:#5d665b; background:transparent; white-space:normal; }
+.builder-body .site-preview .draft-layout .hero { color:#fff; }
+.builder-body .site-preview .draft-layout .hero :is(h1,p,.eyebrow) { color:inherit; }
+.builder-body .site-preview .draft-layout .cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.builder-body .site-preview .draft-layout-frisor .cards, .builder-body .site-preview .draft-layout-eiendom .cards { grid-template-columns:1fr; }
+.builder-body .site-preview .draft-layout-handverker .cards, .builder-body .site-preview .draft-layout-fjordbolig .cards { border-left:4px solid var(--accent); padding-left:14px; }
+.builder-body .site-preview .draft-layout-bilverksted .cards { border-top:4px solid var(--accent); padding-top:14px; }
+.builder-body .site-preview .draft-layout-konsulent .cards { grid-template-columns:1fr; border-left:4px solid var(--accent2); padding-left:14px; }
+.builder-body .site-preview .gallery img { max-width:100%; height:auto; }
+.builder-body .site-preview-mobile .draft-layout .cards { grid-template-columns:1fr; }
+.builder-body #templateModal .modal { max-height:85dvh; overflow-y:auto; }

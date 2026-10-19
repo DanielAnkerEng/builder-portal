@@ -10,6 +10,7 @@ if rg -q 'admin-provision-company|newAccountModal|newAccountForm|newAccountBtn' 
   exit 1
 fi
 expected=(
+  js/builder-editor.mjs js/builder-project-api.mjs
   css/portal-theme.css
   assets/marketing/wreach-design-desk-640.webp
   assets/marketing/wreach-design-desk-1024.webp

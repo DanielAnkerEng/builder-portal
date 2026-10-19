@@ -22,7 +22,9 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Oversikt
     </a>
-    <input type="text" id="projectName" class="project-name-input" value="Mitt nettsideprosjekt">
+    <input type="text" id="projectName" class="project-name-input" value="Mitt nettsideprosjekt" maxlength="160" aria-label="Prosjektnavn">
+    <button type="button" class="btn btn-outline btn-small" id="renameProjectBtn">Lagre navn</button>
+    <span id="renameStatus" role="status"></span>
     <span class="owner-tag" id="ownerTag" style="display:none;"></span>
   </div>
 
@@ -90,9 +92,10 @@
         <p class="panel-desc">Legg til flere sider som meny, produkter eller om oss. "Innhold" og "Seksjoner" gjelder alltid siden du har valgt her.</p>
         <div class="page-list" id="pageList"></div>
         <div class="add-page-wrap">
-          <input type="text" id="newPageName" placeholder="Sidenavn, f.eks. Meny">
+          <input type="text" id="newPageName" placeholder="Sidenavn, f.eks. Meny" maxlength="120" aria-label="Nytt sidenavn">
           <button type="button" class="btn btn-outline btn-full" id="addPageBtn">+ Legg til side</button>
         </div>
+        <p id="pageError" role="alert"></p>
       </div>
 
       <!-- OPPSETT PANEL -->
@@ -105,8 +108,9 @@
             <span>Domene</span>
             <div class="domain-field">
               <input type="text" id="f-domain" placeholder="minbedrift.no">
-              <span class="domain-status" id="domainStatus">✓ Ledig</span>
+              <span class="domain-status" id="domainStatus">Ikke kontrollert</span>
             </div>
+            <small>Et innskrevet domene er ikke bekreftet tilgjengelig eller tilkoblet.</small>
           </label>
           <label class="b-field">
             <span>Bransje</span>
@@ -250,7 +254,7 @@
       <!-- SEKSJONER PANEL -->
       <div class="panel" id="panel-seksjoner">
         <h2 class="panel-title">Bygg med seksjoner</h2>
-        <p class="panel-desc">Dra i &#9776; for å endre rekkefølge. Skru av/på med bryteren.</p>
+        <p class="panel-desc">Flytt med Opp/Ned-knappene eller dra en seksjon. Knappene fungerer også med tastatur. Skru av/på uten å slette innhold.</p>
         <div class="section-list" id="sectionList"></div>
 
         <div class="add-section-wrap">
@@ -284,6 +288,19 @@
       </div>
     </div>
   </main>
+</div>
+
+<div class="modal-overlay" id="templateModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="templateTitle">
+    <h3 id="templateTitle">Bytt mal</h3>
+    <p id="templateSummary"></p>
+    <p>Dette endrer farger, kortoppsett og rekkefølgen på eksisterende seksjoner på alle sider. Tekster, bilder, sidene og prosjektidentiteten beholdes som standard. Den publiserte versjonen endres ikke.</p>
+    <label class="b-field"><span><input type="checkbox" id="replaceTemplateContent"> Tøm innholdet på valgt side og bruk malens tomme seksjonsoppsett.</span></label>
+    <p>Dette valget fjerner tekst, tilbud og galleri på valgt side. Det legger ikke inn eksempelkunder eller demonstrasjonsinnhold. Andre sider beholdes.</p>
+    <p id="templateError" role="alert"></p>
+    <button type="button" class="btn btn-primary btn-full" id="confirmTemplateBtn">Bytt mal og lagre privat utkast</button>
+    <button type="button" class="btn btn-outline btn-full" id="cancelTemplateBtn">Avbryt</button>
+  </div>
 </div>
 
 <!-- PUBLISH MODAL -->

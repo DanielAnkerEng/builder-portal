@@ -115,21 +115,19 @@ test('Builder separates product information from unverified infrastructure and i
     assert.match(html,/id="lastSavedInfo">Ingen lagring bekreftet i denne økten/);
   }
   assert.match(read('builder.html'),/id="saveStatus">Lagring ikke bekreftet/);
-  const before=original('js/builder.js').toString(), after=read('js/builder.js');
-  const previousEmpty=before.split('\n').find(line=>line.startsWith("if(!websiteId){document.body.innerHTML="));
-  assert(previousEmpty);
-  const wideDeclaration=before.match(/const wide=\[[^\n]+?\];/)?.[0];
-  assert(wideDeclaration);
+  // Functionality now includes the explicitly authorized draft editor. Preserve
+  // initial access/project selection byte-for-byte. The separately approved
+  // publish sequencing fix is exercised against the real module in runtime tests.
+  const before=git('show','8b1c99cd374dc3cd5776cc3f4543d75ce7127f45:js/builder.js').toString(), after=read('js/builder.js');
   const presentation=after.match(/\/\/ BEGIN BUILDER PRESENTATION CONTROLS[\s\S]*?\/\/ END BUILDER PRESENTATION CONTROLS\n/)?.[0];
   assert(presentation);
   assert.doesNotMatch(presentation,/saveDraft|persist\(|schedule\(|publishSite|supabase|fetch\(|localStorage|sessionStorage|innerHTML|eval\(/);
-  // Normalize only approved presentation changes. The entire remaining runtime,
-  // including project selection, draft writes and publish authorization, stays identical.
-  const normalized=after.replace(presentation,'').replace(wideDeclaration+'\n','').replace('function page(){',wideDeclaration+'function page(){')
-    .replace('function preview(){const p=state,','function preview(){const p=page(),').replace('--accent:${esc(state.accent)}','--accent:${esc(siteData.accent)}')
-    .replaceAll('openPublishDialog()',"modal.classList.add('open')").replaceAll('closePublishDialog()',"modal.classList.remove('open')")
-    .replace(/if\(!websiteId\)\{\n[\s\S]*?\n\}/,()=>previousEmpty);
-  assert.equal(normalized,before);
+  assert.equal((after.match(/await publishSite\(websiteId,revision,key\)/g)||[]).length,1);
+  assert.match(after,/if\(!await persist\(false\)\)throw/);
+  assert.match(after,/const expectedEditVersion=editVersion,key=document.getElementById\('publishPersonalKey'\).value/);
+  assert.equal(after.slice(after.indexOf('const ctx='),after.indexOf('const loaded=')),before.slice(before.indexOf('const ctx='),before.indexOf('const loaded=')));
+  assert.match(after,/saveDraft\(websiteId,snapshot,revision\)/);
+  assert.match(after,/saveDraft\(websiteId,candidate,revision\)/);
   assert.match(read('js/builder.js'),/lastSavedInfo/);
 });
 
@@ -143,6 +141,14 @@ test('published field contracts, IDs, scripts and control states survive present
   const ids = html => [...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]).sort();
   const controls = html => [...html.matchAll(/<(?:input|select|textarea|button|form|script)\b[^>]*>/g)].map(m=>m[0]).sort();
   for (const page of pages) {
+    if(page==='builder.html') {
+      const old=original(page).toString(),current=read(page);
+      for(const id of ids(old))assert(ids(current).includes(id),id);
+      for(const control of controls(old).filter(tag=>!tag.includes('id="projectName"')&&!tag.includes('id="newPageName"'))) assert(controls(current).includes(control),control);
+      assert.match(current,/id="projectName"[^>]*maxlength="160"/);
+      assert.match(current,/id="newPageName"[^>]*maxlength="120"/);
+      continue;
+    }
     assert.deepEqual(ids(read(page)),ids(original(page).toString()),page);
     assert.deepEqual(controls(read(page)),controls(original(page).toString()),page);
   }
