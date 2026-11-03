@@ -1,0 +1,1 @@
+document.documentElement.classList.add('js-pending');window.navigationWatchdog=setTimeout(()=>document.documentElement.classList.remove('js-pending'),4000);if(!matchMedia('(prefers-reduced-motion:reduce)').matches){document.documentElement.classList.add('motion-pending');window.motionWatchdog=setTimeout(()=>document.documentElement.classList.remove('motion-pending'),4000)}

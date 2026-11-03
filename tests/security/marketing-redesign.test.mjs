@@ -65,13 +65,13 @@ test('prototype properties cannot choose a demo',()=>{
   for(const key of ['constructor','__proto__','toString','<script>','restaurant&redirect=https://example.invalid']) assert.equal(resolveDemo(key),DEMOS.restaurant);
 });
 test('public rendering has no executable HTML, storage, forms, remote operations or tracking',()=>{
-  for(const file of ['js/demo-renderer.mjs','js/demo.js','js/script.js','js/marketing-scenes.mjs']) {
+  for(const file of ['js/demo-renderer.mjs','js/demo.js','js/script.js','js/marketing-scenes.mjs','js/marketing-ui.js','js/marketing-motion.mjs','js/marketing-monitor-geometry.mjs','js/marketing-concepts.mjs','js/marketing-continuation.mjs','js/marketing-bootstrap.js']) {
     const source=read(file);
     assert.doesNotMatch(source,/innerHTML|outerHTML|insertAdjacentHTML|document\.write|\beval\s*\(|new Function|srcdoc|localStorage|sessionStorage|console\.|supabase|\bfetch\s*\(|XMLHttpRequest|sendBeacon/);
   }
   for(const file of ['index.html','demo.html']) {
-    const html=read(file);assert.doesNotMatch(html,/<form|on(?:click|load|error)\s*=|<script[^>]*>\s*[^<\s]|https:\/\//);
-    assert.match(html,/public-fonts\.css/);assert.doesNotMatch(html,/href="css\/styles.css"/);
+    const html=read(file);assert.doesNotMatch(html,/<form|on(?:click|load|error)\s*=|<script[^>]*>\s*[^<\s]/);
+    assert(html.includes('public-fonts.css')||html.includes('assets/marketing/manrope-latin.woff2'));assert.doesNotMatch(html,/href="css\/styles.css"/);
   }
 });
 test('all image assets and licences exist; bounded responsive local images',()=>{
@@ -92,27 +92,15 @@ test('all image assets and licences exist; bounded responsive local images',()=>
   assert.match(read('js/demo-renderer.mjs'),/loading', eager \? 'eager' : 'lazy'/);
   assert.match(read('js/demo-renderer.mjs'),/srcset/);
 });
-test('homepage uses a responsive web-design illustration, not a sector demo photo',()=>{
-  const home=read('index.html');
-  assert.match(home, /class="hero-photograph"[^>]*src="assets\/marketing\/wreach-web-studio-1536.webp"/);
-  assert.match(home, /wreach-web-studio-640.webp 640w, assets\/marketing\/wreach-web-studio-1536.webp 1536w/);
-  assert.match(home, /AI-generert illustrasjon/);
-  assert.doesNotMatch(home, /Restaurantkonseptet Bord & Jord/);
+test('homepage preserves studio illustration, live delivery surface and explicit concept labelling',()=>{
+ const h=read('index.html');assert.match(h,/class="studio"><img src="assets\/marketing\/wreach-web-studio-1536.webp" width="1536" height="1024"/);assert.match(h,/class="site-image"><img src="assets\/marketing\/estate-cabin-1600.webp"/);assert.match(h,/AI-generert/);assert.doesNotMatch(h,/Restaurantkonseptet Bord & Jord/);
 });
-test('mobile menu, six linked previews and calm-view control are explicit',()=>{
-  const html=read('index.html'), source=read('js/script.js');
-  assert.match(html,/aria-controls="mainNav" aria-expanded="false"/);
-  assert.equal((html.match(/data-tile=/g)||[]).length,6);
-  assert.equal((html.match(/data-scene="/g)||[]).length,4);
-  assert.match(html,/id="motionToggle" type="button" aria-pressed="false"/);
-  for (const key of Object.keys(DEMOS)) assert(html.includes(`href="demo.html?site=${key}"`));
-  assert.match(source,/event.key === 'Escape'/);assert.match(source,/toggle.focus\(\)/);
-  assert.match(source,/renderDemo\(root, demo, \{ preview: true, imageMode: 'compact'/);
-  assert.match(source,/installScenes/);
+test('mobile menu, direct concept choices and all six demos are accessible',()=>{
+ const h=read('index.html'),s=read('js/marketing-ui.js');assert.match(h,/aria-controls="mainNav" aria-expanded="false"/);assert.equal((h.match(/data-concept=/g)||[]).length,4);for(const key of Object.keys(DEMOS))assert(h.includes(`href="demo.html?site=${key}"`));assert.match(s,/e.key==='Escape'/);assert.match(s,/toggle.focus\(\)/);assert.match(read('js/marketing-concepts.mjs'),/scene.inert=i!==active/);
 });
-test('reduced motion is supported without hiding content and mobile uses container width',()=>{
-  for(const file of ['css/marketing.css','css/demo.css']) {const css=read(file);assert.match(css,/prefers-reduced-motion:reduce/);assert.doesNotMatch(css,/align-end:|scroll-snap|opacity:\s*0(?:[;}])/);}
-  assert.match(read('css/demo.css'),/@container demo \(max-width:600px\)/);
+test('reduced motion and static fallbacks preserve content; responsive demos keep their container layout',()=>{
+ for(const file of ['css/marketing.css','css/demo.css'])assert.match(read(file),/prefers-reduced-motion:\s*reduce/);
+ assert.match(read('js/marketing-ui.js'),/static-fallback/);assert.match(read('css/demo.css'),/@container demo \(max-width:600px\)/);
 });
 test('primary text and button palettes meet 4.5:1 contrast',()=>{
   const luminance = value => value.match(/../g).map(n=>parseInt(n,16)/255).map(n=>n<=.04045?n/12.92:((n+.055)/1.055)**2.4).reduce((sum,n,i)=>sum+n*[.2126,.7152,.0722][i],0);

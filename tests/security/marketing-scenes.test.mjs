@@ -203,13 +203,17 @@ test('reload and back navigation retain timeline geometry at restored positions'
     h.atPhase(.41);closeTo(scales(h)[0],1.175);assert.deepEqual(scales(h).slice(1),[1,1,1]);
   }
 });
-test('HTML has usable photographs, captions and six demo links before any script runs',()=>{
+test('HTML has four readable concept scenes and six demo links before any script runs',()=>{
   const html=readFileSync(new URL('../../index.html',import.meta.url),'utf8');
-  assert.equal((html.match(/class="scene-fallback"/g)||[]).length,4);
-  assert.equal((html.match(/class="exhibition-card"/g)||[]).length,6);
-  assert(html.includes('Se alle nettsidene'));
-  const css=readFileSync(new URL('../../css/marketing.css',import.meta.url),'utf8');
-  assert.match(css,/\.is-scroll \.scene-sticky\{position:sticky/);
-  assert.match(css,/@media\(max-width:899px\),\(max-height:639px\),\(prefers-reduced-motion:reduce\)/);
+  assert.equal((html.match(/class="concept-scene"/g)||[]).length,4);
+  const allDemos=html.match(/<nav aria-label="Alle bransjedemoer">([\s\S]*?)<\/nav>/)[1];
+  for(const name of ['restaurant','frisor','handverker','bilverksted','eiendom','konsulent']) {
+    assert(allDemos.includes(`href="demo.html?site=${name}"`));
+  }
+  assert.equal((html.match(/class="demo-image"[^>]*alt="[^"]+"/g)||[]).length,4);
+  const css=readFileSync(new URL('../../css/marketing-concepts.css',import.meta.url),'utf8');
+  assert.match(css,/\.concepts-motion \.concept-pin\{position:sticky/);
+  assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+  assert.match(css,/\.concepts-motion \.concept-scene\{position:relative;visibility:visible;pointer-events:auto/);
   assert.doesNotMatch(css,/scroll-snap/);
 });

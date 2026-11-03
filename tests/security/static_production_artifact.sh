@@ -10,6 +10,9 @@ if rg -q 'admin-provision-company|newAccountModal|newAccountForm|newAccountBtn' 
   exit 1
 fi
 expected=(
+  css/marketing-startup.css css/marketing-delivery.css css/marketing-concepts.css css/marketing-continuation.css
+  js/marketing-ui.js js/marketing-motion.mjs js/marketing-monitor-geometry.mjs js/marketing-concepts.mjs js/marketing-continuation.mjs js/marketing-bootstrap.js
+  js/vendor/gsap.min.js js/vendor/ScrollTrigger.min.js
   js/builder-editor.mjs js/builder-project-api.mjs js/builder-recovery.mjs
   css/portal-theme.css
   assets/marketing/wreach-design-desk-640.webp

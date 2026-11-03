@@ -131,8 +131,9 @@ test('Builder separates product information from unverified infrastructure and i
   assert.match(read('js/builder.js'),/lastSavedInfo/);
 });
 
-test('public website, demos, fonts and pre-existing images are unchanged', () => {
-  const files = ['index.html','demo.html','css/styles.css','css/builder.css','css/marketing.css','css/demo.css','css/public-fonts.css',
+// The approved homepage integration is covered separately; existing demos and portal dependencies stay immutable.
+test('existing demos, shared styles, fonts and images are unchanged', () => {
+  const files = ['demo.html','css/styles.css','css/builder.css','css/demo.css','css/public-fonts.css',
     ...git('ls-tree','-r','--name-only',baseline,'assets/marketing').toString().trim().split('\n').filter(f=>!f.endsWith('credits.json'))];
   for (const file of files) assert.deepEqual(readFileSync(new URL(file,root)),original(file),file);
 });

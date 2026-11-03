@@ -1,0 +1,67 @@
+/* Only the opening's illustrative delivery canvas and explanatory captions change. */
+.delivery-stages{display:grid;grid-template-columns:repeat(3,1fr);gap:35px;list-style:none;margin:0;padding:64px 6% 35px;background:#171b1b}
+.delivery-stage h2{font-size:32px;line-height:1.14;letter-spacing:-.035em}.delivery-stage p{font-size:14px;line-height:1.7;color:#bcbdb5;margin-top:16px;max-width:35ch}
+.delivery-plane{display:grid;grid-template-columns:1.15fr 1fr;gap:24px 36px;padding:36px 5%;background:#f3f0e8;color:#171b1b;min-height:0;margin:20px 6% 65px;isolation:isolate}
+.delivery-plane .site-paper{display:none}.delivery-plane .site-brand{position:static;grid-column:1;grid-row:1;font:800 32px/1.1 Manrope,Arial,sans-serif;letter-spacing:-.04em;display:flex;align-items:center;gap:5px}
+.delivery-plane .site-brand span{color:#48632a;font-weight:400}
+.delivery-plane .site-nav{position:static;display:flex;grid-column:2;grid-row:1;gap:20px;align-items:center;justify-content:end;font-size:14px;white-space:nowrap}.delivery-plane .site-nav a{min-height:44px;display:flex;align-items:center}
+.delivery-plane .site-image{position:relative;inset:auto;grid-column:2;grid-row:2/5;z-index:0;overflow:hidden;min-height:300px}.delivery-plane .site-image img{object-position:68% center}.delivery-plane .site-shade{display:none}
+.delivery-plane .site-title{grid-column:1;grid-row:2;font-size:clamp(42px,5.5vw,80px);line-height:1;letter-spacing:-.04em;margin:12px 0 0;align-self:end}
+.delivery-plane .site-copy{grid-column:1;grid-row:3;font-size:17px;line-height:1.6;margin:0;max-width:32ch}
+.delivery-plane .site-cta{grid-column:1;grid-row:4;justify-self:start;align-self:start;margin:0;background:#d3e59f;color:#171b1b;min-height:52px;padding:12px 22px;font-size:14px;gap:28px;white-space:nowrap}
+.delivery-plane .delivery-rule{grid-column:1/-1;grid-row:5;height:1px;background:#9ea392;margin-top:16px}
+.delivery-service-title{grid-column:1;grid-row:6;font:600 24px/1.25 Manrope,Arial,sans-serif;letter-spacing:-.025em}.delivery-service-copy{grid-column:2;grid-row:6;font-size:16px;line-height:1.5;margin:0}
+.delivery-plane .site-footer{position:static;grid-column:1/-1;grid-row:7;font-size:11px;color:#58604f;margin:0;padding:0;border:0;display:block}
+.delivery-plane :focus-visible{outline:3px solid #48632a;outline-offset:5px}
+/* A fixed canvas is mapped from the monitor. Geometry is measured only at setup/resize. */
+.motion .delivery-stages{display:block;position:absolute;inset:0;z-index:4;padding:0;margin:0;background:none;pointer-events:none}
+.motion .delivery-stage{position:absolute;top:110px;left:7%;right:7%;text-align:center;opacity:0;visibility:hidden}
+.motion .delivery-stage h2{font-size:32px;line-height:1.1}.motion .delivery-stage p{display:none}
+.motion .delivery-mobile{text-align:left;right:auto;width:380px;top:37%}.motion .delivery-mobile h2{font-size:42px;line-height:1.15}
+.motion .delivery-plane{display:block;position:absolute;left:0;top:0;width:1000px;height:700px;padding:0;margin:0;min-height:0;background:none;color:#f3f0e8;overflow:visible;isolation:auto;z-index:1;transform-origin:0 0}
+.motion .delivery-plane>*{position:absolute;grid-area:auto;margin:0;transform-origin:0 0}
+.motion .delivery-plane .site-paper{display:block;inset:0;background:#f3f0e8;z-index:0}
+.motion .delivery-plane .site-image{inset:0;width:1000px;height:700px;min-height:0;z-index:1}.motion .delivery-plane .site-image img{width:100%;height:100%}
+.motion .delivery-plane .site-shade{display:block;position:absolute;inset:0;background:linear-gradient(90deg,#111916df,#17211b55 75%);z-index:1}
+.motion .delivery-plane .site-brand{left:55px;top:32px;z-index:3;font-size:34px;color:#f3f0e8}.motion .delivery-plane .site-brand span{color:#d3e59f}
+.motion .delivery-plane .site-nav{left:540px;right:auto;top:20px;justify-content:start;gap:24px;z-index:3;font-size:18px;color:#171b1b}
+.motion .delivery-plane .site-title{left:65px;top:220px;width:650px;font-size:100px;line-height:1;z-index:3;color:#f3f0e8}
+.motion .delivery-plane .site-copy{left:65px;top:345px;width:332px;max-width:none;font-size:20px;line-height:1.45;z-index:3;color:#171b1b}
+.motion .delivery-plane .site-cta{left:65px;top:432px;width:280px;font-size:18px;min-height:64px;z-index:3;display:flex;padding:10px 20px}
+.motion .delivery-plane .delivery-rule{left:55px;top:523px;width:890px;height:1px;margin:0;z-index:3}
+.motion .delivery-plane .delivery-service-title{left:55px;top:550px;width:332px;font-size:25px;z-index:3;color:#171b1b}
+.motion .delivery-plane .delivery-service-copy{left:545px;top:545px;width:332px;font-size:20px;line-height:1.45;z-index:3;color:#171b1b}
+.motion .delivery-plane .site-footer{left:55px;top:665px;width:890px;font-size:12px;color:#58604f;z-index:3;display:block}
+.motion .delivery-plane .site-nav a{min-height:54px}
+.motion .delivery-plane .site-cta:focus-visible{outline-color:#48632a}
+:root.motion:has(.sequence:focus-within){scroll-padding-top:0}
+@media(max-width:1000px) and (min-width:701px){.motion .delivery-mobile{left:5%;width:260px}.motion .delivery-mobile h2{font-size:34px}}
+@media(max-width:700px){
+ .delivery-stages{grid-template-columns:1fr;gap:30px;padding:48px 6% 20px}.delivery-stage h2{font-size:30px}.delivery-stage p{margin-top:12px;font-size:15px}
+ .delivery-plane{grid-template-columns:1fr;padding:26px 22px;gap:22px;margin:24px 6% 52px}.delivery-plane .site-brand{grid-row:1;grid-column:1}.delivery-plane .site-nav{grid-row:2;grid-column:1;justify-content:start;gap:22px;font-size:13px}.delivery-plane .site-image{grid-row:3;grid-column:1;min-height:260px}.delivery-plane .site-title{grid-row:4;grid-column:1;font-size:44px;margin:0}.delivery-plane .site-copy{grid-row:5;grid-column:1;font-size:16px}.delivery-plane .site-cta{grid-row:6;grid-column:1}.delivery-plane .delivery-rule{grid-row:7;grid-column:1;margin:4px 0}.delivery-service-title{grid-row:8;grid-column:1;font-size:23px}.delivery-service-copy{grid-row:9;grid-column:1;font-size:16px}.delivery-plane .site-footer{grid-row:10;grid-column:1;line-height:1.6}
+ .motion .delivery-stage{left:5%;right:5%;top:106px;text-align:center;width:auto;max-width:none}.motion .delivery-stage h2{font-size:clamp(22px,6.5vw,27px);line-height:1.13;letter-spacing:-.03em}.motion .delivery-mobile h2{font-size:clamp(22px,6.5vw,27px)}
+ .motion .delivery-plane .site-brand{font-size:32px}.motion .delivery-plane .site-nav{gap:17px;font-size:20px}.motion .delivery-plane .site-title{font-size:74px}.motion .delivery-plane .site-footer{font-size:14px}
+ .motion .hero-foot{font-size:10px}.motion .hero-foot>span:first-child{max-width:60%}.motion .hero-foot>span:last-child{max-width:32%}
+}
+@media(prefers-reduced-motion:reduce){.delivery-stages{position:relative}.delivery-stage{opacity:1;visibility:visible}}
+
+/* Keep the disclosure readable outside the scaled illustration. */
+.motion .delivery-plane .site-footer{display:none}
+.delivery-disclosure{display:block;font-size:11px;line-height:1.4;letter-spacing:0;color:#bcbdb5;margin-top:3px}
+@media(max-width:700px){
+ .motion[data-delivery-stage]:not([data-delivery-stage="opening"]) .hero-foot>span:last-child{display:none}
+ .motion .hero-foot{padding-top:10px;min-height:44px;align-items:center}
+}
+
+.motion .delivery-plane .site-title{padding-bottom:.12em}
+
+/* The bitmap is scenery, never the content of the live webpage. The precisely
+   traced glass backing removes the baked page; the laptop remains physically
+   in front of the glass while the live surface leaves it. No opacity swap. */
+.monitor-backing,.studio-foreground{display:none;pointer-events:none}
+.motion .monitor-backing{display:block;position:absolute;inset:0;background:#121916}
+.motion .studio-foreground{display:block;position:absolute;inset:0;z-index:1;pointer-events:none}
+.studio-foreground img{object-position:68% center}
+.delivery-plane .site-image img{object-position:54% center}
+
+.motion .delivery-plane{clip-path:inset(0)}
