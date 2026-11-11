@@ -1,0 +1,75 @@
+--- a/builder.html
++++ b/builder.html
+@@ -8,5 +8,6 @@
+ <link rel="stylesheet" href="css/styles.css">
+ <link rel="stylesheet" href="css/builder.css">
+ <link rel="stylesheet" href="css/portal-theme.css">
++<link rel="stylesheet" href="css/project-journey.css">
+ </head>
+ <body class="builder-body">
+@@ -25,5 +26,10 @@
+     <input type="text" id="projectName" class="project-name-input" value="Mitt nettsideprosjekt" maxlength="160" aria-label="Prosjektnavn">
+     <button type="button" class="btn btn-outline btn-small" id="renameProjectBtn">Lagre navn</button>
+     <span id="renameStatus" role="status"></span>
++    <button type="button" class="btn btn-outline" id="journeyEntry" hidden>Kundereisen</button>
++    <div id="journeyAccessNotice" hidden>
++      <span role="alert">Lagring er på pause. Utkastet er beholdt i denne fanen. Bekreft tilgangen med samme konto for å fortsette.</span>
++      <button type="button" class="btn btn-outline btn-small" id="journeyVerifyAccess">Kontroller prosjekttilgang</button>
++    </div>
+     <span class="owner-tag" id="ownerTag" style="display:none;"></span>
+   </div>
+@@ -369,4 +375,8 @@
+ <script src="js/builder-data.js?v=demo2"></script>
+ <script type="module" src="js/builder.js?v=security2"></script>
++<dialog id="journeyDialog" aria-label="Kundereisen i prosjektet">
++<div class="journey-bar"><strong id="journeyProject"></strong><button type="button" id="journeyReturn" class="btn btn-outline">Tilbake til prosjektet</button></div>
++<div id="journeySurface"></div>
++</dialog>
+ </body>
+ </html>
+--- a/js/builder.js
++++ b/js/builder.js
+@@ -38,16 +38,17 @@
+ function preview(){return renderDraftPage(state,state)}
+ function render(){const html=preview();document.getElementById('previewDesktop').innerHTML=html;document.getElementById('previewMobile').innerHTML=html;document.getElementById('browserUrl').textContent=website.domain||website.public_slug}
+ function cancelAutosave(){clearTimeout(saveTimer);saveTimer=null}
++let journeySavePaused=false;
+ function resumeAutosave(){
+   cancelAutosave()
+-  if(editVersion!==savedEditVersion&&!saveBlocked&&!recovering&&!templateBusy&&!publishBusy&&!document.getElementById('templateModal').classList.contains('open'))
++  if(!journeySavePaused&&editVersion!==savedEditVersion&&!saveBlocked&&!recovering&&!templateBusy&&!publishBusy&&!document.getElementById('templateModal').classList.contains('open'))
+     saveTimer=setTimeout(()=>{saveTimer=null;return persist(false)},800)
+ }
+ function schedule(){editVersion++;cancelRecoveryChoice();document.getElementById('saveStatus').textContent=saveBlocked?'Lagring må avklares før flere endringer lagres.':'Ulagrede endringer';document.getElementById('customerSaveHint').textContent='Du har endringer som ikke er lagret';if(observedDraft)describeRecovery();resumeAutosave()}
+ function savedFeedback(show){document.getElementById('saveStatus').textContent=show?'Lagret ✓':'Alt lagret';document.getElementById('customerSaveHint').textContent=`Privat utkast · revisjon ${revision}`;document.getElementById('lastSavedInfo').textContent='Nå nettopp'}
+ async function persist(show=true,recoverySave=false){
+   cancelAutosave()
+-  if(templateBusy||(recovering&&!recoverySave))return false
++  if(journeySavePaused||templateBusy||(recovering&&!recoverySave))return false
+   if(saveBlocked){document.getElementById('saveStatus').textContent='Lagring er satt på pause. Åpne redigeringer er beholdt; avklar lagret tilstand før nytt forsøk.';return false}
+   if(saving){if(!await saving)return false;if(savedEditVersion===editVersion)return true;return persist(show)}
+   commit();const version=editVersion,snapshot=copy(siteData)
+@@ -212,7 +213,7 @@
+ function closeTemplateDialog(){if(templateBusy)return;templateModal.classList.remove('open');document.body.style.overflow=templateOverflow;dialogBackground.forEach((el,i)=>{el.inert=templateInert[i]});templateReturnFocus?.focus();if(!templateAttempted)resumeAutosave()}
+ byId('cancelTemplateBtn').addEventListener('click',closeTemplateDialog)
+ byId('confirmTemplateBtn').addEventListener('click',async()=>{
+-  if(templateBusy||saveBlocked||recovering||reading){byId('templateError').textContent='Lagret tilstand må avklares før nytt malbytte. Åpne redigeringer er beholdt.';return}templateBusy=true;templateControls.forEach(el=>{el.disabled=true});byId('templateError').textContent='Lagrer privat utkast …';cancelAutosave()
++  if(journeySavePaused||templateBusy||saveBlocked||recovering||reading){byId('templateError').textContent='Lagret tilstand må avklares før nytt malbytte. Åpne redigeringer er beholdt.';return}templateBusy=true;templateControls.forEach(el=>{el.disabled=true});byId('templateError').textContent='Lagrer privat utkast …';cancelAutosave()
+   try{
+     if(saving&&!await saving)throw Error('SAVE_FAILED')
+     commit();const candidate=templateDraft(siteData,selectedTemplate,byId('replaceTemplateContent').checked)
+@@ -289,3 +290,6 @@
+ })
+ // END BUILDER PRESENTATION CONTROLS
+ document.getElementById('copyCodeBtn').disabled=true;document.getElementById('downloadDataBtn').style.display='';document.getElementById('downloadHtmlBtn').style.display='none';render()
++
++import { installProjectJourney } from './project-launcher.mjs';
++installProjectJourney({website,ctx,supabase, beforeOpen(){journeySavePaused=true;cancelAutosave()}, afterClose(){journeySavePaused=false;resumeAutosave()}});
+--- a/js/supabase.js
++++ b/js/supabase.js
+@@ -1,4 +1,4 @@
+-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
++import { createClient } from './vendor/local-supabase-2.112.4.js'
+ import { isLocalSupabaseHost } from './supabase-environment.mjs'
+ import { createBrowserAuthStorage } from './auth-storage.mjs'
+ import { PRODUCTION_PUBLIC_CONFIG, validateProductionPublicConfig } from './supabase-public-config.mjs'

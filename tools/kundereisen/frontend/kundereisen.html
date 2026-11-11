@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="nb">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Kundereisen · Bord &amp; Jord | Wreach</title>
+  <link rel="stylesheet" href="css/public-fonts.css">
+  <link rel="stylesheet" href="css/annonse.css">
+  <link rel="stylesheet" href="css/kundereisen.css">
+
+</head>
+<body>
+<header><nav aria-label="Wreach"><span class="brand">Wreach<span aria-hidden="true">↗</span></span><span>Prosjektvisning</span></nav></header>
+<main hidden>
+  <div class="heading"><div><p class="eyebrow">Kundedemo · Bord &amp; Jord</p><h1>Kundereisen</h1></div><button id="reset" disabled>Start ny demorunde</button></div>
+  <nav class="steps" aria-label="Steg i kundereisen"><a href="#sok" data-step="sok">1. Søk</a><a href="#annonse" data-step="annonse">2. Annonse</a><a href="#resultat" data-step="resultat">3. Analyse</a></nav>
+  <p id="warning" class="warning" role="alert" hidden></p>
+  <noscript>Slå på JavaScript for å lese sidene på nytt og måle handlinger i demorunden.</noscript>
+  <section id="sok" data-panel aria-labelledby="search-heading">
+    <h2 id="search-heading" tabindex="-1">Slik blir restauranten funnet.</h2>
+    <div class="preview-bar"><div><h3>Forhåndsvisning av søkeresultat</h3><p>Tekstene er hentet fra levert HTML. En søkemotor kan vise andre utdrag.</p></div><button id="rerun" disabled>Kjør analyse på nytt</button></div>
+    <div class="pair previews">
+      <article class="before"><span>Før</span><h4 data-value="before-title">…</h4><p data-value="before-description">…</p><a href="demo.html?site=restaurant" target="_blank" rel="noopener">Åpne originalen ↗</a></article>
+      <article class="after"><span>Etter</span><h4 data-value="after-title">…</h4><p data-value="after-description">…</p><a href="bord-og-jord.html" target="_blank" rel="noopener">Åpne etterversjonen ↗</a></article>
+    </div>
+    <p data-seo-status role="status">Leser sidene …</p>
+    <p class="explain">Originalen viser først «Bli sittende litt til.» når JavaScript kjører. Da blir fanetittelen «Bord &amp; Jord — fiktiv restaurantdemo | Wreach». På ettersiden følger både restaurantens tittel og hovedoverskriften med i første HTML-svar.</p>
+    <details><summary>Se de målte HTML-feltene</summary><div id="measurements"></div></details>
+    <a class="next" href="#annonse">Videre til Instagram-annonse →</a>
+  </section>
+  <section id="annonse" data-panel hidden aria-labelledby="ad-heading">
+    <div class="spread"><article class="ad" aria-label="Lokalt Instagram-konsept for Bord og Jord">
+<div class="imprint"><strong>Bord &amp; Jord</strong><span>Lokalt Instagram-konsept</span></div>
+<figure><img src="assets/marketing/restaurant-food-640.webp" width="640" height="480" alt="Sesongrett på en tallerken, illustrasjonsfoto fra restaurantkonseptet"><figcaption>Illustrasjonsfoto</figcaption></figure>
+<div class="copy"><h2>Ovnsbakt torsk.</h2><p>Erter, brunet smør og sprø potet. Se hva mer kjøkkenet har på menyen.</p>
+<a id="visit" target="_blank" rel="noopener" aria-disabled="true">Besøk restauranten <span aria-hidden="true">↗</span></a></div>
+</article><div class="guide">
+      <p class="eyebrow">Instagram-annonse</p><h2 id="ad-heading" tabindex="-1">Slik kommer kunden til menyen.</h2>
+      <p>En annen vei til samme restaurant er annonsen for torskeretten. Velg <strong>«Besøk restauranten»</strong> for å åpne Bord &amp; Jord i en ny fane.</p>
+      <p>Rull ned, eller velg <strong>«Se menyen»</strong>. Gå tilbake til denne fanen for å se forskjellen.</p>
+      <a class="next" href="#resultat">Se målingen →</a>
+    </div></div>
+  </section>
+  <section id="resultat" data-panel hidden aria-labelledby="result-heading">
+    <h2 id="result-heading" tabindex="-1">Dette gjorde kunden.</h2>
+    <h3 class="group-title">Instagram-annonse</h3>
+    <ol class="flow" aria-label="Handlinger fra Instagram-annonse" aria-live="polite" aria-atomic="true">
+      <li><span>Annonseklikk</span><strong id="click">–</strong></li><li><span>Sideåpninger</span><strong id="opening">–</strong></li><li><span>Menyklikk</span><strong id="menu">–</strong></li>
+    </ol>
+    <h3 class="group-title">Sammenlign med to andre innganger</h3>
+    <table><thead><tr><th scope="col">Inngang</th><th scope="col">Sideåpninger</th><th scope="col">Menyklikk</th></tr></thead>
+    <tbody><tr><th scope="row"><a data-source="instagram" target="_blank" rel="noopener" aria-disabled="true">Instagram-lenke <span aria-hidden="true">↗</span></a></th><td data-counter="instagram.opening">–</td><td data-counter="instagram.menu">–</td></tr>
+    <tr><th scope="row"><a data-source="nyhetsbrev" target="_blank" rel="noopener" aria-disabled="true">Nyhetsbrev <span aria-hidden="true">↗</span></a></th><td data-counter="nyhetsbrev.opening">–</td><td data-counter="nyhetsbrev.menu">–</td></tr></tbody></table>
+    <p class="explain">Prøv en inngang i tabellen. En gjenlasting av restaurantsiden gir en ny åpning. Bare et valg av «Se menyen» teller som et menyklikk. Tallene sier ikke hvor mange gjester som bestilte bord.</p>
+    <a class="next" href="#annonse">Tilbake til annonsen</a>
+  </section>
+  <p id="status" class="round-status" role="status">Henter demorunden …</p>
+</main><p id="locked" role="status">Åpne Kundereisen fra ditt innloggede prosjekt.</p></body></html>

@@ -1,0 +1,12 @@
+#journeyEntry[hidden],#journeyDialog:not([open]){display:none!important}
+#journeyDialog{width:min(1120px,96vw);height:92dvh;max-width:100vw;max-height:100dvh;padding:0;border:1px solid #526448;background:#f3f0e8;color:#171b1b}
+#journeyDialog[open]{display:flex;flex-direction:column;margin:auto}
+#journeyDialog::backdrop{background:#101716ce}
+.journey-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px;background:#171b1b;color:#f3f0e8}
+#journeyReturn,#journeyEntry{min-height:44px;white-space:nowrap}
+#journeySurface{overflow:auto;overscroll-behavior:contain;flex:1;min-height:0;width:100%;border:0;background:#f3f0e8}
+@media(max-width:600px){#journeyDialog{width:100vw;height:100dvh;max-width:100%;max-height:100%}.topbar:has(#journeyEntry:not([hidden])){height:auto;flex-wrap:wrap}.topbar-left:has(#journeyEntry:not([hidden])){flex-wrap:wrap}}
+.builder-body #journeyEntry,.builder-body #journeyReturn{color:#171b1b;background:#d3e59f;border:1px solid #bed286;font:650 14px/1.2 Manrope,Arial,sans-serif;padding:10px 14px}
+.builder-body #journeyEntry:focus-visible,.builder-body #journeyReturn:focus-visible{outline:3px solid #f3f0e8;outline-offset:3px}
+#journeyAccessNotice[hidden]{display:none}
+#journeyAccessNotice{max-width:44ch;color:#f5f3ea;line-height:1.4}
