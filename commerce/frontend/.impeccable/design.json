@@ -1,0 +1,546 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-03T13:57:41.717310Z",
+  "title": "Design System: Bli Støgg",
+  "extensions": {
+    "colorMeta": {
+      "red": {
+        "role": "primary",
+        "displayName": "Merkerød",
+        "tonalRamp": [
+          "oklch(15% 0.21910 28.210)",
+          "oklch(27% 0.21910 28.210)",
+          "oklch(39% 0.21910 28.210)",
+          "oklch(51% 0.21910 28.210)",
+          "oklch(63% 0.21910 28.210)",
+          "oklch(75% 0.21910 28.210)",
+          "oklch(87% 0.21910 28.210)",
+          "oklch(95% 0.21910 28.210)"
+        ]
+      },
+      "card-red": {
+        "role": "primary",
+        "displayName": "Dyp kortrød",
+        "tonalRamp": [
+          "oklch(15% 0.16606 26.976)",
+          "oklch(27% 0.16606 26.976)",
+          "oklch(39% 0.16606 26.976)",
+          "oklch(51% 0.16606 26.976)",
+          "oklch(63% 0.16606 26.976)",
+          "oklch(75% 0.16606 26.976)",
+          "oklch(87% 0.16606 26.976)",
+          "oklch(95% 0.16606 26.976)"
+        ]
+      },
+      "card-edge": {
+        "role": "primary",
+        "displayName": "Rød kortkant",
+        "tonalRamp": [
+          "oklch(15% 0.16065 27.694)",
+          "oklch(27% 0.16065 27.694)",
+          "oklch(39% 0.16065 27.694)",
+          "oklch(51% 0.16065 27.694)",
+          "oklch(63% 0.16065 27.694)",
+          "oklch(75% 0.16065 27.694)",
+          "oklch(87% 0.16065 27.694)",
+          "oklch(95% 0.16065 27.694)"
+        ]
+      },
+      "scene": {
+        "role": "neutral",
+        "displayName": "Kullsvart",
+        "tonalRamp": [
+          "oklch(15% 0.00263 67.653)",
+          "oklch(27% 0.00263 67.653)",
+          "oklch(39% 0.00263 67.653)",
+          "oklch(51% 0.00263 67.653)",
+          "oklch(63% 0.00263 67.653)",
+          "oklch(75% 0.00263 67.653)",
+          "oklch(87% 0.00263 67.653)",
+          "oklch(95% 0.00263 67.653)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Mørk overflate",
+        "tonalRamp": [
+          "oklch(15% 0.00946 17.863)",
+          "oklch(27% 0.00946 17.863)",
+          "oklch(39% 0.00946 17.863)",
+          "oklch(51% 0.00946 17.863)",
+          "oklch(63% 0.00946 17.863)",
+          "oklch(75% 0.00946 17.863)",
+          "oklch(87% 0.00946 17.863)",
+          "oklch(95% 0.00946 17.863)"
+        ]
+      },
+      "warm-white": {
+        "role": "neutral",
+        "displayName": "Varm hvit",
+        "tonalRamp": [
+          "oklch(15% 0.01477 80.707)",
+          "oklch(27% 0.01477 80.707)",
+          "oklch(39% 0.01477 80.707)",
+          "oklch(51% 0.01477 80.707)",
+          "oklch(63% 0.01477 80.707)",
+          "oklch(75% 0.01477 80.707)",
+          "oklch(87% 0.01477 80.707)",
+          "oklch(95% 0.01477 80.707)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Dempet tekst",
+        "tonalRamp": [
+          "oklch(15% 0.01638 42.354)",
+          "oklch(27% 0.01638 42.354)",
+          "oklch(39% 0.01638 42.354)",
+          "oklch(51% 0.01638 42.354)",
+          "oklch(63% 0.01638 42.354)",
+          "oklch(75% 0.01638 42.354)",
+          "oklch(87% 0.01638 42.354)",
+          "oklch(95% 0.01638 42.354)"
+        ]
+      },
+      "secondary": {
+        "role": "neutral",
+        "displayName": "Sekundær flate",
+        "tonalRamp": [
+          "oklch(15% 0.02272 27.194)",
+          "oklch(27% 0.02272 27.194)",
+          "oklch(39% 0.02272 27.194)",
+          "oklch(51% 0.02272 27.194)",
+          "oklch(63% 0.02272 27.194)",
+          "oklch(75% 0.02272 27.194)",
+          "oklch(87% 0.02272 27.194)",
+          "oklch(95% 0.02272 27.194)"
+        ]
+      },
+      "field": {
+        "role": "neutral",
+        "displayName": "Mørkt butikkfelt",
+        "tonalRamp": [
+          "oklch(15% 0.00657 17.739)",
+          "oklch(27% 0.00657 17.739)",
+          "oklch(39% 0.00657 17.739)",
+          "oklch(51% 0.00657 17.739)",
+          "oklch(63% 0.00657 17.739)",
+          "oklch(75% 0.00657 17.739)",
+          "oklch(87% 0.00657 17.739)",
+          "oklch(95% 0.00657 17.739)"
+        ]
+      },
+      "field-border": {
+        "role": "neutral",
+        "displayName": "Feltkant",
+        "tonalRamp": [
+          "oklch(15% 0.02984 32.319)",
+          "oklch(27% 0.02984 32.319)",
+          "oklch(39% 0.02984 32.319)",
+          "oklch(51% 0.02984 32.319)",
+          "oklch(63% 0.02984 32.319)",
+          "oklch(75% 0.02984 32.319)",
+          "oklch(87% 0.02984 32.319)",
+          "oklch(95% 0.02984 32.319)"
+        ]
+      },
+      "demo-secondary": {
+        "role": "primary",
+        "displayName": "Mørk demorød",
+        "tonalRamp": [
+          "oklch(15% 0.17243 27.599)",
+          "oklch(27% 0.17243 27.599)",
+          "oklch(39% 0.17243 27.599)",
+          "oklch(51% 0.17243 27.599)",
+          "oklch(63% 0.17243 27.599)",
+          "oklch(75% 0.17243 27.599)",
+          "oklch(87% 0.17243 27.599)",
+          "oklch(95% 0.17243 27.599)"
+        ]
+      },
+      "demo-field": {
+        "role": "primary",
+        "displayName": "Dyp demorød",
+        "tonalRamp": [
+          "oklch(15% 0.13352 27.043)",
+          "oklch(27% 0.13352 27.043)",
+          "oklch(39% 0.13352 27.043)",
+          "oklch(51% 0.13352 27.043)",
+          "oklch(63% 0.13352 27.043)",
+          "oklch(75% 0.13352 27.043)",
+          "oklch(87% 0.13352 27.043)",
+          "oklch(95% 0.13352 27.043)"
+        ]
+      },
+      "demo-text": {
+        "role": "neutral",
+        "displayName": "Lys demotekst",
+        "tonalRamp": [
+          "oklch(15% 0.01537 67.646)",
+          "oklch(27% 0.01537 67.646)",
+          "oklch(39% 0.01537 67.646)",
+          "oklch(51% 0.01537 67.646)",
+          "oklch(63% 0.01537 67.646)",
+          "oklch(75% 0.01537 67.646)",
+          "oklch(87% 0.01537 67.646)",
+          "oklch(95% 0.01537 67.646)"
+        ]
+      },
+      "error": {
+        "role": "neutral",
+        "displayName": "Feilflate",
+        "tonalRamp": [
+          "oklch(15% 0.07471 25.906)",
+          "oklch(27% 0.07471 25.906)",
+          "oklch(39% 0.07471 25.906)",
+          "oklch(51% 0.07471 25.906)",
+          "oklch(63% 0.07471 25.906)",
+          "oklch(75% 0.07471 25.906)",
+          "oklch(87% 0.07471 25.906)",
+          "oklch(95% 0.07471 25.906)"
+        ]
+      },
+      "error-text": {
+        "role": "neutral",
+        "displayName": "Feiltekst",
+        "tonalRamp": [
+          "oklch(15% 0.01784 48.531)",
+          "oklch(27% 0.01784 48.531)",
+          "oklch(39% 0.01784 48.531)",
+          "oklch(51% 0.01784 48.531)",
+          "oklch(63% 0.01784 48.531)",
+          "oklch(75% 0.01784 48.531)",
+          "oklch(87% 0.01784 48.531)",
+          "oklch(95% 0.01784 48.531)"
+        ]
+      },
+      "invalid": {
+        "role": "neutral",
+        "displayName": "Ugyldig felt",
+        "tonalRamp": [
+          "oklch(15% 0.06269 51.068)",
+          "oklch(27% 0.06269 51.068)",
+          "oklch(39% 0.06269 51.068)",
+          "oklch(51% 0.06269 51.068)",
+          "oklch(63% 0.06269 51.068)",
+          "oklch(75% 0.06269 51.068)",
+          "oklch(87% 0.06269 51.068)",
+          "oklch(95% 0.06269 51.068)"
+        ]
+      },
+      "footer": {
+        "role": "neutral",
+        "displayName": "Footerfelt",
+        "tonalRamp": [
+          "oklch(15% 0.00180 17.370)",
+          "oklch(27% 0.00180 17.370)",
+          "oklch(39% 0.00180 17.370)",
+          "oklch(51% 0.00180 17.370)",
+          "oklch(63% 0.00180 17.370)",
+          "oklch(75% 0.00180 17.370)",
+          "oklch(87% 0.00180 17.370)",
+          "oklch(95% 0.00180 17.370)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "display",
+        "purpose": "Åpningsoverskrift på desktop."
+      },
+      "display-tablet": {
+        "displayName": "display-tablet",
+        "purpose": "Åpningsoverskrift ved 700–1050 px."
+      },
+      "display-mobile": {
+        "displayName": "display-mobile",
+        "purpose": "Åpningsoverskrift under 700 px."
+      },
+      "headline": {
+        "displayName": "headline",
+        "purpose": "Generell seksjonsoverskrift."
+      },
+      "title": {
+        "displayName": "title",
+        "purpose": "Stegoverskrift på desktop."
+      },
+      "body": {
+        "displayName": "body",
+        "purpose": "Løpende tekst på desktop."
+      },
+      "body-mobile": {
+        "displayName": "body-mobile",
+        "purpose": "Løpende tekst under 700 px."
+      },
+      "lead": {
+        "displayName": "lead",
+        "purpose": "Åpningstekst på desktop."
+      },
+      "label": {
+        "displayName": "label",
+        "purpose": "Demoteller og andre støttelabels."
+      },
+      "button": {
+        "displayName": "button",
+        "purpose": "Standard butikkknapp på desktop."
+      },
+      "button-mobile": {
+        "displayName": "button-mobile",
+        "purpose": "Standard butikkknapp under 700 px."
+      },
+      "navigation": {
+        "displayName": "navigation",
+        "purpose": "Mastheadens navlenker på desktop."
+      },
+      "demo-title": {
+        "displayName": "demo-title",
+        "purpose": "Tittel på det interaktive demokortet på desktop."
+      },
+      "demo-title-mobile": {
+        "displayName": "demo-title-mobile",
+        "purpose": "Tittel på demokort under 700 px."
+      },
+      "demo-body": {
+        "displayName": "demo-body",
+        "purpose": "Demokortets oppgavetekst på desktop."
+      },
+      "demo-body-mobile": {
+        "displayName": "demo-body-mobile",
+        "purpose": "Demokortets oppgavetekst under 700 px."
+      },
+      "scene-card-title": {
+        "displayName": "scene-card-title",
+        "purpose": "Fast tittelstørrelse før scenens geometriske skalering."
+      },
+      "scene-card-body": {
+        "displayName": "scene-card-body",
+        "purpose": "Scenekortets oppgavetekst før geometrisk skalering."
+      }
+    },
+    "shadows": [
+      {
+        "name": "scene-card",
+        "value": "0 2px 0 #5b1b18, 0 12px 24px #0004",
+        "purpose": "Kortkant og dybde i scenens fem kort."
+      },
+      {
+        "name": "phone-shell",
+        "value": "8px 8px 0 #241d1b, 10px 10px 0 #67534c, 22px 30px 35px #0006",
+        "purpose": "Materialkant og skygge på den ene mobilen."
+      },
+      {
+        "name": "phone-screen",
+        "value": "0 0 0 2px #080707",
+        "purpose": "Innramming av skjermen."
+      },
+      {
+        "name": "product-digital",
+        "value": "4px 5px 0 #9d211d",
+        "purpose": "Hard kant i digital produktillustrasjon."
+      },
+      {
+        "name": "product-physical",
+        "value": "3px 4px 0 #f6f0e6, 6px 7px 0 #9d211d, 9px 10px 0 #f6f0e6, 12px 13px 0 #9d211d",
+        "purpose": "Synlige lag i fysisk produktkonsept."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ui-ease",
+        "value": "cubic-bezier(.23,1,.32,1)",
+        "purpose": "Easing for knappe- og produktillustrasjonstilbakemelding."
+      },
+      {
+        "name": "button-duration",
+        "value": "160ms",
+        "purpose": "Transform/opacity på pekerhandlinger; fokus og redusert bevegelse har ingen overgang."
+      },
+      {
+        "name": "product-duration",
+        "value": "180ms",
+        "purpose": "Produktkortets hoverrotasjon."
+      },
+      {
+        "name": "scene-progress",
+        "value": "clamp((scrollY - start) / span, 0, 1)",
+        "purpose": "Direkte reverserbar scrollprogresjon; ingen tidsbasert avspilling eller etterslep."
+      },
+      {
+        "name": "scene-lift",
+        "value": "12%–38%",
+        "purpose": "Løft av samme fem kort; sidekort har opptil 2.4 prosentpoeng faseforskyvning."
+      },
+      {
+        "name": "scene-aperture",
+        "value": "12%–34%",
+        "purpose": "Kontinuerlig åpning av skjermens clip-path."
+      },
+      {
+        "name": "scene-turn",
+        "value": "38%–52%",
+        "purpose": "Midtkortets vending til 180 grader."
+      },
+      {
+        "name": "scene-read",
+        "value": "52%–75%",
+        "purpose": "Stabil kortgeometri og lesefase."
+      },
+      {
+        "name": "scene-gather",
+        "value": "75%–94%",
+        "purpose": "Samling til fysisk konseptstokk; midtkortet vender tilbake mellom 75 og 89 %."
+      },
+      {
+        "name": "scene-deck",
+        "value": "94%–100%",
+        "purpose": "Hold av ferdig konseptstokk."
+      },
+      {
+        "name": "static-fallback",
+        "value": "prefers-reduced-motion: reduce; innerHeight < 620; no JavaScript",
+        "purpose": "Komplette statiske budskap uten sticky sekvens; redusert bevegelse fjerner også UI-overganger."
+      },
+      {
+        "name": "keyboard-focus",
+        "value": "transition: none; transform: none",
+        "purpose": "Direkte fokusrespons på knapper."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "small-max-width",
+        "value": "360px"
+      },
+      {
+        "name": "store-compact-max-width",
+        "value": "540px"
+      },
+      {
+        "name": "landing-mobile-max-width",
+        "value": "699px"
+      },
+      {
+        "name": "landing-tablet-min-width",
+        "value": "700px"
+      },
+      {
+        "name": "store-single-column-max-width",
+        "value": "800px"
+      },
+      {
+        "name": "landing-tablet-max-width",
+        "value": "1050px"
+      },
+      {
+        "name": "static-short-max-height",
+        "value": "619px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primærknapp",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Merkerød handling på mørk butikk- eller scenebakgrunn.",
+      "html": "<button class=\"ds-button-primary\" type=\"button\">Prøv et demospill ↗</button>",
+      "css": ".ds-button-primary{font-family:Manrope,Arial,sans-serif;font-size:17px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:28px;min-height:56px;padding:15px 23px;border:0;border-radius:0;cursor:pointer;text-decoration:none;transition:transform 160ms cubic-bezier(.23,1,.32,1),opacity 160ms cubic-bezier(.23,1,.32,1);background:#f13b32;color:#11100f;}@media(hover:hover) and (pointer:fine){.ds-button-primary:hover{transform:translateY(-2px)}}.ds-button-primary:active{transform:scale(.98)}.ds-button-primary:focus-visible{outline:3px solid #f6f0e6;outline-offset:5px;transition:none;transform:none}.ds-button-primary:disabled{opacity:.5;cursor:default;transform:none}@media(max-width:699px){.ds-button-primary{min-height:54px;font-size:15px;padding:14px 20px;gap:18px}}@media(prefers-reduced-motion:reduce){.ds-button-primary{transition:none}}"
+    },
+    {
+      "name": "Knapp på rød flate",
+      "kind": "button",
+      "refersTo": "button-inverse",
+      "description": "Kullsvart handling i demo og avslutning.",
+      "html": "<button class=\"ds-button-inverse\" type=\"button\">Neste kort ↗</button>",
+      "css": ".ds-button-inverse{font-family:Manrope,Arial,sans-serif;font-size:17px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:28px;min-height:56px;padding:15px 23px;border:0;border-radius:0;cursor:pointer;text-decoration:none;transition:transform 160ms cubic-bezier(.23,1,.32,1),opacity 160ms cubic-bezier(.23,1,.32,1);background:#11100f;color:#f6f0e6;}@media(hover:hover) and (pointer:fine){.ds-button-inverse:hover{transform:translateY(-2px)}}.ds-button-inverse:active{transform:scale(.98)}.ds-button-inverse:focus-visible{outline:3px solid #11100f;outline-offset:5px;transition:none;transform:none}.ds-button-inverse:disabled{opacity:.5;cursor:default;transform:none}@media(max-width:699px){.ds-button-inverse{min-height:54px;font-size:15px;padding:14px 20px;gap:18px}}@media(prefers-reduced-motion:reduce){.ds-button-inverse{transition:none}}"
+    },
+    {
+      "name": "Sekundær butikkhandling",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Sekundær handling i eksisterende butikkflyt.",
+      "html": "<button class=\"ds-button-secondary\" type=\"button\">Oppdater status</button>",
+      "css": ".ds-button-secondary{font-family:Manrope,Arial,sans-serif;font-size:17px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:28px;min-height:56px;padding:15px 23px;border:0;border-radius:0;cursor:pointer;text-decoration:none;transition:transform 160ms cubic-bezier(.23,1,.32,1),opacity 160ms cubic-bezier(.23,1,.32,1);background:#3a2b29;color:#f6f0e6;}@media(hover:hover) and (pointer:fine){.ds-button-secondary:hover{transform:translateY(-2px)}}.ds-button-secondary:active{transform:scale(.98)}.ds-button-secondary:focus-visible{outline:3px solid #f6f0e6;outline-offset:5px;transition:none;transform:none}.ds-button-secondary:disabled{opacity:.5;cursor:default;transform:none}@media(max-width:699px){.ds-button-secondary{min-height:54px;font-size:15px;padding:14px 20px;gap:18px}}@media(prefers-reduced-motion:reduce){.ds-button-secondary{transition:none}}"
+    },
+    {
+      "name": "Sekundær demohandling",
+      "kind": "button",
+      "refersTo": "button-demo-secondary",
+      "description": "Sekundær handling i den røde demoen.",
+      "html": "<button class=\"ds-button-demo-secondary\" type=\"button\">Hopp over</button>",
+      "css": ".ds-button-demo-secondary{font-family:Manrope,Arial,sans-serif;font-size:17px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:28px;min-height:56px;padding:15px 23px;border:0;border-radius:0;cursor:pointer;text-decoration:none;transition:transform 160ms cubic-bezier(.23,1,.32,1),opacity 160ms cubic-bezier(.23,1,.32,1);background:#b12a25;color:#fff6ed;}@media(hover:hover) and (pointer:fine){.ds-button-demo-secondary:hover{transform:translateY(-2px)}}.ds-button-demo-secondary:active{transform:scale(.98)}.ds-button-demo-secondary:focus-visible{outline:3px solid #11100f;outline-offset:5px;transition:none;transform:none}.ds-button-demo-secondary:disabled{opacity:.5;cursor:default;transform:none}@media(max-width:699px){.ds-button-demo-secondary{min-height:54px;font-size:15px;padding:14px 20px;gap:18px}}@media(prefers-reduced-motion:reduce){.ds-button-demo-secondary{transition:none}}"
+    },
+    {
+      "name": "Butikkfelt",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "E-postfelt i den eksisterende butikkflyten.",
+      "html": "<label class=\"ds-field-label\" for=\"ds-email\">E-post</label><input class=\"ds-field\" id=\"ds-email\" type=\"email\" placeholder=\"gjest@test.invalid\">",
+      "css": ".ds-field-label{display:block;margin:20px 0 8px;font:600 17px Manrope,Arial,sans-serif;color:#f6f0e6}.ds-field{font:400 17px Manrope,Arial,sans-serif;width:100%;min-height:48px;padding:13px;border:1px solid #8e7772;border-radius:0;background:#171313;color:#f6f0e6}.ds-field:focus-visible{outline:3px solid #f6f0e6;outline-offset:5px}.ds-field[aria-invalid=\"true\"]{outline:2px solid #ffd1b7}"
+    },
+    {
+      "name": "Navnefelt i demo",
+      "kind": "input",
+      "refersTo": "demo-names",
+      "description": "Navnefeltet i demoens åpnbare innstillinger; navngivning er sekundært til oppgaven.",
+      "html": "<label class=\"ds-names-label\" for=\"ds-names\">Hvem spiller? Ett navn per linje.</label><textarea class=\"ds-names\" id=\"ds-names\" rows=\"3\" maxlength=\"371\">Alex\nSam\nKim</textarea>",
+      "css": ".ds-names-label{display:block;margin:20px 0 8px;font:600 16px Manrope,Arial,sans-serif;color:#fff6ed}.ds-names{display:block;width:100%;font:400 18px Manrope,Arial,sans-serif;background:#801e1b;color:#fff6ed;border:0;border-radius:0;padding:17px 20px;min-height:122px;max-height:230px;resize:vertical;margin-bottom:14px}.ds-names:focus-visible{outline:3px solid #11100f;outline-offset:5px}.ds-names[aria-invalid=\"true\"]{outline:2px solid #ffd1b7}"
+    },
+    {
+      "name": "Butikknavigasjon",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Mastheadens tekstlenker; produktlenken skjules under 700 px.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Butikk\"><a href=\"#products\">Spillene</a><a href=\"#account\">Mine spill</a><a href=\"#cart\">Handlekurv (0)</a></nav>",
+      "css": ".ds-nav{display:flex;gap:32px;align-items:center;flex-wrap:nowrap;background:#11100f;color:#f6f0e6}.ds-nav a{font:400 15px Manrope,Arial,sans-serif;color:inherit;padding:10px 0;min-height:44px;display:flex;align-items:center;text-decoration:none;text-underline-offset:5px}.ds-nav a:hover{text-decoration:underline}.ds-nav a:focus-visible{outline:3px solid #f6f0e6;outline-offset:5px}@media(max-width:699px){.ds-nav{gap:14px}.ds-nav a{font-size:13px;padding:5px 0;white-space:nowrap}.ds-nav a:first-child{display:none}}@media(max-width:360px){.ds-nav{gap:12px}}"
+    },
+    {
+      "name": "Demokort",
+      "kind": "card",
+      "refersTo": "demo-card",
+      "description": "Det interaktive demokortets leseflate; innhold skifter direkte uten inngangsanimasjon.",
+      "html": "<article class=\"ds-demo-card\"><span class=\"ds-demo-corner\">Bli Støgg</span><h3 class=\"ds-demo-title\">Hvem i rommet?</h3><p class=\"ds-demo-copy\">Hvem ville laget den rareste spillelisten? Alle peker samtidig.</p><span class=\"ds-demo-bottom\">Ingen fasit. Ingen plikt.</span></article>",
+      "css": ".ds-demo-card{font-family:Manrope,Arial,sans-serif;background:#f6f0e6;color:#11100f;border-radius:16px;min-height:460px;padding:36px;display:flex;flex-direction:column}.ds-demo-corner{font-size:16px;font-weight:800;letter-spacing:-.02em}.ds-demo-title{font-size:42px;font-weight:800;line-height:1.05;letter-spacing:-.055em;margin:56px 0 20px}.ds-demo-copy{font-size:23px;font-weight:400;line-height:1.4;max-width:28ch;margin:0 0 1em}.ds-demo-bottom{font-size:13px;font-weight:600;margin-top:auto;padding-top:35px}@media(min-width:700px) and (max-width:1050px){.ds-demo-card{padding:27px}.ds-demo-title{font-size:36px}.ds-demo-copy{font-size:20px}}@media(max-width:699px){.ds-demo-card{min-height:340px;padding:26px}.ds-demo-corner{font-size:14px}.ds-demo-title{font-size:31px;margin:28px 0 18px}.ds-demo-copy{font-size:20px}.ds-demo-bottom{padding-top:24px}}@media(max-width:360px){.ds-demo-card{min-height:330px;padding:22px}.ds-demo-title{margin-top:26px}}"
+    },
+    {
+      "name": "Scenekortets bakside",
+      "kind": "card",
+      "refersTo": "scene-card",
+      "description": "Ett av de samme fem kortene i scrollsekvensen, vist uten scenens transform.",
+      "html": "<div class=\"ds-scene-card\"><span class=\"ds-scene-corner\">Bli Støgg</span><strong class=\"ds-scene-title\">Bli<br>Støgg.</strong><span class=\"ds-scene-bottom\">Hele gjengen er med.</span></div>",
+      "css": ".ds-scene-card{font-family:Manrope,Arial,sans-serif;width:220px;height:310px;padding:19px;border:1px solid #ff7766;border-radius:12px;background:#f13b32;color:#11100f;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 2px 0 #5b1b18,0 12px 24px #0004}.ds-scene-corner{font-size:11px;font-weight:800;letter-spacing:-.02em}.ds-scene-title{font-size:66px;font-weight:800;letter-spacing:-.075em;line-height:.89;margin-top:auto;margin-bottom:auto;transform:rotate(-5deg)}.ds-scene-bottom{font-size:10px;font-weight:600;margin-top:auto}"
+    },
+    {
+      "name": "FAQ-panel",
+      "kind": "custom",
+      "refersTo": "faq",
+      "description": "Native details/summary med direkte åpning og lesbar forklaring.",
+      "html": "<details class=\"ds-faq\"><summary class=\"ds-faq-summary\">Trenger alle sin egen mobil?<span class=\"ds-faq-plus\" aria-hidden=\"true\">+</span></summary><p class=\"ds-faq-copy\">Nei. Første digitale spill er laget for én felles skjerm.</p></details>",
+      "css": ".ds-faq{font-family:Manrope,Arial,sans-serif;background:#211b1b;color:#f6f0e6;padding:0 24px;margin-bottom:12px}.ds-faq-summary{cursor:pointer;min-height:76px;padding:24px 0;display:flex;gap:25px;justify-content:space-between;align-items:center;font-size:18px;font-weight:600;list-style:none}.ds-faq-summary::-webkit-details-marker{display:none}.ds-faq-summary:focus-visible{outline:3px solid #f6f0e6;outline-offset:5px}.ds-faq-plus{font-size:28px;font-weight:400;color:#f13b32}.ds-faq[open] .ds-faq-plus{transform:rotate(45deg)}.ds-faq-copy{font-size:16px;line-height:1.55;color:#c9bcb7;padding-bottom:24px;margin:0}@media(max-width:699px){.ds-faq{padding:0 20px}.ds-faq-summary{font-size:16px;gap:20px}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Fra skjerm til kortstokk",
+    "overview": "Bli Støgg bruker tung plakatskrift, tydelige røde felt og varm hvit på kullsvart. Uttrykket er sosialt, frekt og lekent; lesbarhet og den felles spilloppgaven bærer opplevelsen. Kort og mobil er bygget i kode, uten produktfotografier.\n\nDenne dokumentasjonen gjelder bare butikkfrontenden under `commerce/frontend` og stilene avgrenset av `.shop-page`. Den beskriver den ferdige koden, ikke Wreach-portalen eller admin. Brukerens rødt/svart-retning og forbindelsen mellom én skjerm og fysiske kort er beholdt. Taste-retningen «Loud and flat», seed 1464425984, informerte plakatskriften og fargeflatene; foreslått kystfoto, portrettseksjon og global fargebevegelse ble ikke tatt i bruk.",
+    "keyCharacteristics": [
+      "Tung lokal Manrope og kompakte overskrifter.",
+      "Kullsvart scene, merkerøde flater og varme hvite lesekort.",
+      "Rette kontroller; avrunding og strukturell dybde på kort og mobil.",
+      "Scrollstyrt forvandling på forsiden, direkte handlinger i demo og butikk."
+    ],
+    "rules": [],
+    "dos": [
+      "**Do** bruk den fastsatte svarte, røde og varmhvite identiteten i butikkfrontenden.",
+      "**Do** behold én mobil og de samme fem DOM-kortene gjennom hele forsidens sekvens, også ved reversert scroll.",
+      "**Do** behold lesepausen og den komplette statiske fortellingen ved redusert bevegelse, kort viewport eller uten JavaScript.",
+      "**Do** hold oppgaver, knapper, fokusmarkering og merking av fysisk produktkonsept lesbare i den aktuelle komposisjonen.",
+      "**Do** bruk de egne mobilverdiene; demokort, tekst og navneinnstillinger har en annen plassering og tetthet enn på desktop."
+    ],
+    "donts": [
+      "**Don't** erstatt den fastsatte forsidens forvandling med dupliserte mobiler, bildeskift eller kryssfading mellom kortkopier.",
+      "**Don't** legg automatisk avspilling, smooth-scroll-etterslep eller en skjult tidslinje til forsidens scrollsekvens.",
+      "**Don't** behandle fysisk produktutforming, testpriser eller pilotinnhold som et ferdig salgstilbud.",
+      "**Don't** før disse scoped butikkvalgene inn som nye globale designregler for Wreach."
+    ]
+  }
+}
