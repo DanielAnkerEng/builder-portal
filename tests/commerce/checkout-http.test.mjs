@@ -1,0 +1,44 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { randomUUID } from 'node:crypto';
+import Stripe from 'stripe';
+import http from 'node:http';
+import { config,check,service,fixtures,signIn } from './local-support.mjs';
+import {fakeStripe} from './fake-stripe.mjs';
+import { createPilot } from '../../commerce/server.mjs';
+test('SIMULATED STRIPE HTTP: Checkout, signed webhook, replay, failure, no-return fulfillment and session reuse',async()=>{
+ const f=fixtures(),secret='whsec_'+randomUUID(),accountId='acct_simulated_fixture';
+ const fake=fakeStripe(config,accountId);
+ const sessions=fake.sessions,created=fake.created;
+ const cfg={...config,stripe:{...config.stripe,accountId,webhookSecret:secret}};
+ const app=await createPilot(cfg,{portal:4311,shop:4312},{stripeClient:fake});
+ const person={email:'http-'+randomUUID()+'@test.invalid',password:'Pilot!a9-'+randomUUID()};check(await service.auth.admin.createUser({...person,email_confirm:true}));const buyer=await signIn(person);
+ const call=async(path,body,headers={})=>{const r=await fetch('http://127.0.0.1:4312'+path,{method:body?'POST':'GET',headers:{Origin:'http://127.0.0.1:4312',Authorization:'Bearer '+buyer.token,'Content-Type':'application/json',...headers},body:body?(typeof body==='string'?body:JSON.stringify(body)):undefined});return {status:r.status,data:await r.json()};};
+ try{
+  const cart={request_key:randomUUID(),items:f.products.map(p=>({product_id:p.id,quantity:1}))};
+  const clicks=await Promise.all([call('/api/checkout',cart),call('/api/checkout',cart)]);assert.ok(clicks.every(r=>r.status===200));assert.equal(clicks[0].data.order_id,clicks[1].data.order_id);assert.equal(created.length,1);
+  const orderId=clicks[0].data.order_id,s=sessions.get('checkout:'+orderId);
+  assert.equal(created[0].shipping_address_collection.allowed_countries[0],'NO');assert.ok(created[0].line_items[0].price.startsWith('price_'));assert.equal(fake.productsById.size,2);
+  await call('/api/checkout',cart);assert.equal(created.length,1,'Existing session reused without second create');
+  let body=JSON.stringify({id:'evt_http_'+randomUUID(),livemode:false,type:'checkout.session.completed',data:{object:{id:s.id}}});
+  assert.equal((await call('/api/stripe/webhook',body,{'stripe-signature':'invalid'})).status,400);
+  let signature=Stripe.webhooks.generateTestHeaderString({payload:body,secret});assert.equal((await call('/api/stripe/webhook',body,{'stripe-signature':signature})).status,200);
+  const unicode=JSON.stringify({...JSON.parse(body),id:'evt_utf8_'+randomUUID(),description:'Støgg på skjerm'}),utf8=Buffer.from(unicode),split=utf8.indexOf(Buffer.from('ø'))+1;
+  const unicodeStatus=await new Promise((resolve,reject)=>{const req=http.request('http://127.0.0.1:4312/api/stripe/webhook',{method:'POST',headers:{'Content-Type':'application/json','Stripe-Signature':Stripe.webhooks.generateTestHeaderString({payload:unicode,secret})}},res=>{res.resume();res.on('end',()=>resolve(res.statusCode));});req.on('error',reject);req.write(utf8.subarray(0,split));setTimeout(()=>req.end(utf8.subarray(split)),5);});assert.equal(unicodeStatus,200,'Raw UTF-8 bytes survive chunk boundaries');
+  assert.equal((await call('/api/orders/'+orderId)).data.status,'pending');assert.equal((await call('/api/library')).data.length,0);
+  const signed=async event=>{const payload=JSON.stringify(event);return call('/api/stripe/webhook',payload,{'stripe-signature':Stripe.webhooks.generateTestHeaderString({payload,secret})});};
+  const baseEvent={id:'evt_bad_'+randomUUID(),livemode:false,type:'checkout.session.completed',data:{object:{id:s.id}}};
+  assert.equal((await signed({...baseEvent,livemode:true})).status,500);
+  const originalStore=s.metadata.store_id;s.metadata.store_id=f.otherStore.id;
+  assert.equal((await signed(baseEvent)).status,500);s.metadata.store_id=originalStore;
+  const originalAmount=s.amount_total;s.amount_total=1;assert.equal((await signed(baseEvent)).status,500);s.amount_total=originalAmount;
+  assert.equal((await call('/api/orders/'+orderId)).data.status,'pending');assert.equal((await call('/api/library')).data.length,0);
+  s.status='complete';s.payment_status='paid';body=JSON.stringify({id:'evt_http_'+randomUUID(),livemode:false,type:'checkout.session.async_payment_succeeded',data:{object:{id:s.id}}});signature=Stripe.webhooks.generateTestHeaderString({payload:body,secret});
+  assert.equal((await call('/api/stripe/webhook',body+' ',{'stripe-signature':signature})).status,400);
+  const webhooks=await Promise.all([call('/api/stripe/webhook',body,{'stripe-signature':signature}),call('/api/stripe/webhook',body,{'stripe-signature':signature})]);assert.ok(webhooks.every(r=>r.status===200));
+  assert.equal((await call('/api/library')).data.length,1,'Entitlement exists without return-page visit');
+  const paid=(await call('/api/orders/'+orderId)).data;assert.equal(paid.status,'paid');assert.equal(paid.commerce_payments.provider,'simulation');
+  assert.equal(check(await service.from('commerce_payment_events').select('event_id').eq('event_id',JSON.parse(body).id)).length,1);
+  assert.equal((await call('/api/checkout',{...cart,company_id:f.otherCompany})).status,400);
+ }finally{await app.close();}
+});

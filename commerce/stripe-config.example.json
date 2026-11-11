@@ -1,0 +1,9 @@
+{
+  "stripe": {
+    "mode": "disabled",
+    "environmentName": "",
+    "accountId": "",
+    "secretKey": "",
+    "webhookSecret": ""
+  }
+}
