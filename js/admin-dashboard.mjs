@@ -34,6 +34,12 @@ export function createProjectRow(document, site) {
   const edit = el('a', 'btn btn-outline btn-small', 'Åpne Builder')
   edit.href = `builder.html?website=${encodeURIComponent(site.id)}`
   actions.append(edit)
+  // Commerce is available only on the isolated pilot portal, not Wreach production.
+  if (document.location?.origin === 'http://127.0.0.1:4307') {
+    const commerce = el('a', 'btn btn-outline btn-small', 'Butikk og ordre')
+    commerce.href = `commerce-admin.html?website=${encodeURIComponent(site.id)}`
+    actions.append(commerce)
+  }
   if (published && typeof site.public_slug === 'string' && site.public_slug.trim()) {
     const live = el('a', 'dashboard-live-link', 'Se live ↗')
     live.href = `site.html?slug=${encodeURIComponent(site.public_slug)}`

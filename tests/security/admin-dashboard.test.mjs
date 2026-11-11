@@ -3,8 +3,8 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { websiteState, createKpi, createProjectRow, mountDashboard, loadDashboardWebsites, DASHBOARD_STATES } from '../../js/admin-dashboard.mjs'
 
-function documentStub() {
-  return { createElement: tag => ({ tag, children: [], dataset: {}, attrs: {}, textContent: '',
+function documentStub(origin='https://wreach.no') {
+  return { location:{origin},createElement: tag => ({ tag, children: [], dataset: {}, attrs: {}, textContent: '',
     append(...nodes) { this.children.push(...nodes) }, replaceChildren(...nodes) { this.children = nodes },
     setAttribute(key, value) { this.attrs[key] = value } }) }
 }
@@ -56,6 +56,23 @@ test('live action requires publication and slug; published URL is encoded and is
   assert.equal(flatten(createProjectRow(doc,{...site,current_publication_id:'pub',public_slug:null})).filter(n => n.tag === 'a').length,1)
   const live = flatten(createProjectRow(doc,{...site,current_publication_id:'pub'})).find(n => n.target === '_blank')
   assert.equal(live.href,'site.html?slug=test%26slug'); assert.equal(live.rel,'noopener noreferrer')
+})
+test('pilot commerce link uses each website identity, never company identity or the other row', () => {
+  const doc=documentStub('http://127.0.0.1:4307')
+  for(const id of ['site/1','site?2&company=other','"><script>']) {
+    const row=createProjectRow(doc,{...site,id,company_id:'not-the-website-id'})
+    const links=flatten(row).filter(n=>n.textContent==='Butikk og ordre')
+    assert.equal(links.length,1)
+    const url=new URL(links[0].href,doc.location.origin)
+    assert.equal(url.pathname,'/commerce-admin.html')
+    assert.deepEqual([...url.searchParams],[['website',id]])
+  }
+})
+test('pilot link is absent in production, other ports, other hosts and absent location', () => {
+  for(const origin of ['https://wreach.no','https://wreach.no.evil.invalid','http://127.0.0.1:4308','http://127.0.0.1:4175','http://localhost:4307','https://127.0.0.1:4307',undefined]) {
+    const doc=documentStub(origin);if(origin===undefined)delete doc.location
+    assert.equal(flatten(createProjectRow(doc,site)).some(n=>n.textContent==='Butikk og ordre'),false)
+  }
 })
 test('real empty projects and demo projects are explicitly labelled', () => {
   const doc = documentStub(), host = doc.createElement('div'), dashboard = mountDashboard({document:doc,host})

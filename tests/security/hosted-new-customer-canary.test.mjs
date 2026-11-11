@@ -57,7 +57,7 @@ test('actual handler: authorized missing key stops BEFORE body and RPC', async (
   const old = globalThis.Deno
   try {
     globalThis.__p3Forbidden = 0
-    globalThis.Deno = { serve: fn => { handler = fn } }
+    globalThis.Deno = { env: { get: () => undefined }, serve: fn => { handler = fn } }
     await import(url(source.replace("'../_shared/security.ts'", JSON.stringify(auth))
       .replace("'../_shared/new-customer.ts'", JSON.stringify(body))))
     const response = await handler(new Request('http://unit.invalid/', {

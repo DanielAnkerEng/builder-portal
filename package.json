@@ -1,0 +1,17 @@
+{
+  "name": "wreach-bli-stogg-pilot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start:pilot": "python3 commerce/local-stack.py start && node commerce/server.mjs",
+    "start:pilot:edge": "supabase functions serve --workdir . --env-file commerce/local-edge.env",
+    "test:commerce": "NODE_ENV=test node --test --test-concurrency=1 tests/commerce/*.test.mjs",
+    "build:commerce": "node commerce/build.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.117.2",
+    "stripe": "^20.0.0",
+    "pg": "^8.16.3",
+    "esbuild": "^0.25.0"
+  }
+}

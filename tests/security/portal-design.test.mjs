@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync, existsSync, statSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
+import {expectedPilotFile} from './pilot-platform-contract.mjs';
 
 const root = new URL('../../', import.meta.url);
 const baseline = '85cb16a4156744c779b842d2bcbcf433f065a7d9';
@@ -91,9 +92,9 @@ test('production allowlist includes only the shared stylesheet, never design fix
   assert.doesNotMatch(read('scripts/build-production.sh'), /builder-design|tests\/fixtures/);
 });
 
-test('runtime outside approved login and Builder presentation, backend and security headers remain byte-identical', () => {
+test('runtime/backend/headers retain baseline bytes except exact reviewed local-pilot adaptations', () => {
   const files = git('ls-tree','-r','--name-only',baseline,'js','supabase','deploy/cloudflare').toString().trim().split('\n');
-  for (const file of files.filter(file=>!['js/login.js','js/builder.js'].includes(file))) assert.deepEqual(readFileSync(new URL(file,root)),original(file),file);
+  for (const file of files.filter(file=>!['js/login.js','js/builder.js'].includes(file))) assert.deepEqual(readFileSync(new URL(file,root)),expectedPilotFile(file,original(file)),file);
 });
 
 test('login retains Auth imports, call parameters and ordered MFA/destination path behind shared busy guard', () => {

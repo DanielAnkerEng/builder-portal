@@ -3,6 +3,10 @@ import { readPayload, RequestError, validateStructure } from '../_shared/new-cus
 
 // Local origins are the exact existing config.toml Auth development origins.
 const origins = new Set(['https://wreach.no', 'http://127.0.0.1:4175', 'http://localhost:4175'])
+// Both CLI-local Kong and an explicit pilot env file are required; never request data.
+if (Deno.env.get('SUPABASE_URL') === 'http://kong:8000' && Deno.env.get('WREACH_LOCAL_PILOT') === 'bli-stogg-pilot:56321') {
+  origins.add('http://127.0.0.1:4307')
+}
 const allowedHeaders = ['authorization', 'apikey', 'content-type', 'idempotency-key', 'x-client-info']
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 const validationCodes = new Set(['INVALID_IDEMPOTENCY_KEY', 'INVALID_PAYLOAD', 'INVALID_ORGANIZATION_NUMBER',

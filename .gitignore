@@ -5,3 +5,9 @@ Thumbs.db
 .vscode/
 supabase/.temp/
 dist/
+
+node_modules/
+.env*
+!.env.example
+.taste-skill/
+commerce/public/vendor/

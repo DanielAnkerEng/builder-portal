@@ -1,0 +1,12 @@
+import { build } from 'esbuild';
+import { mkdir,readFile,writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+const packageInfo=JSON.parse(await readFile('node_modules/@supabase/supabase-js/package.json','utf8'));
+const declared=JSON.parse(await readFile('package.json','utf8')).dependencies['@supabase/supabase-js'];
+if(packageInfo.version!=='2.117.2'||declared!==packageInfo.version)throw Error('PILOT_SDK_VERSION_MISMATCH');
+await mkdir('commerce/public/vendor',{recursive:true});
+const built=await build({stdin:{contents:"export { createClient } from '@supabase/supabase-js';",resolveDir:process.cwd()},bundle:true,format:'esm',platform:'browser',outfile:'commerce/public/vendor/supabase.js',minify:true,metafile:true});
+if(Object.values(built.metafile.outputs).some(output=>output.imports.length))throw Error('PILOT_SDK_EXTERNAL_IMPORT');
+const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
+await writeFile('commerce/public/vendor/supabase.meta.json',JSON.stringify({package:packageInfo.name,version:packageInfo.version,license:packageInfo.license,upstream:packageInfo.repository,lockfileSha256:sha256(await readFile('pnpm-lock.yaml')),bundleSha256:sha256(await readFile('commerce/public/vendor/supabase.js')),inputs:Object.keys(built.metafile.inputs).sort()},null,2));
+console.log('Local Supabase browser SDK built.');

@@ -40,7 +40,7 @@ async function fixture(options = {}) {
     return new Proxy({}, {get(){throw new Error('Privileged client must not be used')}})
   }
   let handler
-  globalThis.Deno={env:{get:name=>name==='SUPABASE_URL'?'http://127.0.0.1:54321':'unit-placeholder'},serve:fn=>{handler=fn}}
+  globalThis.Deno={env:{get:name=>name==='SUPABASE_URL'?(options.supabaseUrl??'http://127.0.0.1:54321'):name==='WREACH_LOCAL_PILOT'?options.pilotMarker:'unit-placeholder'},serve:fn=>{handler=fn}}
   const securityUrl=moduleUrl(securitySource.replace(/^import .*from 'npm:[^']+'\n/,'const createClient = globalThis.__ncClient\n')+'\n//'+serial++)
   await import(moduleUrl(edgeSource.replace("'../_shared/security.ts'",JSON.stringify(securityUrl)).replace("'../_shared/new-customer.ts'",JSON.stringify(helperUrl))+'\n//'+serial++))
   delete globalThis.__ncClient
@@ -135,6 +135,25 @@ for(const origin of ['https://evil.invalid','https://wreach.no.evil.invalid','nu
 test('allowed-origin errors have CORS; no-Origin requires auth but permits server client',async()=>{
   const r=await run({aal:'aal1'});assert.equal(r.response.headers.get('access-control-allow-origin'),'https://wreach.no')
   assert.equal((await run({}, {headers:{origin:null}})).response.status,200)
+})
+for(const [label,supabaseUrl,pilotMarker,allowed] of [
+  ['isolated local pilot','http://kong:8000','bli-stogg-pilot:56321',true],
+  ['hosted production','https://oqwpfnmqeriupujpssxz.supabase.co','bli-stogg-pilot:56321',false],
+  ['another local stack','http://kong:8000','another-project',false],
+  ['missing pilot marker','http://kong:8000',undefined,false],
+  ['lookalike host','http://kong:8000.evil.invalid','bli-stogg-pilot:56321',false],
+])test('pilot CORS environment boundary: '+label,async()=>{
+  const r=await run({supabaseUrl,pilotMarker},{method:'OPTIONS',headers:{origin:'http://127.0.0.1:4307','access-control-request-method':'POST'}})
+  assert.equal(r.response.status,allowed?204:403)
+  assert.equal(r.response.headers.get('access-control-allow-origin'),allowed?'http://127.0.0.1:4307':null)
+  assert.equal(r.calls.length,0)
+})
+test('pilot Origin still requires AAL2, active profile and active platform admin',async()=>{
+  for(const [options,code] of [[{aal:'aal1'},'MFA_REQUIRED'],[{admin:false},'NOT_AUTHORIZED'],[{profile:'suspended'},'PROFILE_INACTIVE']]) {
+    const r=await run({supabaseUrl:'http://kong:8000',pilotMarker:'bli-stogg-pilot:56321',...options},{headers:{origin:'http://127.0.0.1:4307'}})
+    assert.equal(r.response.status,403);assert.equal(r.data.error.code,code)
+    assert.equal(r.calls.some(c=>c[0]==='rpc'),false)
+  }
 })
 for(const code of ['IDEMPOTENCY_CONFLICT','ORGANIZATION_NUMBER_EXISTS','INVALID_PAYLOAD','INVALID_ASSIGNEE','INVALID_SERVICE','NOT_AUTHORIZED'])test('Phase B error '+code,async()=>{
   const r=await run({result:{data:{ok:false,error:code,operationId:key},error:null}})
